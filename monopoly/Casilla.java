@@ -54,7 +54,7 @@ public class Casilla {
         this.tipo = tipo;
         this.posicion = posicion;
         this.duenho = duenho;
-        this.valor=0 //para el parking
+        this.valor=0; //para el parking
         this.avatares = new ArrayList<>();
     }
 
