@@ -22,6 +22,10 @@ public class Avatar {
     * avatares creados (usado para crear un ID distinto del de los demás avatares).
      */
     public Avatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
+        this.tipo = tipo;
+        this.jugador = jugador;
+        this.lugar = lugar;
+        this.generarId(avCreados);
     }
 
     //A continuación, tenemos otros métodos útiles para el desarrollo del juego.
@@ -31,6 +35,9 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+        int pos = (lugar.getPosicion() + 1);
+        ArrayList<Casilla> lado = casillas.get((int)pos/4);
+        this.lugar = lado.get(pos % 4);
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
@@ -38,5 +45,6 @@ public class Avatar {
     * - Un arraylist de los avatares ya creados, con el objetivo de evitar que se generen dos ID iguales.
      */
     private void generarId(ArrayList<Avatar> avCreados) {
+        this.id = String.valueOf((char) (avCreados.size() + 64 + 1)); //as letras asígnanse por orden, o primeiro avatar ten A, o segundo B ...
     }
 }
