@@ -22,6 +22,7 @@ class Grupo {
         this.colorGrupo = colorGrupo;
         anhadirCasilla(cas2);
         anhadirCasilla(cas1);
+        this.numCasillas = 2;
 
     }
 
@@ -33,6 +34,7 @@ class Grupo {
         anhadirCasilla(cas3);
         anhadirCasilla(cas2);
         anhadirCasilla(cas1);
+        this.numCasillas = 3;
     }
 
     /* Método que añade una casilla al array de casillas miembro de un grupo.
