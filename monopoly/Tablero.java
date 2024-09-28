@@ -104,4 +104,14 @@ public class Tablero {
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
     }
+
+    // GETTERS
+
+    public Jugador getBanca(){
+        return banca;
+    }
+    
+    public Grupo getGrupo(String color){ //devuelve el grupo asociado a un color
+        return grupos.get(color);
+    }
 }

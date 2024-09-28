@@ -62,12 +62,18 @@ public class Casilla {
     public void anhadirAvatar(Avatar av) {
         if (!avatares.contains(av))
             avatares.add(av);
+        else{
+            System.out.println("error: añadido avatar que ya estaba en casilla");
+        }
     }
 
     //Método utilizado para eliminar un avatar del array de avatares en casilla.
     public void eliminarAvatar(Avatar av) {
         if (avatares.contains(av))
             avatares.remove(av);
+        else{
+                System.out.println("error: eliminado avatar que no estaba en casilla");
+            }
     }
 
     /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
@@ -77,9 +83,7 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-
         return  (impuesto <= actual.getFortuna());
-        
         
 
     }
@@ -115,11 +119,52 @@ public class Casilla {
     public String casEnVenta() {
     }
 
+    // GETTERS
+    public String getNombre(){
+        return nombre;
+    }
+
+    public Grupo getGrupo(){
+        return grupo;
+    }
+
+    public float getValor(){
+        return valor;
+    }
+
     public Jugador getduenhoJugador(){
-        return this.duenho;
+        return duenho;
     }
 
     public int getPosicion(){
         return posicion;
     }
+
+    public String getTipo(){
+        return tipo;
+    }
+
+    public float getHipoteca(){
+        return hipoteca;
+    }
+
+    // SETTERS
+    public void setPosicion(int p){
+        this.posicion = p;
+    }
+
+    public void setGrupo(Grupo g){
+        this.grupo = g;
+    }
+
+    public void setValor(float v){
+        this.valor = v;
+    }
+
+    public void setDuenho(Jugador j){
+        this.duenho = j;
+    }
+
+
+
 }

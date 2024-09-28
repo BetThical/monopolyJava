@@ -58,4 +58,16 @@ class Grupo {
         return esDuenho;
     }
 
+    
+     // GETTERS
+     public String getColor(){
+        return colorGrupo;
+    }
+
+    public int getNumCasillas(){
+        return numCasillas;
+    }
+
+    
+
 }
