@@ -3,6 +3,7 @@ package monopoly;
 import java.util.ArrayList;
 import partida.*;
 
+
 public class Menu {
 
     //Atributos
@@ -21,8 +22,15 @@ public class Menu {
         return banca;
     }
 
+    public Menu(){
+        this.banca = new Jugador();
+        this.tablero = new Tablero(getBanca());
+        
+    }
+
     // Método para inciar una partida: crea los jugadores y avatares.
-    private void iniciarPartida() {
+    public void iniciarPartida() {
+
     }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.

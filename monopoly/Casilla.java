@@ -1,7 +1,9 @@
 package monopoly;
 
+
 import partida.*;
 import java.util.ArrayList;
+
 
 //pepito
 
@@ -90,7 +92,7 @@ public class Casilla {
 
     //devuelve true si se puede comprar la casilla
     public boolean esComprable(Jugador comprador, Jugador banca){
-        return ((tipo == "solar" || tipo == "transporte" || tipo == "servicios") && (duenho == banca) && (valor <= comprador.getFortuna()));
+        return (("solar".equals(tipo) || "transporte".equals(tipo) || "servicios".equals(tipo)) && (duenho == banca) && (valor <= comprador.getFortuna()));
         
 
     }
@@ -111,12 +113,14 @@ public class Casilla {
     /*Método para mostrar información sobre una casilla.
     * Devuelve una cadena con información específica de cada tipo de casilla.*/
     public String infoCasilla() {
+        return ""; 
     }
 
     /* Método para mostrar información de una casilla en venta.
      * Valor devuelto: texto con esa información.
      */
     public String casEnVenta() {
+        return ""; 
     }
 
     // GETTERS
