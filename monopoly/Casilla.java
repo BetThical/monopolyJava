@@ -10,7 +10,7 @@ public class Casilla {
 
     //Atributos:
     private String nombre; //Nombre de la casilla
-    private String tipo; //Tipo de casilla (Solar, Especial, Transporte, Servicios, Comunidad).
+    private String tipo; //Tipo de casilla (Solar, Especial, Transporte, Servicios, Comunidad, Sorte, Impostos).
     private float valor; //Valor de esa casilla (en la mayoría será valor de compra, en la casilla parking se usará como el bote).
     private int posicion; //Posición que ocupa la casilla en el tablero (entero entre 1 y 40).
     private Jugador duenho; //Dueño de la casilla (por defecto sería la banca).
@@ -77,8 +77,19 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+
+        return  (impuesto <= actual.getFortuna());
+        
+        
+
     }
 
+    //devuelve true si se puede comprar la casilla
+    public boolean esComprable(Jugador comprador, Jugador banca){
+        return ((tipo == "solar" || tipo == "transporte" || tipo == "servicios") && (duenho == banca) && (valor <= comprador.getFortuna()));
+        
+
+    }
     /*Método usado para comprar una casilla determinada. Parámetros:
     * - Jugador que solicita la compra de la casilla.
     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/

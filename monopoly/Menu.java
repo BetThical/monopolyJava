@@ -17,6 +17,9 @@ public class Menu {
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
 
+    public Jugador getBanca(){
+        return banca;
+    }
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {

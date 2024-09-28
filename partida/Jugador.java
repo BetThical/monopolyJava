@@ -52,6 +52,10 @@ public class Jugador {
         this.fortuna += valor;
     }
 
+    public float getFortuna(){
+        return fortuna;
+    }
+
     //Método para sumar gastos a un jugador.
     //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
     public void sumarGastos(float valor) {
