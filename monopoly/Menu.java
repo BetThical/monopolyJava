@@ -1,6 +1,7 @@
 package monopoly;
 
 import java.util.ArrayList;
+import java.util.*;
 import partida.*;
 
 
@@ -25,11 +26,39 @@ public class Menu {
     public Menu(){
         this.banca = new Jugador();
         this.tablero = new Tablero(getBanca());
+        tablero.imprimirTablero();
+
         
     }
 
     // Método para inciar una partida: crea los jugadores y avatares.
     public void iniciarPartida() {
+
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Avatar> avCreados = new ArrayList<>();
+
+        System.out.println("Introduce el número de jugadores:");
+        int numJugadores = sc.nextInt();
+        sc.nextLine();
+
+        Casilla casillaInicio = tablero.getCasilla(0);
+
+        for (int i = 1; i <= numJugadores; i++) {
+            System.out.println("Introduce el nombre del jugador " + i + ":");
+            String nombre = sc.nextLine();
+
+            System.out.println("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, sombrero, perro):");
+            String tipoAvatar = sc.nextLine();
+
+            Jugador jugador = new Jugador(nombre, tipoAvatar, casillaInicio, avCreados);
+            jugadores.add(jugador);
+
+            avCreados.add(jugador.getAvatar());
+
+            System.out.println("Jugador " + nombre + " con avatar " + tipoAvatar + " creado.");
+        }
+
+        System.out.println("Partida iniciada con " + numJugadores + " jugadores.");
 
     }
     
@@ -59,6 +88,8 @@ public class Menu {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados() {
+
+
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.

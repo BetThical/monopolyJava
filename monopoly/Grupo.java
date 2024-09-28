@@ -21,6 +21,8 @@ class Grupo {
      */
     public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
         this.colorGrupo = colorGrupo;
+        this.miembros = new ArrayList<>();
+
         anhadirCasilla(cas2);
         anhadirCasilla(cas1);
         this.numCasillas = 2;
@@ -32,6 +34,8 @@ class Grupo {
      */
     public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo) {
         this.colorGrupo = colorGrupo;
+        this.miembros = new ArrayList<>();
+
         anhadirCasilla(cas3);
         anhadirCasilla(cas2);
         anhadirCasilla(cas1);
@@ -42,8 +46,10 @@ class Grupo {
     * Parámetro: casilla que se quiere añadir.
      */
     public void anhadirCasilla(Casilla miembro) {
-        if (!this.miembros.contains(miembro))
+        if (!this.miembros.contains(miembro)){
             this.miembros.add(miembro);
+            miembro.setGrupo(this);
+        }
     }
 
     /*Método que comprueba si el jugador pasado tiene en su haber todas las casillas del grupo:
