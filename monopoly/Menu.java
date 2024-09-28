@@ -25,6 +25,8 @@ public class Menu {
     public Menu(){
         this.banca = new Jugador();
         this.tablero = new Tablero(getBanca());
+        tablero.imprimirTablero();
+
         
     }
 

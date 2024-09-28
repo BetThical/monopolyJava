@@ -2,7 +2,9 @@ package monopoly;
 
 
 
+import java.sql.ResultSet;
 import partida.*;
+import monopoly.Valor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,9 +20,10 @@ public class Tablero {
     public Tablero(Jugador b) {
         banca = b;
         posiciones = new ArrayList<>();
+        grupos = new HashMap<>();
 
         generarCasillas();
-        toString();
+
     }
 
     
@@ -32,6 +35,11 @@ public class Tablero {
         this.insertarLadoEste();
     }
     
+    //Función para imprimir el tablero
+    public void imprimirTablero(){
+        System.out.print(toString());
+    }
+
     //Método para insertar las casillas del lado sur.
     private void insertarLadoSur() {
 
@@ -43,9 +51,13 @@ public class Tablero {
         ladoSur.add(new Casilla("Imp1", "imposto", 5, banca));
         ladoSur.add(new Casilla("Trans1", "transporte", 6, 0, banca));
         ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
-        ladoSur.add(new Casilla("Suerte", "solar", 8, banca));
+        ladoSur.add(new Casilla("Suerte", "suerte", 8, banca));
         ladoSur.add(new Casilla("Solar4", "servicio", 9, 520000, banca));
         ladoSur.add(new Casilla("Solar5", "solar", 10, 520000, banca));
+
+        grupos.put("negro", new Grupo(ladoSur.get(1), ladoSur.get(3), "\u001B[30m"));
+        grupos.put("cian", new Grupo(ladoSur.get(6), ladoSur.get(8),ladoSur.get(9), "\u001B[36m"));
+
         posiciones.add(ladoSur);
     }
 
@@ -63,6 +75,11 @@ public class Tablero {
         ladoOeste.add(new Casilla("Caja", "comunidad", 18, banca));
         ladoOeste.add(new Casilla("Solar10", "solar", 19, 878000, banca));
         ladoOeste.add(new Casilla("Solar11", "solar", 20, 878000, banca));
+        
+        grupos.put("morado", new Grupo(ladoOeste.get(1), ladoOeste.get(3),ladoOeste.get(4), "\u001B[35m"));
+        grupos.put("amarillo", new Grupo(ladoOeste.get(6), ladoOeste.get(8),ladoOeste.get(9), "\u001B[33m"));
+
+        
         posiciones.add(ladoOeste);
 
     }
@@ -82,6 +99,10 @@ public class Tablero {
         ladoNorte.add(new Casilla("Solar16", "solar", 28, 1485172, banca));
         ladoNorte.add(new Casilla("Serv2", "servicio", 29, banca));
         ladoNorte.add(new Casilla("Solar17", "solar", 30, 1485172, banca));
+        
+        grupos.put("rojo", new Grupo(ladoNorte.get(1), ladoNorte.get(3),ladoNorte.get(4), "\u001B[31m"));
+        grupos.put("marron", new Grupo(ladoNorte.get(6), ladoNorte.get(7),ladoNorte.get(9), "\u001B[37m"));
+
         posiciones.add(ladoNorte);
 
     }
@@ -103,6 +124,10 @@ public class Tablero {
         ladoEste.add(new Casilla("Solar21", "solar", 38, (float)3764922.02, banca));
         ladoEste.add(new Casilla("Imp2", "imposto", 39, banca));
         ladoEste.add(new Casilla("Solar22", "solar", 40, (float)3764922.02, banca));
+
+        grupos.put("verde", new Grupo(ladoEste.get(1), ladoEste.get(2),ladoEste.get(4),"\u001B[32m"));
+        grupos.put("azul", new Grupo(ladoEste.get(7), ladoEste.get(9), "\u001B[34m"));
+
         posiciones.add(ladoEste);
 
 
@@ -133,23 +158,31 @@ public class Tablero {
                 col = 10;
             }
         
-        tableroArr[fila][col] = getCasilla(j).getNombre();
+        Casilla c = getCasilla(j);
+
+        
+        if (c.getTipo().equals("solar")) {
+            tableroArr[fila][col] = String.format(c.getGrupo().getColor() + c.getNombre() + Valor.RESET);
+        }   
+        else
+        tableroArr[fila][col] = String.format(Valor.WHITE + c.getNombre() + Valor.RESET);
     }
 
-
+    StringBuilder tableroStr = new StringBuilder();
     for (int i = 0; i < 11; i++) {
         for (int k = 0; k < 11; k++) {
-            if(tableroArr[i][k] == null)             
-                System.out.printf("%-12s", "");
-            else
-                System.out.printf("|%-10s|", tableroArr[i][k]);
+            if(tableroArr[i][k] == null){         
+                tableroStr.append(String.format("%-12s", ""));
+            }            
+            else{
+                tableroStr.append(String.format("| %-18s|", tableroArr[i][k]));
+            }
         }
-        System.out.println();
-    }
-    
-    
+        tableroStr.append("\n");
 
-    return "";
+    }
+    return tableroStr.toString();
+
 
 
 
