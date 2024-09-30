@@ -63,6 +63,19 @@ public class Menu {
         System.out.println("Partida iniciada con " + numJugadores + " jugadores.");
 
     }
+
+    public void loopJugable(){
+        String comando;
+        Scanner sc = new Scanner(System.in);
+        while (1==1){
+            tablero.imprimirTablero();
+            
+            comando = sc.nextLine();
+
+            analizarComando(comando);
+            
+        }
+    }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
