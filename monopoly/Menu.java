@@ -26,7 +26,6 @@ public class Menu {
     public Menu(){
         this.banca = new Jugador();
         this.tablero = new Tablero(getBanca());
-        tablero.imprimirTablero();
 
         
     }
@@ -120,5 +119,4 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
     }
-
 }
