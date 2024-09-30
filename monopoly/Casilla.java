@@ -152,6 +152,10 @@ public class Casilla {
         return hipoteca;
     }
 
+    public ArrayList<Avatar> getAvatares(){
+        return avatares;
+    }
+
     // SETTERS
     public void setPosicion(int p){
         this.posicion = p;
