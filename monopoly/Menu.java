@@ -76,6 +76,9 @@ public class Menu {
             
         }
     }
+    private void turnoActual(){
+
+    }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
@@ -105,6 +108,7 @@ public class Menu {
     private void lanzarDados() {
 
 
+
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
@@ -129,7 +133,16 @@ public class Menu {
     private void listarAvatares() {
     }
 
+    public Jugador obtenerJugadorTurno() {
+        return jugadores.get(turno);
+    }
+
+    public int obtenerNumeroDeJugadores() {
+        return jugadores.size();
+    }
+
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
+        turno = (turno + 1) % obtenerNumeroDeJugadores();
     }
 }
