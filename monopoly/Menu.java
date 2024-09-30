@@ -35,6 +35,9 @@ public class Menu {
     public void iniciarPartida() {
 
         Scanner sc = new Scanner(System.in);
+
+        jugadores = new ArrayList<>();
+        avatares = new ArrayList<>();
         ArrayList<Avatar> avCreados = new ArrayList<>();
 
         System.out.println("Introduce el número de jugadores:");
