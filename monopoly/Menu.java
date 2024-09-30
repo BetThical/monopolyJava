@@ -26,7 +26,6 @@ public class Menu {
     public Menu(){
         this.banca = new Jugador();
         this.tablero = new Tablero(getBanca());
-        tablero.imprimirTablero();
 
         
     }
@@ -134,5 +133,4 @@ public class Menu {
     private void acabarTurno() {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
     }
-
 }
