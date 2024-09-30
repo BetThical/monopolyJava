@@ -29,7 +29,7 @@ public class Jugador {
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
         this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
-
+        this.propiedades = new ArrayList<>();
         
     }
 
@@ -59,7 +59,14 @@ public class Jugador {
     public Avatar getAvatar(){
         return avatar;
     }
+    
+    public String getNombre(){
+        return nombre;
+    }
 
+    public ArrayList<Casilla> getPropiedades(){
+        return propiedades;
+    }
     //Método para sumar gastos a un jugador.
     //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
     public void sumarGastos(float valor) {

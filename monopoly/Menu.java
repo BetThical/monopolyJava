@@ -84,6 +84,8 @@ public class Menu {
     * Parámetro: cadena de caracteres (el comando).
     */
     private void analizarComando(String comando) {
+    
+
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -126,7 +128,23 @@ public class Menu {
     }
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
-    private void listarJugadores() {
+    private void listarJugadores(){
+
+        for (int i=0;i<obtenerNumeroDeJugadores(); i++){
+            
+            System.out.println("Nombre: " + jugadores.get(i).getNombre());
+            System.out.println("Avatar: " + jugadores.get(i).getAvatar().getID());
+            System.out.println("Fortuna: " + jugadores.get(i).getFortuna());
+            System.out.println("Propiedades: ||");
+            for (int j=0; j<jugadores.get(i).getPropiedades().size(); j++){
+                System.out.print(jugadores.get(i).getPropiedades().get(j).getNombre() + " || ");
+            }
+            System.out.println("");
+            System.out.println("Hipotecas: ");
+            System.out.println("Edificios: ");
+        }
+
+        System.out.println("");
     }
 
     // Método que realiza las acciones asociadas al comando 'listar avatares'.

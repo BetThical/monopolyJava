@@ -47,4 +47,8 @@ public class Avatar {
     private void generarId(ArrayList<Avatar> avCreados) {
         this.id = String.valueOf((char) (avCreados.size() + 64 + 1)); //as letras asígnanse por orden, o primeiro avatar ten A, o segundo B ...
     }
+
+    public String getID(){
+        return id;
+    }
 }
