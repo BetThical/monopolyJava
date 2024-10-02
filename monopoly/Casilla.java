@@ -136,6 +136,10 @@ public class Casilla {
         return valor;
     }
 
+    public float getImpuesto(){
+        return impuesto;
+    }
+
     public Jugador getduenhoJugador(){
         return duenho;
     }
@@ -150,10 +154,6 @@ public class Casilla {
 
     public float getHipoteca(){
         return hipoteca;
-    }
-
-    public ArrayList<Avatar> getAvatares(){
-        return avatares;
     }
 
     // SETTERS

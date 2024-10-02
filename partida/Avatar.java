@@ -28,6 +28,9 @@ public class Avatar {
         this.generarId(avCreados);
     }
 
+    public String getId() {
+        return this.id;
+    }
     //A continuación, tenemos otros métodos útiles para el desarrollo del juego.
     /*Método que permite mover a un avatar a una casilla concreta. Parámetros:
     * - Un array con las casillas del tablero. Se trata de un arrayList de arrayList de casillas (uno por lado).
@@ -35,9 +38,24 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
-        int pos = (lugar.getPosicion() + 1);
-        ArrayList<Casilla> lado = casillas.get((int)pos/4);
-        this.lugar = lado.get(pos % 4);
+
+        int posicionactual = lugar.getPosicion();
+
+        int nuevaposicion = (posicionactual + valorTirada) % 40;
+
+        int lado = (nuevaposicion / 10);
+
+        int casilla = (nuevaposicion % 10) - 1;
+
+        System.out.println("Posición actual: " + posicionactual);
+        System.out.println("Valor de la tirada: " + valorTirada);
+        System.out.println("Nueva posición: " + nuevaposicion);
+        System.out.println("Lado calculado: " + lado);
+        System.out.println("Casilla calculada: " + casilla);
+
+        Casilla nuevaCasilla = casillas.get(lado).get(casilla);
+
+        this.lugar = nuevaCasilla;
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
@@ -50,5 +68,21 @@ public class Avatar {
 
     public String getID(){
         return id;
+    }
+
+    public Casilla getLugar() {
+        return lugar; // Devuelve la casilla donde se encuentra el avatar
+    }
+
+    public void mover(Casilla nuevaCasilla) {
+        this.lugar = nuevaCasilla;
+    }
+
+    public String getTipo() {
+        return this.tipo;
+    }
+
+    public void setLugar(Casilla nuevaCasilla) {
+        this.lugar = nuevaCasilla;
     }
 }

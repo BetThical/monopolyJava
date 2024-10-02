@@ -18,6 +18,7 @@ public class Menu {
     private Jugador banca; //El jugador banca.
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
+    private boolean acabarPartida; //Booleano para comprobar si hai que acabar la partida.
 
     public Jugador getBanca(){
         return banca;
@@ -76,9 +77,6 @@ public class Menu {
             
         }
     }
-    private void turnoActual(){
-
-    }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
@@ -109,7 +107,73 @@ public class Menu {
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados() {
 
+        Jugador jugador = obtenerJugadorTurno();
 
+        Avatar avatar = jugador.getAvatar();
+
+        dado1 = new Dado();
+
+        dado2 = new Dado();
+
+        int tirada1 = dado1.hacerTirada();
+
+        int tirada2 = dado2.hacerTirada();
+
+        int valor_tiradas = tirada1 + tirada2;
+
+        if (jugador.getEnCarcel() && (tirada2 != tirada1)) {
+
+            System.out.println("Continúas en la carcel.");
+            return;
+
+        } else if (jugador.getEnCarcel() && (tirada2 == tirada1)) {
+
+            tirada1 = dado1.hacerTirada();
+
+            tirada2 = dado2.hacerTirada();
+
+            valor_tiradas = tirada1 + tirada2; //Volvemos a tirar los dados
+
+            System.out.println("Sales de la carcel y vuelves a tirar.");
+
+        }
+
+        Casilla casillainicio = avatar.getLugar();
+
+        avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
+
+        Casilla casillafinal = avatar.getLugar();
+
+        System.out.println("El avatar " + avatar.getId() + " avanza " + (tirada1+tirada2) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
+
+        if (casillafinal.getduenhoJugador() != banca && casillafinal.getduenhoJugador() != jugador){
+            if (casillafinal.getImpuesto() > jugador.getFortuna()) {
+                System.out.println("No tienes suficiente dinero.");
+                acabarPartida = true;
+                return;
+            }
+
+            jugador.sumarFortuna(-casillafinal.getImpuesto());
+            System.out.println("Se ha pagado " + casillafinal.getImpuesto() + "€ de alquiler.");
+        }
+
+        if (casillafinal.getPosicion() == 31){
+            avatar.setLugar(tablero.getCasilla(11));
+            jugador.setEnCarcel(true);
+            System.out.println("El avatar " + avatar.getId() + " va a la cárcel.");
+        }
+
+        if (casillafinal.getPosicion() == 11){
+            jugador.setEnCarcel(true);
+            System.out.println("El avatar " + avatar.getId() + " está en la cárcel.");
+        }
+
+        if (casillafinal.getNombre().equals("Parking")){
+            float bote = banca.getBote();
+            jugador.sumarFortuna(bote);
+            banca.restarDelBote(bote);
+            System.out.println("El jugador " + jugador.getNombre() + " recibe " + bote + "€ del bote.");
+        }
 
     }
 
