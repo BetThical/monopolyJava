@@ -12,8 +12,8 @@ public class MonopolyETSE {
 
         Tablero tablero = new Tablero(menu.getBanca());
 
-        menu.iniciarPartida();
-        tablero.imprimirTablero();
+        menu.iniciarPartida(tablero);
+
         menu.loopJugable();
         
     }

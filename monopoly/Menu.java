@@ -32,7 +32,7 @@ public class Menu {
     }
 
     // Método para inciar una partida: crea los jugadores y avatares.
-    public void iniciarPartida() {
+    public void iniciarPartida(Tablero t) {
 
         Scanner sc = new Scanner(System.in);
 
@@ -57,10 +57,12 @@ public class Menu {
             jugadores.add(jugador);
 
             avCreados.add(jugador.getAvatar());
-
+            casillaInicio.anhadirAvatar(jugador.getAvatar());
             System.out.println("Jugador " + nombre + " con avatar " + tipoAvatar + " creado.");
+
         }
 
+        tablero.SetCasilla(casillaInicio, 0);
         System.out.println("Partida iniciada con " + numJugadores + " jugadores.");
 
     }

@@ -161,15 +161,25 @@ public class Tablero {
                 tableroArr[fila][col] = String.format(c.getGrupo().getColor() + c.getNombre() + Valor.RESET);
             } else
                 tableroArr[fila][col] = String.format(Valor.WHITE + c.getNombre() + Valor.RESET);
+            
+            if (!c.getAvatares().isEmpty()){
+                if (c.getAvatares().size()>2)
+                    tableroArr[fila][col] += String.format("[...]");
+                else
+                    for (int i = 0; i < c.getAvatares().size(); i++) {
+                        tableroArr[fila][col] += String.format("&" + c.getAvatares().get(i).getID());
+                    }
+            }
+
         }
 
         StringBuilder tableroStr = new StringBuilder();
         for (int i = 0; i < 11; i++) {
             for (int k = 0; k < 11; k++) {
                 if (tableroArr[i][k] == null) {
-                    tableroStr.append(String.format("%-12s", ""));
+                    tableroStr.append(String.format("%-14s", ""));
                 } else {
-                    tableroStr.append(String.format("| %-18s|", tableroArr[i][k]));
+                    tableroStr.append(String.format("| %-20s|", tableroArr[i][k]));
                 }
             }
             tableroStr.append("\n");
@@ -203,5 +213,11 @@ public class Tablero {
 
     public ArrayList<ArrayList<Casilla>> getPosiciones() {
         return posiciones;
+    }
+
+    public void SetCasilla(Casilla c, int pos){ //modifica una casilla del tablero
+        ArrayList<Casilla> lado = posiciones.get((int) pos/10);
+        lado.set(pos%10, c);
+        posiciones.set((int) pos/10, lado);
     }
 }
