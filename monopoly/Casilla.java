@@ -1,6 +1,7 @@
 package monopoly;
 
 
+import com.sun.source.tree.TryTree;
 import partida.*;
 import java.util.ArrayList;
 
@@ -85,8 +86,28 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        return  (impuesto <= actual.getFortuna());
-        
+        if (getduenhoJugador() != banca && getduenhoJugador() != actual){
+            if (getImpuesto() > actual.getFortuna()) {
+                System.out.println("No tienes suficiente dinero.");
+
+                return false;
+            }
+
+            actual.sumarFortuna(getImpuesto());
+            System.out.println("Se ha pagado " + getImpuesto() + "€ de alquiler.");
+        }
+
+
+
+
+        if (getNombre().equals("Parking")){
+            float bote = banca.getBote();
+            actual.sumarFortuna(bote);
+            banca.restarDelBote(bote);
+            System.out.println("El jugador " + actual.getNombre() + " recibe " + bote + "€ del bote.");
+
+        }        
+        return true;
 
     }
 

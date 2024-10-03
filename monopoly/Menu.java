@@ -1,6 +1,5 @@
 package monopoly;
 
-import java.util.ArrayList;
 import java.util.*;
 import partida.*;
 
@@ -33,6 +32,8 @@ public class Menu {
 
     // Método para inciar una partida: crea los jugadores y avatares.
     public void iniciarPartida(Tablero t) {
+
+
 
         Scanner sc = new Scanner(System.in);
 
@@ -84,7 +85,23 @@ public class Menu {
     * Parámetro: cadena de caracteres (el comando).
     */
     private void analizarComando(String comando) {
-    
+
+        if (comando.equals("lanzar dados") &&( lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+            lanzarDados();
+            lanzamientos ++;
+        }
+        else if (comando.equals("lanzar dados")){
+            System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
+        }
+
+        if (comando.equals("acabar turno") &&(lanzamientos != 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+            acabarTurno();
+
+        }
+        else if (comando.equals("acabar turno")){
+            System.out.println("Debes lanzar los dados.");
+        }
+        
 
     }
 
@@ -123,6 +140,7 @@ public class Menu {
 
         int valor_tiradas = tirada1 + tirada2;
 
+        
         if (jugador.getEnCarcel() && (tirada2 != tirada1)) {
 
             System.out.println("Continúas en la carcel.");
@@ -146,37 +164,19 @@ public class Menu {
 
         Casilla casillafinal = avatar.getLugar();
 
-        System.out.println("El avatar " + avatar.getId() + " avanza " + (tirada1+tirada2) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
-
-        if (casillafinal.getduenhoJugador() != banca && casillafinal.getduenhoJugador() != jugador){
-            if (casillafinal.getImpuesto() > jugador.getFortuna()) {
-                System.out.println("No tienes suficiente dinero.");
-                acabarPartida = true;
-                return;
-            }
-
-            jugador.sumarFortuna(-casillafinal.getImpuesto());
-            System.out.println("Se ha pagado " + casillafinal.getImpuesto() + "€ de alquiler.");
-        }
-
         if (casillafinal.getPosicion() == 31){
-            avatar.setLugar(tablero.getCasilla(11));
+            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), 20);
             jugador.setEnCarcel(true);
-            System.out.println("El avatar " + avatar.getId() + " va a la cárcel.");
+            System.out.println("El avatar " + jugador.getAvatar().getId() + " va a la cárcel.");
         }
+        else
+            System.out.println("El avatar " + avatar.getId() + " avanza " + (tirada1+tirada2) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
 
-        if (casillafinal.getPosicion() == 11){
-            jugador.setEnCarcel(true);
-            System.out.println("El avatar " + avatar.getId() + " está en la cárcel.");
+
+        if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)){
+            System.out.printf("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
+            acabarPartida = true;
         }
-
-        if (casillafinal.getNombre().equals("Parking")){
-            float bote = banca.getBote();
-            jugador.sumarFortuna(bote);
-            banca.restarDelBote(bote);
-            System.out.println("El jugador " + jugador.getNombre() + " recibe " + bote + "€ del bote.");
-        }
-
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
@@ -221,6 +221,8 @@ public class Menu {
         return jugadores.get(turno);
     }
 
+
+
     public int obtenerNumeroDeJugadores() {
         return jugadores.size();
     }
@@ -228,5 +230,6 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
+        lanzamientos = 0;
     }
 }

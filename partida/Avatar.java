@@ -41,19 +41,23 @@ public class Avatar {
 
         int posicionactual = lugar.getPosicion();
 
-        int nuevaposicion = (posicionactual + valorTirada) % 40;
+        lugar.eliminarAvatar(this);
+        if (posicionactual + valorTirada > 40) jugador.sumarVuelta();
+        int nuevaposicion = (posicionactual + valorTirada - 1) % 40;
 
         int lado = (nuevaposicion / 10);
 
-        int casilla = (nuevaposicion % 10) - 1;
-
+        int casilla = (nuevaposicion % 10);
+        /* 
         System.out.println("Posición actual: " + posicionactual);
         System.out.println("Valor de la tirada: " + valorTirada);
         System.out.println("Nueva posición: " + nuevaposicion);
         System.out.println("Lado calculado: " + lado);
         System.out.println("Casilla calculada: " + casilla);
 
+        */
         Casilla nuevaCasilla = casillas.get(lado).get(casilla);
+        nuevaCasilla.anhadirAvatar(this);
 
         this.lugar = nuevaCasilla;
     }

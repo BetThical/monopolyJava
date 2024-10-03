@@ -99,4 +99,9 @@ public class Jugador {
         this.bote -= cantidad;
     }
 
+    public void sumarVuelta(){
+        vueltas++;
+    }
+
+
 }

@@ -7,7 +7,11 @@ public class Dado {
 
     //Metodo para simular lanzamiento de un dado: devolverá un valor aleatorio entre 1 y 6.
     public int hacerTirada() {
-        return ThreadLocalRandom.current().nextInt(1, 7);
+        valor = ThreadLocalRandom.current().nextInt(1, 7);
+        return valor;
     }
 
+    public int getValorPrevio(){
+        return valor;
+    }
 }
