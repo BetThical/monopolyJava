@@ -34,6 +34,7 @@ public class Casilla {
         this.tipo = tipo;
         this.posicion = posicion;
         this.valor = valor;
+        this.impuesto = ((float)(valor*0.1));
         this.duenho = duenho;
         this.avatares = new ArrayList<>();
     }
@@ -89,12 +90,12 @@ public class Casilla {
         if (getduenhoJugador() != banca && getduenhoJugador() != actual){
             if (getImpuesto() > actual.getFortuna()) {
                 System.out.println("No tienes suficiente dinero.");
-
                 return false;
             }
-
-            actual.sumarFortuna(getImpuesto());
-            System.out.println("Se ha pagado " + getImpuesto() + "€ de alquiler.");
+            duenho.sumarFortuna(getImpuesto());
+            actual.sumarGastos(getImpuesto());
+            System.out.println(actual.getNombre() + " ha pagado " + getImpuesto() + "€ de alquiler a " + duenho.getNombre() + ".");
+            return true;
         }
 
         if (getNombre().equals("Parking")){
@@ -108,13 +109,22 @@ public class Casilla {
             System.out.println("El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor() +" euros.");
             
         }
+
+        if (getTipo() == "impuesto"){
+            if (getImpuesto() > actual.getFortuna()) {
+                System.out.println("No tienes suficiente dinero.");
+                return false;
+            }
+            actual.sumarGastos(getImpuesto());
+            System.out.println(actual.getNombre() + " ha pagado " + getImpuesto() + " en impuestos. Le quedan " + actual.getFortuna() + "." );
+        }
         return true;
 
     }
 
     //devuelve true si se puede comprar la casilla
     public boolean esComprable(Jugador comprador, Jugador banca){
-        return (("solar".equals(tipo) || "transporte".equals(tipo) || "servicios".equals(tipo)) && (duenho == banca) && (valor <= comprador.getFortuna()));
+        return (("solar".equals(tipo) || "transporte".equals(tipo) || "servicio".equals(tipo)) && (duenho == banca) && (valor <= comprador.getFortuna()));
         
 
     }
@@ -122,6 +132,8 @@ public class Casilla {
     * - Jugador que solicita la compra de la casilla.
     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
+        solicitante.sumarGastos(valor);
+        this.duenho = solicitante;
     }
 
     /*Método para añadir valor a una casilla. Utilidad:

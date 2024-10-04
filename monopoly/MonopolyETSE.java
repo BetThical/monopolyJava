@@ -5,8 +5,6 @@ public class MonopolyETSE {
 
     public static void main(String[] args) {
         
-        String comando;
-
         System.out.println("hello world\n");
         Menu menu = new Menu();
 

@@ -72,6 +72,7 @@ public class Jugador {
     //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
     public void sumarGastos(float valor) {
         this.gastos += valor;
+        this.sumarFortuna(-valor);
     }
 
     /*Método para establecer al jugador en la cárcel. 
@@ -103,5 +104,8 @@ public class Jugador {
         vueltas++;
     }
 
+    public int getTiradasCarcel(){
+        return tiradasCarcel;
+    }
 
 }

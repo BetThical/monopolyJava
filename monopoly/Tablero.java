@@ -52,7 +52,7 @@ public class Tablero {
         ladoSur.add(new Casilla("Trans1", "transporte", 6, 0, banca));
         ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
         ladoSur.add(new Casilla("Suerte", "suerte", 8, banca));
-        ladoSur.add(new Casilla("Solar4", "servicio", 9, 520000, banca));
+        ladoSur.add(new Casilla("Solar4", "solar", 9, 520000, banca));
         ladoSur.add(new Casilla("Solar5", "solar", 10, 520000, banca));
 
         grupos.put("negro", new Grupo(ladoSur.get(1), ladoSur.get(3), "\u001B[30m"));

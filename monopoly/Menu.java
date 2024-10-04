@@ -92,30 +92,41 @@ public class Menu {
 
         Jugador jugador = obtenerJugadorTurno();
         Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
-        if (comando.equals("lanzar dados") &&( lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+        if (comando.equals("l") &&( lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
             lanzarDados();
             lanzamientos ++;
         }
-        else if (comando.equals("lanzar dados")){
+        else if (comando.equals("l")){
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
 
 
-        if (comando.equals("comprar casilla") && (casilla.esComprable(jugador, banca))){
+        if (comando.equals("c") && (casilla.esComprable(jugador, banca))){
             System.out.println(jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor() + ".");
             casilla.comprarCasilla(jugador, banca);
         }
-        else if (comando.equals("comprar casilla")){
+        else if (comando.equals("c")){
             System.out.println("No puedes comprar esta casilla.");
         }
-        if (comando.equals("acabar turno") &&(lanzamientos != 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+        if (comando.equals("a") &&(lanzamientos != 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
             acabarTurno();
             System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
             return;
-
         }
-        else if (comando.equals("acabar turno")){
+        else if (comando.equals("a")){
             System.out.println("Debes lanzar los dados.");
+        }
+
+        if (comando.equals("s") && jugador.getEnCarcel()){
+            if (salirCarcel()){
+                System.out.println("Sales de la cárcel.");
+            }
+            else{
+                System.out.println("No tienes los fondos necesarios.");
+            }
+        }
+        else if (comando.equals("s")){
+            System.out.println("No estás en la cárcel.");
         }
         
 
@@ -142,7 +153,12 @@ public class Menu {
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados() {
 
+
         Jugador jugador = obtenerJugadorTurno();
+        if (jugador.getEnCarcel() && jugador.getTiradasCarcel() > 2){
+            System.out.println("No puedes tirar los dados. Debes pagar la multa para salir.");
+            return;
+        }
 
         Avatar avatar = jugador.getAvatar();
 
@@ -202,13 +218,19 @@ public class Menu {
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
-    private void salirCarcel() {
+    private boolean salirCarcel() {
+        if(obtenerJugadorTurno().getFortuna() > (Valor.SUMA_VUELTA*0.25)){
+            obtenerJugadorTurno().sumarGastos((float)(Valor.SUMA_VUELTA*0.25));
+            return true;
+        }
+        return false;
     }
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
     }
-
+    
+    
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     private void listarJugadores(){
 
