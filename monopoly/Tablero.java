@@ -48,7 +48,7 @@ public class Tablero {
         ladoSur.add(new Casilla("Solar1", "solar", 2, 600000, banca));
         ladoSur.add(new Casilla("Caja", "comunidad", 3, banca));
         ladoSur.add(new Casilla("Solar2", "solar", 4, 600000, banca));
-        ladoSur.add(new Casilla("Imp1", "imposto", 5, banca));
+        ladoSur.add(new Casilla("Imp1", "imposto", 5,((float) (Valor.SUMA_VUELTA * 0.5)),  banca));
         ladoSur.add(new Casilla("Trans1", "transporte", 6, 0, banca));
         ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
         ladoSur.add(new Casilla("Suerte", "suerte", 8, banca));
@@ -121,7 +121,7 @@ public class Tablero {
         ladoEste.add(new Casilla("Trans4", "transporte", 36, 0, banca));
         ladoEste.add(new Casilla("Suerte", "suerte", 37, banca));
         ladoEste.add(new Casilla("Solar21", "solar", 38, (float) 3764922.02, banca));
-        ladoEste.add(new Casilla("Imp2", "imposto", 39, banca));
+        ladoEste.add(new Casilla("Imp2", "imposto", 39, ((float) Valor.SUMA_VUELTA), banca));
         ladoEste.add(new Casilla("Solar22", "solar", 40, (float) 3764922.02, banca));
 
         grupos.put("verde", new Grupo(ladoEste.get(1), ladoEste.get(2), ladoEste.get(4), "\u001B[32m"));

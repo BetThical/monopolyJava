@@ -10,7 +10,7 @@ public class Menu {
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
     private ArrayList<Avatar> avatares; //Avatares en la partida.
     private int turno = 0; //Índice correspondiente a la posición en el arrayList del jugador (y el avatar) que tienen el turno
-    private int lanzamientos; //Variable para contar el número de lanzamientos de un jugador en un turno.
+    private int lanzamientos=0; //Variable para contar el número de lanzamientos de un jugador en un turno.
     private Tablero tablero; //Tablero en el que se juega.
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
@@ -92,6 +92,12 @@ public class Menu {
 
         Jugador jugador = obtenerJugadorTurno();
         Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
+
+        if (comando.equals("jugador")){
+            System.out.println("Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
+
+        }
+        
         if (comando.equals("l") &&( lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
             lanzarDados();
             lanzamientos ++;
@@ -108,7 +114,7 @@ public class Menu {
         else if (comando.equals("c")){
             System.out.println("No puedes comprar esta casilla.");
         }
-        if (comando.equals("a") &&(lanzamientos != 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+        if ((comando.equals("a") &&(lanzamientos != 0)) && (dado1.getValorPrevio() != dado2.getValorPrevio())){
             acabarTurno();
             System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
             return;
@@ -171,14 +177,16 @@ public class Menu {
         int tirada2 = dado2.hacerTirada();
 
         int valor_tiradas = tirada1 + tirada2;
+        if (tirada1 == tirada2)
+            System.out.println("Dobles!");
 
-        
-        if (jugador.getEnCarcel() && (tirada2 != tirada1)) {
+        else if (jugador.getEnCarcel()) {
 
             System.out.println("Continúas en la carcel.");
-            return;
+            jugador.sumarTiradaCarcel();
+            return;}
 
-        } else if (jugador.getEnCarcel() && (tirada2 == tirada1)) {
+        if (jugador.getEnCarcel() && (tirada2 == tirada1)) {
 
             tirada1 = dado1.hacerTirada();
 
@@ -187,6 +195,7 @@ public class Menu {
             valor_tiradas = tirada1 + tirada2; //Volvemos a tirar los dados
 
             System.out.println("Sales de la carcel y vuelves a tirar.");
+            jugador.salirCarcel();
 
         }
 

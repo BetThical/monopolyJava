@@ -104,8 +104,15 @@ public class Jugador {
         vueltas++;
     }
 
+    public void salirCarcel(){
+        tiradasCarcel = 0;
+        this.enCarcel = false;
+    }
+
     public int getTiradasCarcel(){
         return tiradasCarcel;
     }
-
+    public void sumarTiradaCarcel(){
+        tiradasCarcel++;
+    }
 }

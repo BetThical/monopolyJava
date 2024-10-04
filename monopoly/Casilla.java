@@ -110,7 +110,7 @@ public class Casilla {
             
         }
 
-        if (getTipo() == "impuesto"){
+        if (getTipo() == "imposto"){
             if (getImpuesto() > actual.getFortuna()) {
                 System.out.println("No tienes suficiente dinero.");
                 return false;
