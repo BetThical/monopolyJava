@@ -97,16 +97,17 @@ public class Casilla {
             System.out.println("Se ha pagado " + getImpuesto() + "€ de alquiler.");
         }
 
-
-
-
         if (getNombre().equals("Parking")){
             float bote = banca.getBote();
             actual.sumarFortuna(bote);
             banca.restarDelBote(bote);
             System.out.println("El jugador " + actual.getNombre() + " recibe " + bote + "€ del bote.");
-
         }        
+
+        if (esComprable(actual, banca)){
+            System.out.println("El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor() +" euros.");
+            
+        }
         return true;
 
     }

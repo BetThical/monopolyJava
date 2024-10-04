@@ -55,8 +55,9 @@ public class Menu {
             String tipoAvatar = sc.nextLine();
 
             Jugador jugador = new Jugador(nombre, tipoAvatar, casillaInicio, avCreados);
+            jugador.sumarFortuna((float)Valor.FORTUNA_INICIAL);
             jugadores.add(jugador);
-
+            
             avCreados.add(jugador.getAvatar());
             casillaInicio.anhadirAvatar(jugador.getAvatar());
             System.out.println("Jugador " + nombre + " con avatar " + tipoAvatar + " creado.");
@@ -65,6 +66,9 @@ public class Menu {
 
         tablero.SetCasilla(casillaInicio, 0);
         System.out.println("Partida iniciada con " + numJugadores + " jugadores.");
+        System.out.println("Empieza la partida: " + obtenerJugadorTurno().getNombre() + ".");
+
+        
 
     }
 
@@ -86,6 +90,8 @@ public class Menu {
     */
     private void analizarComando(String comando) {
 
+        Jugador jugador = obtenerJugadorTurno();
+        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
         if (comando.equals("lanzar dados") &&( lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
             lanzarDados();
             lanzamientos ++;
@@ -94,8 +100,18 @@ public class Menu {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
 
+
+        if (comando.equals("comprar casilla") && (casilla.esComprable(jugador, banca))){
+            System.out.println(jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor() + ".");
+            casilla.comprarCasilla(jugador, banca);
+        }
+        else if (comando.equals("comprar casilla")){
+            System.out.println("No puedes comprar esta casilla.");
+        }
         if (comando.equals("acabar turno") &&(lanzamientos != 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
             acabarTurno();
+            System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
+            return;
 
         }
         else if (comando.equals("acabar turno")){
