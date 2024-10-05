@@ -134,6 +134,7 @@ public class Casilla {
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
         solicitante.sumarGastos(valor);
         this.duenho = solicitante;
+        solicitante.anhadirPropiedad(this);
     }
 
     /*Método para añadir valor a una casilla. Utilidad:

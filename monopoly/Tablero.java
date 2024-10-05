@@ -163,12 +163,13 @@ public class Tablero {
                 tableroArr[fila][col] = String.format(Valor.WHITE + c.getNombre() + Valor.RESET);
             
             if (!c.getAvatares().isEmpty()){
-                if (c.getAvatares().size()>2)
+                if (c.getAvatares().size()>3)
                     tableroArr[fila][col] += String.format("[...]");
-                else
+                else{
+                    tableroArr[fila][col]+="&";
                     for (int i = 0; i < c.getAvatares().size(); i++) {
-                        tableroArr[fila][col] += String.format("&" + c.getAvatares().get(i).getID());
-                    }
+                        tableroArr[fila][col] += String.format(c.getAvatares().get(i).getID());
+                    }}
             }
 
         }
@@ -205,12 +206,21 @@ public class Tablero {
         return grupos.get(color);
     }
 
-    public Casilla getCasilla(int pos) {
-
-
+    public Casilla getCasilla(int pos) { //devuelve una casilla a partir de su posición
         return posiciones.get((int) pos / 10).get(pos % 10);
     }
 
+    
+    //toma sobrecarga de métodos
+    public Casilla getCasilla(String nombre) { // devuelve una casilla a partir de su nombre
+        for (int i=0; i<getPosiciones().size(); i++){
+            if (getCasilla(i).getNombre().equals(nombre))
+                return getCasilla(i);
+        }
+        return null;
+    }
+
+ 
     public ArrayList<ArrayList<Casilla>> getPosiciones() {
         return posiciones;
     }

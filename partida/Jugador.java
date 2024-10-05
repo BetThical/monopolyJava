@@ -20,6 +20,7 @@ public class Jugador {
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
+
     }
 
     /*Constructor principal. Requiere parámetros:

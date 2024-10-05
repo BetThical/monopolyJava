@@ -74,6 +74,10 @@ public class Avatar {
         return id;
     }
 
+    
+    public Jugador getJugador(){
+        return jugador;
+    }
     public Casilla getLugar() {
         return lugar; // Devuelve la casilla donde se encuentra el avatar
     }
