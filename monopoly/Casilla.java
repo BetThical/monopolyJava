@@ -34,7 +34,12 @@ public class Casilla {
         this.tipo = tipo;
         this.posicion = posicion;
         this.valor = valor;
-        this.impuesto = ((float)(valor*0.1));
+        if (tipo.equals("solar"))
+            this.impuesto = ((float)(valor*0.1));
+        else if (tipo.equals("transporte"))
+            this.impuesto = Valor.SUMA_VUELTA;
+        else //servicio
+            this.impuesto = (Valor.SUMA_VUELTA/200);
         this.duenho = duenho;
         this.avatares = new ArrayList<>();
     }
@@ -86,41 +91,45 @@ public class Casilla {
     * - El valor de la tirada: para determinar impuesto a pagar en casillas de servicios.
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
-    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        if (getduenhoJugador() != banca && getduenhoJugador() != actual){
-            if (getImpuesto() > actual.getFortuna()) {
-                System.out.println("No tienes suficiente dinero.");
-                return false;
-            }
-            duenho.sumarFortuna(getImpuesto());
-            actual.sumarGastos(getImpuesto());
-            System.out.println(actual.getNombre() + " ha pagado " + getImpuesto() + "€ de alquiler a " + duenho.getNombre() + ".");
-            return true;
-        }
-
-        if (getNombre().equals("Parking")){
-            float bote = banca.getBote();
-            actual.sumarFortuna(bote);
-            banca.restarDelBote(bote);
-            System.out.println("El jugador " + actual.getNombre() + " recibe " + bote + "€ del bote.");
-        }        
-
+    public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {  
         if (esComprable(actual, banca)){
             System.out.println("El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor() +" euros.");
-            
         }
 
+        if (getduenhoJugador() != banca && getduenhoJugador() != actual)
+            return actual.pagar(calcular_coste(tirada), duenho);
+        
+        if (getNombre().equals("Parking")){
+            actual.cobrarBote(banca);
+            return true;
+        }        
+
         if (getTipo() == "imposto"){
-            if (getImpuesto() > actual.getFortuna()) {
-                System.out.println("No tienes suficiente dinero.");
-                return false;
-            }
-            actual.sumarGastos(getImpuesto());
-            System.out.println(actual.getNombre() + " ha pagado " + getImpuesto() + " en impuestos. Le quedan " + actual.getFortuna() + "." );
+            return actual.pagar(impuesto);
         }
+
         return true;
 
     }
+
+    private float calcular_coste(int tirada){
+        float coste;
+        if(tipo.equals("solar")){
+            coste = getImpuesto();
+            }
+        else if (tipo.equals("transporte")){
+            coste = (getImpuesto() * (0.25f * duenho.getNumTrans()));
+        }
+        else { //servicio
+            if (duenho.getNumServ() == 1)
+                coste = (getImpuesto()*4*tirada);
+            else
+                coste = (getImpuesto()*10*tirada);
+        } 
+        return coste;
+    }
+
+
 
     //devuelve true si se puede comprar la casilla
     public boolean esComprable(Jugador comprador, Jugador banca){
@@ -146,10 +155,39 @@ public class Casilla {
     }
 
     /*Método para mostrar información sobre una casilla.
-    * Devuelve una cadena con información específica de cada tipo de casilla.*/
-    public String infoCasilla() {
-        return ""; 
-    }
+    * Devuelve una cadena con información específica de cada tipo de casilla.
+    * Banca para poder imprimir el bote. */
+    public String infoCasilla(Jugador banca) {
+
+        StringBuilder output = new StringBuilder();
+    
+        output.append("- Tipo: ").append(getTipo()).append("\n");
+        
+        if (getTipo().equals("solar")) {
+            output.append("- Grupo: ").append(getGrupo().getColor()).append("\n");
+            output.append("- Valor: ").append(getValor()).append("\n");
+            output.append("- Alquiler: ").append(getImpuesto()).append("\n");
+        } 
+        else if (getTipo().equals("imposto")) {
+            output.append("- Imposto: ").append(getImpuesto()).append("\n");
+        } 
+        else if (getNombre().equals("parking")) {
+            output.append("- Bote: ").append(banca.getBote()).append("\n");
+        } 
+        else if (getNombre().equals("carcel")) {
+            output.append("- Fianza: ").append(Valor.FORTUNA_INICIAL * 0.25).append("\n");
+        }
+    
+        if (getAvatares().size() > 0) {
+            output.append("- Jugadores:\n");
+            for (int i = 0; i < getAvatares().size(); i++) {
+                output.append("   · ").append(getAvatares().get(i).getJugador().getNombre()).append("\n");
+            }
+        }
+    
+        output.append("\n"); 
+    
+        return output.toString();    }
 
     /* Método para mostrar información de una casilla en venta.
      * Valor devuelto: texto con esa información.

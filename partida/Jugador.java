@@ -116,4 +116,75 @@ public class Jugador {
     public void sumarTiradaCarcel(){
         tiradasCarcel++;
     }
+
+    public int getNumTrans(){ // número de casillas de transporte que posee
+        int j=0;
+        for(int i=0; i<propiedades.size(); i++){
+            if (propiedades.get(i).getTipo().equals("transporte"))
+                j++;
+        }
+        return j;
+    }
+    public int getNumServ(){ // número de casillas de servicio que posee
+        int j=0;
+        for(int i=0; i<propiedades.size(); i++){
+            if (propiedades.get(i).getTipo().equals("servicio"))
+                j++;
+        }
+        return j;
+    }
+
+    public void cobrarBote(Jugador banca){
+        float bote = banca.getBote();
+        sumarFortuna(bote);
+        banca.restarDelBote(bote);
+        System.out.println("El jugador " + getNombre() + " recibe " + bote + "€ del bote.");
+    }
+
+
+    //máis sobrecarga
+    public boolean pagar(float coste, Jugador duenho){ //pagar un alquiler
+        if (coste > getFortuna()) {
+            System.out.println("No tienes suficiente dinero.");
+            return false;
+        }
+            duenho.sumarFortuna(coste);
+            sumarGastos(coste);
+            System.out.println(getNombre() + " ha pagado " + coste + "€ de alquiler a " + duenho.getNombre() + ".");
+            return true;
+        }
+    
+    public boolean pagar(float coste){ //pagar un imposto
+        if (coste > getFortuna()) {
+            System.out.println("No tienes suficiente dinero.");
+            return false;
+        }
+            sumarGastos(coste);
+            System.out.println(getNombre() + " ha pagado " + coste + "€ en impuestos.");
+            return true;
+    }
+    
+
+    public boolean limiteCarcel(){
+        return(enCarcel && (tiradasCarcel > 2));
+    }
+
+    public boolean pagarMulta(){
+        if(fortuna > 0.25f*Valor.SUMA_VUELTA){
+            sumarGastos(0.25f*Valor.SUMA_VUELTA);
+            System.out.println("Pagas la multa y sales de la cárcel.");
+            enCarcel = false;
+            tiradasCarcel = 0;
+            return true;
+        }
+
+        System.out.println("No tienes los fondos necesarios.");
+        return false;
+        
+    }
+    
+    
+
+
+
 }
