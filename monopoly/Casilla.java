@@ -105,6 +105,7 @@ public class Casilla {
         }        
 
         if (getTipo() == "imposto"){
+            banca.añadirAlBote(impuesto);
             return actual.pagar(impuesto);
         }
 

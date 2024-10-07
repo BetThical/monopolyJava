@@ -9,9 +9,7 @@ public class MonopolyETSE {
         Menu menu = new Menu();
 
         Tablero tablero = new Tablero(menu.getBanca());
-
         menu.iniciarPartida(tablero);
-
         menu.loopJugable();
         
     }
