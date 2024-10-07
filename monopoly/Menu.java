@@ -132,7 +132,7 @@ public class Menu {
         
         //salir carcel
         if (comando.equals("salir carcel") && jugador.getEnCarcel()){
-            jugador.pagarMulta();
+            salirCarcel();
         }
         else if (comando.equals("salir carcel")){
             System.out.println("No estás en la cárcel.");
@@ -150,19 +150,19 @@ public class Menu {
         
         if (comando.contains("describir")){
             //describir jugador <jugador>
-            if (comando.contains("describir jugador ")){
-                    descJugador(comando.replace("describir jugador ", ""));
+            if (comando.contains("describir jugador "))
+                    descJugador(comando.replace("describir jugador ", ""));      
+                
+                else if (comando.contains("describir avatar "))
+                    descAvatar(comando.replace("describir avatar ", ""));
+                
+                else 
+                    descCasilla(comando.replace("describir ", ""));
+
                     
-            }
-            //describir avatar <avatar>
-            else if (comando.contains("describir avatar ")){
-                descAvatar(comando.replace("describir avatar ", ""));
-            }
-            //describir <casilla>
-            else {
-                descCasilla(comando.replace("describir  ", ""));
-            }
-        } 
+            
+        }
+        
         //listar enventa
         if (comando.equals("listar enventa")){
            listarVenta(); 
@@ -179,7 +179,11 @@ public class Menu {
             jugador.sumarFortuna(Float.parseFloat(comando.replace("f ", "")));
             System.out.println("Nueva fortuna: " + jugador.getFortuna());
         }
+    
     }
+    
+    
+
     
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -277,7 +281,6 @@ public class Menu {
             return;}
 
         if (jugador.getEnCarcel() && (tirada2 == tirada1)) {
-
             System.out.println("Sales de la carcel y vuelves a tirar.");
             jugador.salirCarcel();
 
@@ -289,19 +292,32 @@ public class Menu {
 
         Casilla casillafinal = avatar.getLugar();
 
-        if (casillafinal.getPosicion() == 31){
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), 20);
-            jugador.setEnCarcel(true);
-            System.out.println("El avatar " + jugador.getAvatar().getId() + " va a la cárcel.");
-        }
-        else
-            System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
-
+        System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
 
         if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)){
             System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
             acabarPartida = true;
         }
+
+
+        if (casillafinal.getPosicion() == 31){
+            jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+            jugador.setEnCarcel(true);
+        }
+        
+        if (avatar.get4Voltas() == true){
+            boolean condicion = true;
+            for(int i=0; i<jugadores.size(); i++){
+                if (jugadores.get(i).getVueltas() < jugador.getVueltas()){
+                    condicion = false;
+                }
+            }
+            if (condicion==true){
+                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de las propiedades aumenta."));
+            }
+        }
+
+
     }
 
     private void lanzarDados(int valor_tiradas){
@@ -313,19 +329,30 @@ public class Menu {
         avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
 
         Casilla casillafinal = avatar.getLugar();
-
-        if (casillafinal.getPosicion() == 31){
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), 20);
-            jugador.setEnCarcel(true);
-            System.out.println("El avatar " + jugador.getAvatar().getId() + " va a la cárcel.");
-        }
-        else
-            System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
+        System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
 
 
         if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)){
-            System.out.printf("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
+            System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
             acabarPartida = true;
+        }
+
+        
+        if (casillafinal.getPosicion() == 31){
+            jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+            jugador.setEnCarcel(true);
+        }
+        if (avatar.get4Voltas() == true){
+            boolean condicion = true;
+            for(int i=0; i<jugadores.size(); i++){
+                if (jugadores.get(i).getVueltas() < jugador.getVueltas()){
+                    condicion = false;
+                }
+            }
+            if (condicion==true){
+                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de los solares aumenta."));
+                tablero.aumentarCoste(banca);
+            }
         }
 
     }
@@ -347,16 +374,17 @@ public class Menu {
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
-    private boolean salirCarcel() {
-        if(obtenerJugadorTurno().getFortuna() > (Valor.SUMA_VUELTA*0.25)){
-            obtenerJugadorTurno().sumarGastos((float)(Valor.SUMA_VUELTA*0.25));
+    private boolean salirCarcel() 
+    {   if (lanzamientos == 0)
+        return obtenerJugadorTurno().pagarMulta();
+        else
+            System.out.println("Sólo puedes pagar la multa al inicio del turno.");
             return true;
-        }
-        return false;
-    }
+            }
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
+        banca.getPropiedades();
         Casilla casilla_aux;
         for (int i=0; i<40; i++){
             casilla_aux = tablero.getCasilla(i);

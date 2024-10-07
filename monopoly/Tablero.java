@@ -230,4 +230,14 @@ public class Tablero {
         lado.set(pos%10, c);
         posiciones.set((int) pos/10, lado);
     }
+
+    public void aumentarCoste(Jugador banca){
+        for (int i=0; i<getPosiciones().size(); i++){
+            if (getCasilla(i).getduenhoJugador() == banca){
+                float valor = (getCasilla(i).getValor()*0.05f);
+                getCasilla(i).sumarValor(valor);
+            }
+        }
+    
+    }
 }

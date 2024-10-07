@@ -102,6 +102,7 @@ public class Jugador {
     }
 
     public void sumarVuelta(){
+        fortuna += Valor.SUMA_VUELTA;
         vueltas++;
     }
 
@@ -184,7 +185,9 @@ public class Jugador {
     }
     
     
-
+    public int getVueltas(){
+        return vueltas;
+    }
 
 
 }

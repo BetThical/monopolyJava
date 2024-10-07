@@ -35,7 +35,6 @@ class Grupo {
     public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo) {
         this.colorGrupo = colorGrupo;
         this.miembros = new ArrayList<>();
-
         anhadirCasilla(cas3);
         anhadirCasilla(cas2);
         anhadirCasilla(cas1);
