@@ -99,67 +99,74 @@ public class Menu {
 
         Jugador jugador = obtenerJugadorTurno();
         Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
-
+        
+        //jugador
         if (comando.equals("jugador")){
             System.out.println("Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
 
         }
         
-        if ( comando.equals("l") &&(lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+        //lanzar dados
+        if ( comando.equals("lanzar dados") &&(lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
             lanzarDados();
             lanzamientos ++;
         }
-        else if (comando.equals("l")){
+        else if (comando.equals("lanzar dados")){
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
 
-
-        if (comando.equals("c") && (casilla.esComprable(jugador, banca))){
-            System.out.println(jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor() + ".");
-            casilla.comprarCasilla(jugador, banca);
+        //comprar
+        if (comando.equals("comprar")){
+            comprar(casilla.getNombre());
         }
-        else if (comando.equals("c")){
-            System.out.println("No puedes comprar esta casilla.");
-        }
-        if ((comando.equals("a") &&(lanzamientos != 0)) && (dado1.getValorPrevio() != dado2.getValorPrevio())){
+        
+        //acabar turno
+        if ((comando.equals("acabar turno") &&(lanzamientos != 0)) && (dado1.getValorPrevio() != dado2.getValorPrevio())){
             acabarTurno();
             System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
             return;
         }
-        else if (comando.equals("a")){
+        else if (comando.equals("acabar turno")){
             System.out.println("Debes lanzar los dados.");
         }
-
-        if (comando.equals("s") && jugador.getEnCarcel()){
+        
+        //salir carcel
+        if (comando.equals("salir carcel") && jugador.getEnCarcel()){
             jugador.pagarMulta();
         }
-        else if (comando.equals("s")){
+        else if (comando.equals("salir carcel")){
             System.out.println("No estás en la cárcel.");
         }
-        
+       
+        //listar avatares
         if (comando.equals("listar avatares")){
             listarAvatares();
         }
-
+        
+        //listar jugadores
         if (comando.equals("listar jugadores")){
             listarJugadores();
         }
-
+        
         if (comando.contains("describir")){
-
+            //describir jugador`
             if (comando.contains("describir jugador ")){
                     descJugador(comando.replace("describir jugador ", ""));
                     
-                }
-                else if (comando.contains("describir avatar ")){
-                    descAvatar(comando.replace("describir avatar ", ""));
-                }
-                else {
-                    descCasilla(comando.replace("describir  ", ""));
-                }
-                }  
+            }
+            //describir avatar
+            else if (comando.contains("describir avatar ")){
+                descAvatar(comando.replace("describir avatar ", ""));
+            }
+            //describir <casilla>
+            else {
+                descCasilla(comando.replace("describir  ", ""));
+            }
+        }  
         
-
+/*
+ *      DEBUG
+ */
         if (comando.contains("m ")){ //movimiento manual (debug)
             lanzarDados(Integer.parseInt(comando.replace("m ", "")));
         }
@@ -323,7 +330,16 @@ public class Menu {
     * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
     private void comprar(String nombre) {
-
+        Jugador jugador = obtenerJugadorTurno();
+        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
+        
+        if (casilla.esComprable(jugador, banca)){
+            System.out.println(jugador.getNombre() + " compra la propiedad " + nombre + " por " + casilla.getValor() + ".");
+            casilla.comprarCasilla(jugador, banca);
+        }
+        else {
+            System.out.println("No puedes comprar esta casilla.");
+        }
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
