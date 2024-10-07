@@ -3,6 +3,7 @@ package partida;
 import monopoly.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Avatar {
@@ -67,7 +68,25 @@ public class Avatar {
     * - Un arraylist de los avatares ya creados, con el objetivo de evitar que se generen dos ID iguales.
      */
     private void generarId(ArrayList<Avatar> avCreados) {
-        this.id = String.valueOf((char) (avCreados.size() + 64 + 1)); //as letras asígnanse por orden, o primeiro avatar ten A, o segundo B ...
+
+        char letra_aleatoria;
+        boolean IdUnico;
+
+        do {
+            int valor = ThreadLocalRandom.current().nextInt(65, 91);
+            letra_aleatoria = (char) (valor);
+            IdUnico = true;
+
+            for (Avatar avatar : avCreados) {
+                if (avatar.getId().equals(String.valueOf(letra_aleatoria))) {
+                    IdUnico = false;
+                    break;
+                }
+            }
+
+        } while(!IdUnico);
+
+        this.id = String.valueOf(letra_aleatoria);
     }
 
     public String getID(){
