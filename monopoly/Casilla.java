@@ -193,6 +193,7 @@ public class Casilla {
      * Valor devuelto: texto con esa información.
      */
     public String casEnVenta() {
+
         if (tipo.equals("solar") ) {
             return "tipo: " + tipo + "grupo: " + grupo + "valor: " + valor + "€.";
         }
