@@ -388,7 +388,7 @@ public class Menu {
         Casilla casilla_aux;
         for (int i=0; i<40; i++){
             casilla_aux = tablero.getCasilla(i);
-            if ((casilla_aux.getTipo().equals("solar") || casilla_aux.getTipo().equals("transporte")) && casilla_aux.getduenhoJugador()==banca){
+            if ((casilla_aux.getTipo().equals("solar") || casilla_aux.getTipo().equals("transporte") || casilla_aux.getTipo().equals("servicio")) && casilla_aux.getduenhoJugador()==banca){
                 System.out.println(casilla_aux.casEnVenta());
             }
         } 
