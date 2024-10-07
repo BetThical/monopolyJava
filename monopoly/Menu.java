@@ -162,7 +162,11 @@ public class Menu {
             else {
                 descCasilla(comando.replace("describir  ", ""));
             }
-        }  
+        } 
+        //listar enventa
+        if (comando.equals("listar enventa")){
+           listarVenta(); 
+        }
         
 /*
  *      DEBUG
@@ -218,7 +222,7 @@ public class Menu {
             System.out.println("Edificios: ");
             System.out.println("");
         }
-        else 
+            else 
             System.out.println("No existe un avatar con ese ID.");
     }
 
@@ -353,6 +357,13 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
+        Casilla casilla_aux;
+        for (int i=0; i<40; i++){
+            casilla_aux = tablero.getCasilla(i);
+            if ((casilla_aux.getTipo().equals("solar") || casilla_aux.getTipo().equals("transporte")) && casilla_aux.getduenhoJugador()==banca){
+                System.out.println(casilla_aux.casEnVenta());
+            }
+        } 
     }
     
     
