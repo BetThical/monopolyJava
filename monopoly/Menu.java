@@ -149,12 +149,12 @@ public class Menu {
         }
         
         if (comando.contains("describir")){
-            //describir jugador`
+            //describir jugador <jugador>
             if (comando.contains("describir jugador ")){
                     descJugador(comando.replace("describir jugador ", ""));
                     
             }
-            //describir avatar
+            //describir avatar <avatar>
             else if (comando.contains("describir avatar ")){
                 descAvatar(comando.replace("describir avatar ", ""));
             }
