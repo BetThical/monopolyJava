@@ -197,9 +197,9 @@ public class Casilla {
      */
     public String casEnVenta() {
         if (tipo.equals("solar") ) {
-            return "tipo: " + tipo + ", grupo: " + grupo.getColor() + "■■■■■■" + (Valor.RESET) + ", valor: " + valor + "€.";
+            return "Nombre: " + nombre + ", tipo: " + tipo + ", grupo: " + grupo.getColor()  + ", valor: " + valor + "€.\n";
         }
-        return Valor.RESET + "tipo: " + tipo + ", valor: " + valor + "€.";
+        return "Nombre: " + nombre + ", tipo: " + tipo + ", valor: " + valor + "€.\n";
     }
 
     // GETTERS

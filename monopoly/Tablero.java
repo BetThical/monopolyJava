@@ -49,14 +49,14 @@ public class Tablero {
         ladoSur.add(new Casilla("Caja", "comunidad", 3, banca));
         ladoSur.add(new Casilla("Solar2", "solar", 4, 600000, banca));
         ladoSur.add(new Casilla("Imp1", "imposto", 5,((float) (Valor.SUMA_VUELTA * 0.5)),  banca));
-        ladoSur.add(new Casilla("Trans1", "transporte", 6, 0, banca));
+        ladoSur.add(new Casilla("Trans1", "transporte", 6, Valor.SUMA_VUELTA, banca));
         ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
         ladoSur.add(new Casilla("Suerte", "suerte", 8, banca));
         ladoSur.add(new Casilla("Solar4", "solar", 9, 520000, banca));
         ladoSur.add(new Casilla("Solar5", "solar", 10, 520000, banca));
 
-        grupos.put("negro", new Grupo(ladoSur.get(1), ladoSur.get(3), "\u001B[30m"));
-        grupos.put("cian", new Grupo(ladoSur.get(6), ladoSur.get(8), ladoSur.get(9), "\u001B[36m"));
+        grupos.put(Valor.BLACK, new Grupo(ladoSur.get(1), ladoSur.get(3), Valor.BLACK + "Negro" + Valor.RESET));
+        grupos.put(Valor.CYAN, new Grupo(ladoSur.get(6), ladoSur.get(8), ladoSur.get(9), Valor.CYAN + "Cián" + Valor.RESET));
 
         posiciones.add(ladoSur);
     }
@@ -67,17 +67,17 @@ public class Tablero {
         ArrayList<Casilla> ladoOeste = new ArrayList<>();
         ladoOeste.add(new Casilla("Carcel", "especial", 11, banca));
         ladoOeste.add(new Casilla("Solar6", "solar", 12, 676000, banca));
-        ladoOeste.add(new Casilla("Serv1", "servicio", 13, banca));
+        ladoOeste.add(new Casilla("Serv1", "servicio", 13, 0.75f*Valor.SUMA_VUELTA, banca));
         ladoOeste.add(new Casilla("Solar7", "solar", 14, 676000, banca));
         ladoOeste.add(new Casilla("Solar8", "solar", 15, 676000, banca));
-        ladoOeste.add(new Casilla("Trans2", "transporte", 16, 0, banca));
+        ladoOeste.add(new Casilla("Trans2", "transporte", 16, Valor.SUMA_VUELTA, banca));
         ladoOeste.add(new Casilla("Solar9", "solar", 17, 878000, banca));
         ladoOeste.add(new Casilla("Caja", "comunidad", 18, banca));
         ladoOeste.add(new Casilla("Solar10", "solar", 19, 878000, banca));
         ladoOeste.add(new Casilla("Solar11", "solar", 20, 878000, banca));
 
-        grupos.put("morado", new Grupo(ladoOeste.get(1), ladoOeste.get(3), ladoOeste.get(4), "\u001B[35m"));
-        grupos.put("amarillo", new Grupo(ladoOeste.get(6), ladoOeste.get(8), ladoOeste.get(9), "\u001B[33m"));
+        grupos.put(Valor.PURPLE, new Grupo(ladoOeste.get(1), ladoOeste.get(3), ladoOeste.get(4), Valor.PURPLE + "Morado" + Valor.RESET));
+        grupos.put(Valor.YELLOW, new Grupo(ladoOeste.get(6), ladoOeste.get(8), ladoOeste.get(9), Valor.YELLOW + "Amarillo" + Valor.RESET));
 
 
         posiciones.add(ladoOeste);
@@ -94,14 +94,14 @@ public class Tablero {
         ladoNorte.add(new Casilla("Suerte", "suerte", 23, banca));
         ladoNorte.add(new Casilla("Solar13", "solar", 24, 1142440, banca));
         ladoNorte.add(new Casilla("Solar14", "solar", 25, 1142440, banca));
-        ladoNorte.add(new Casilla("Trans3", "transporte", 26, 0, banca));
+        ladoNorte.add(new Casilla("Trans3", "transporte", 26, Valor.SUMA_VUELTA, banca));
         ladoNorte.add(new Casilla("Solar15", "solar", 27, 1485172, banca));
         ladoNorte.add(new Casilla("Solar16", "solar", 28, 1485172, banca));
-        ladoNorte.add(new Casilla("Serv2", "servicio", 29, banca));
+        ladoNorte.add(new Casilla("Serv2", "servicio", 29, 0.75f*Valor.SUMA_VUELTA, banca));
         ladoNorte.add(new Casilla("Solar17", "solar", 30, 1485172, banca));
 
-        grupos.put("rojo", new Grupo(ladoNorte.get(1), ladoNorte.get(3), ladoNorte.get(4), "\u001B[31m"));
-        grupos.put("marron", new Grupo(ladoNorte.get(6), ladoNorte.get(7), ladoNorte.get(9), "\u001B[37m"));
+        grupos.put(Valor.RED, new Grupo(ladoNorte.get(1), ladoNorte.get(3), ladoNorte.get(4), Valor.RED + "Rojo" + Valor.RESET));
+        grupos.put(Valor.WHITE, new Grupo(ladoNorte.get(6), ladoNorte.get(7), ladoNorte.get(9), Valor.WHITE + "Marrón" + Valor.RESET));
 
         posiciones.add(ladoNorte);
 
@@ -118,14 +118,14 @@ public class Tablero {
         ladoEste.add(new Casilla("Solar19", "solar", 33, (float) 1930723.6, banca));
         ladoEste.add(new Casilla("Caja", "comunidad", 34, banca));
         ladoEste.add(new Casilla("Solar20", "solar", 35, (float) 1930723.6, banca));
-        ladoEste.add(new Casilla("Trans4", "transporte", 36, 0, banca));
+        ladoEste.add(new Casilla("Trans4", "transporte", 36, Valor.SUMA_VUELTA, banca));
         ladoEste.add(new Casilla("Suerte", "suerte", 37, banca));
         ladoEste.add(new Casilla("Solar21", "solar", 38, (float) 3764922.02, banca));
         ladoEste.add(new Casilla("Imp2", "imposto", 39, ((float) Valor.SUMA_VUELTA), banca));
         ladoEste.add(new Casilla("Solar22", "solar", 40, (float) 3764922.02, banca));
 
-        grupos.put("verde", new Grupo(ladoEste.get(1), ladoEste.get(2), ladoEste.get(4), "\u001B[32m"));
-        grupos.put("azul", new Grupo(ladoEste.get(7), ladoEste.get(9), "\u001B[34m"));
+        grupos.put(Valor.GREEN, new Grupo(ladoEste.get(1), ladoEste.get(2), ladoEste.get(4), (Valor.GREEN + "Verde" + Valor.RESET)));
+        grupos.put(Valor.BLUE, new Grupo(ladoEste.get(7), ladoEste.get(9), (Valor.BLUE + "Azul" + Valor.RESET)));
 
         posiciones.add(ladoEste);
 
@@ -158,7 +158,7 @@ public class Tablero {
 
 
             if (c.getTipo().equals("solar")) {
-                tableroArr[fila][col] = String.format(c.getGrupo().getColor() + c.getNombre() + Valor.RESET);
+                tableroArr[fila][col] = String.format(getCodigoColor(c.getGrupo()) + c.getNombre() + Valor.RESET);
             } else
                 tableroArr[fila][col] = String.format(Valor.WHITE + c.getNombre() + Valor.RESET);
             
@@ -240,4 +240,15 @@ public class Tablero {
         }
     
     }
+
+    private String getCodigoColor(Grupo g){
+        for(String key : grupos.keySet()){
+            if (grupos.get(key).equals(g))
+                return key;
+        }
+        return "error";
+
+    }
+
+        
 }
