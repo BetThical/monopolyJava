@@ -12,6 +12,8 @@ public class Avatar {
     private String tipo; //Sombrero, Esfinge, Pelota, Coche
     private Jugador jugador; //Un jugador al que pertenece ese avatar.
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
+    private boolean ultimoMovementoFuiVoltaMultiploDe4;
+
 
     //Constructor vacío
     public Avatar() {
@@ -38,11 +40,17 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
-
+        ultimoMovementoFuiVoltaMultiploDe4 = false;
         int posicionactual = lugar.getPosicion();
 
         lugar.eliminarAvatar(this);
-        if (posicionactual + valorTirada > 40) jugador.sumarVuelta();
+        if (posicionactual + valorTirada > 40){ 
+            System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
+            jugador.sumarVuelta();
+            if (jugador.getVueltas()%4 == 0){
+                ultimoMovementoFuiVoltaMultiploDe4 = true;
+            }
+        }
         int nuevaposicion = (posicionactual + valorTirada - 1) % 40;
 
         int lado = (nuevaposicion / 10);
@@ -61,6 +69,7 @@ public class Avatar {
 
         this.lugar = nuevaCasilla;
     }
+
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:
@@ -91,6 +100,20 @@ public class Avatar {
     }
 
     public void setLugar(Casilla nuevaCasilla) {
+        lugar.eliminarAvatar(this);
         this.lugar = nuevaCasilla;
     }
+
+    public void setLugar(ArrayList<ArrayList<Casilla>> casillas, int posicion) {
+        lugar.eliminarAvatar(this);
+        int lado = (posicion / 10);
+        int casilla = (posicion % 10);
+        Casilla nuevaCasilla = casillas.get(lado).get(casilla);
+        nuevaCasilla.anhadirAvatar(this);
+        lugar = nuevaCasilla;
+
+    }
+    
+    public boolean get4Voltas(){
+        return ultimoMovementoFuiVoltaMultiploDe4;}
 }

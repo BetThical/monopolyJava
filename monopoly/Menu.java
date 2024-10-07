@@ -155,7 +155,7 @@ public class Menu {
                     descAvatar(comando.replace("describir avatar ", ""));
                 }
                 else {
-                    descCasilla(comando.replace("describir  ", ""));
+                    descCasilla(comando.replace("describir ", ""));
                 }
                 }  
         
@@ -278,19 +278,32 @@ public class Menu {
 
         Casilla casillafinal = avatar.getLugar();
 
-        if (casillafinal.getPosicion() == 31){
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), 20);
-            jugador.setEnCarcel(true);
-            System.out.println("El avatar " + jugador.getAvatar().getId() + " va a la cárcel.");
-        }
-        else
-            System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
-
+        System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
 
         if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)){
             System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
             acabarPartida = true;
         }
+
+
+        if (casillafinal.getPosicion() == 31){
+            jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+            jugador.setEnCarcel(true);
+        }
+        
+        if (avatar.get4Voltas() == true){
+            boolean condicion = true;
+            for(int i=0; i<jugadores.size(); i++){
+                if (jugadores.get(i).getVueltas() < jugador.getVueltas()){
+                    condicion = false;
+                }
+            }
+            if (condicion==true){
+                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de las propiedades aumenta."));
+            }
+        }
+
+
     }
 
     private void lanzarDados(int valor_tiradas){
@@ -302,19 +315,30 @@ public class Menu {
         avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
 
         Casilla casillafinal = avatar.getLugar();
-
-        if (casillafinal.getPosicion() == 31){
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), 20);
-            jugador.setEnCarcel(true);
-            System.out.println("El avatar " + jugador.getAvatar().getId() + " va a la cárcel.");
-        }
-        else
-            System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
+        System.out.println("El avatar " + avatar.getId() + " avanza " + (valor_tiradas) + " posiciones, desde " + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
 
 
         if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)){
-            System.out.printf("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
+            System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
             acabarPartida = true;
+        }
+
+        
+        if (casillafinal.getPosicion() == 31){
+            jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+            jugador.setEnCarcel(true);
+        }
+        if (avatar.get4Voltas() == true){
+            boolean condicion = true;
+            for(int i=0; i<jugadores.size(); i++){
+                if (jugadores.get(i).getVueltas() < jugador.getVueltas()){
+                    condicion = false;
+                }
+            }
+            if (condicion==true){
+                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de los solares aumenta."));
+                tablero.aumentarCoste(banca);
+            }
         }
 
     }
@@ -337,6 +361,7 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
+        banca.getPropiedades();
     }
     
     

@@ -85,7 +85,7 @@ public class Casilla {
             }
     }
 
-    /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
+    /*Método para luar qué hacer en una casilla concreta. Parámetros:
     * - Jugador cuyo avatar está en esa casilla.
     * - La banca (para ciertas comprobaciones).
     * - El valor de la tirada: para determinar impuesto a pagar en casillas de servicios.
@@ -108,6 +108,8 @@ public class Casilla {
             return actual.pagar(impuesto);
         }
 
+        if (getNombre().equals("IrCarcel"))
+            System.out.println("El jugador " + actual.getNombre() + " va a la cárcel.");
         return true;
 
     }
@@ -141,6 +143,7 @@ public class Casilla {
     * - Jugador que solicita la compra de la casilla.
     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
+        banca.sumarFortuna(valor);
         solicitante.sumarGastos(valor);
         this.duenho = solicitante;
         solicitante.anhadirPropiedad(this);
