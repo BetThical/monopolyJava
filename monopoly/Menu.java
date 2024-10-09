@@ -47,7 +47,6 @@ public class Menu {
 
         System.out.println("Partida iniciada con " + numJugadores + " jugadores.");
         System.out.println("Empieza la partida: " + obtenerJugadorTurno().getNombre() + ".");
-        sc.close();
 
     }
 
@@ -66,7 +65,6 @@ public class Menu {
             }
             comando = sc.nextLine();
             analizarComando(comando);
-            sc.close();
 
         }
         System.out.println("\nLa partida ha terminado! El jugador " + obtenerJugadorTurno().getNombre()
@@ -87,7 +85,6 @@ public class Menu {
         avatares.add(jugador.getAvatar());
         casillaInicio.anhadirAvatar(jugador.getAvatar());
         System.out.println("Jugador " + nombre + " con avatar " + tipoAvatar + " creado.");
-        sc.close();
     }
 
     /*
