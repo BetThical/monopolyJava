@@ -194,6 +194,11 @@ public class Menu {
             listarJugadores();
         }
 
+        // ver tablero
+        else if (comando.equals("ver tablero")){
+            return; // No hace nada
+        }
+
         else if (comando.contains("describir")) {
             // describir jugador <jugador>
             if (comando.contains("describir jugador "))

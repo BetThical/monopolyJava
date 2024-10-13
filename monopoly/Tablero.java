@@ -212,8 +212,8 @@ public class Tablero {
         return posiciones.get((int) pos / 10).get(pos % 10);
     }
 
-    public Casilla getCasilla(String nombre) { // devuelve una casilla a partir de su nombre
-        for (int i = 0; i < getPosiciones().size(); i++) {
+    public Casilla getCasilla(String nombre) {// devuelve una casilla a partir de su nombre
+        for (int i = 0; i < 40; i++) {
             if (getCasilla(i).getNombre().equals(nombre))
                 return getCasilla(i);
         }
