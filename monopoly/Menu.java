@@ -76,7 +76,10 @@ public class Menu {
             numJugadores = sc.nextInt();
         } catch (Exception e) {
             numJugadores = 0;
-        }}
+            sc.nextLine();
+
+        }
+        }
 
         sc.nextLine();
         for (int i = 1; (i <= numJugadores); i++) {
