@@ -16,6 +16,7 @@ public class Menu {
     private Dado dado2;
     private Jugador banca; // El jugador banca.
     private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
+    private Scanner sc = new Scanner(System.in);
 
     public Jugador getBanca() {
         return banca;
@@ -25,23 +26,60 @@ public class Menu {
         this.banca = new Jugador();
         this.tablero = new Tablero(getBanca());
 
+
     }
+
+    public void titulo(){
+
+        System.out.println("      ___          ___          ___          ___          ___          ___          ___   ___     ");
+        System.out.println("     /\\__\\        /\\  \\        /\\__\\        /\\  \\        /\\  \\        /\\  \\        /\\__\\ |\\__\\    ");
+        System.out.println("    /::|  |      /::\\  \\      /::|  |      /::\\  \\      /::\\  \\      /::\\  \\      /:/  / |:|  |   ");
+        System.out.println("   /:|:|  |     /:/\\:\\  \\    /:|:|  |     /:/\\:\\  \\    /:/\\:\\  \\    /:/\\:\\  \\    /:/  /  |:|  |   ");
+        System.out.println("  /:/|:|__|__  /:/  \\:\\  \\  /:/|:|  |__  /:/  \\:\\  \\  /::\\~\\:\\  \\  /:/  \\:\\  \\  /:/  /   |:|__|__ ");
+        System.out.println(" /:/ |::::\\__/\\:/__/ \\:\\__/\\:/ |:| /\\__/\\:/__/ \\:\\__/\\:/\\:\\ \\:\\__/\\:/__/ \\:\\__/\\:/__/    /::::\\__\\");
+        System.out.println(" \\/__/~~/:/  /\\:\\  \\ /:/  /\\/__|:|/:/  /\\:\\  \\ /:/  /\\/__\\:\\/:/  /\\:\\  \\ /:/  /\\:\\  \\   /:/~~/~   ");
+        System.out.println("       /:/  /  \\:\\  /:/  /     |:/:/  /  \\:\\  /:/  /      \\::/  /  \\:\\  /:/  /  \\:\\  \\ /:/  /     ");
+        System.out.println("      /:/  /    \\:\\/:/  /      |::/  /    \\:\\/:/  /        \\/__/    \\:\\/:/  /    \\:\\  \\/__/      ");
+        System.out.println("     /:/  /      \\::/  /       /:/  /      \\::/  /                   \\::/  /      \\:\\__\\          ");
+        System.out.println("     \\/__/        \\/__/        \\/__/        \\/__/                     \\/__/        \\/__/          ");
+        System.out.println("                                ___       ___          ___          ___                           ");
+        System.out.println("                               /\\  \\     /\\  \\        /\\  \\        /\\  \\                          ");
+        System.out.println("                              /::\\  \\    \\:\\  \\      /::\\  \\      /::\\  \\                         ");
+        System.out.println("                            /::\\~\\:\\  \\   /::\\  \\  _\\:\\~\\ \\  \\  /::\\~\\:\\  \\                       ");
+        System.out.println("                           /:/\\:\\ \\:\\__/ /:/\\:\\__/\\/ \\:\\ \\ \\__/\\:/\\:\\ \\:\\__/                      ");
+        System.out.println("                           \\:\\~\\:\\ \\/__//:/  \\/__/\\:\\ \\:\\ \\/__/\\:\\~\\:\\ \\/__/                      ");
+        System.out.println("                            \\:\\ \\:\\__\\ /:/  /      \\:\\ \\:\\__\\   \\:\\ \\:\\__\\                        ");
+        System.out.println("                             \\:\\ \\/__/ \\/__/        \\:\\/:/  /    \\:\\ \\/__/                        ");
+        System.out.println("                              \\:\\__\\                 \\::/  /      \\:\\__\\                          ");
+        System.out.println("                               \\/__/                  \\/__/        \\/__/                          ");
+    
+
+        System.out.println("\n\n\n                                Pulse ENTER para iniciar una partida.\n\n");
+        sc.nextLine();
+
+    
+    }
+
 
     // Método para inciar una partida: crea los jugadores y avatares.
     public void iniciarPartida(Tablero t) {
-        Scanner sc = new Scanner(System.in);
-
+        int numJugadores = 0;
         jugadores = new ArrayList<>();
         avatares = new ArrayList<>();
 
         dado1 = new Dado();
         dado2 = new Dado();
 
-        System.out.println("Introduce el número de jugadores:");
-        int numJugadores = sc.nextInt();
-        sc.nextLine();
+        while (numJugadores < 2 || numJugadores > 6){
+        try {
+            System.out.println("Introduzca el número de jugadores (2-6):");
+            numJugadores = sc.nextInt();
+        } catch (Exception e) {
+            numJugadores = 0;
+        }}
 
-        for (int i = 1; i <= numJugadores; i++) {
+        sc.nextLine();
+        for (int i = 1; (i <= numJugadores); i++) {
             anhadirJugador();
         }
 
@@ -52,7 +90,6 @@ public class Menu {
 
     public void loopJugable() {
         String comando = "";
-        Scanner sc = new Scanner(System.in);
         while (!acabarPartida) {
             tablero.imprimirTablero();
 
@@ -69,13 +106,14 @@ public class Menu {
         }
         System.out.println("\nLa partida ha terminado! El jugador " + obtenerJugadorTurno().getNombre()
                 + " ha declarado la bancarrota.");
+        sc.close();
 
     }
 
     private void anhadirJugador() {
+
         Casilla casillaInicio = tablero.getCasilla(0);
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce el nombre del jugador:");
+        System.out.println("\nIntroduce el nombre del jugador " +(obtenerNumeroDeJugadores() + 1) + ": ");
         String nombre = sc.nextLine();
         System.out.println("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, sombrero, perro):");
         String tipoAvatar = sc.nextLine();
@@ -85,6 +123,7 @@ public class Menu {
         avatares.add(jugador.getAvatar());
         casillaInicio.anhadirAvatar(jugador.getAvatar());
         System.out.println("Jugador " + nombre + " con avatar " + tipoAvatar + " creado.");
+
     }
 
     /*
@@ -99,17 +138,21 @@ public class Menu {
 
         // añadir jugador
         if (comando.equals("añadir jugador")) {
-            anhadirJugador();
+            if (jugadores.size() >= 6)
+                System.out.println("Número de jugadores máximo alcanzado.");
+            
+            else
+                anhadirJugador();
         }
 
         // jugador
-        if (comando.equals("jugador")) {
+        else if (comando.equals("jugador")) {
             System.out.println(
                     "Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
         }
 
         // lanzar dados
-        if (comando.equals("lanzar dados") && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
+        else if (comando.equals("lanzar dados") && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             lanzarDados();
             lanzamientos++;
         } else if (comando.equals("lanzar dados")) {
@@ -117,12 +160,12 @@ public class Menu {
         }
 
         // comprar
-        if (comando.equals("comprar")) {
+        else if (comando.equals("comprar")) {
             comprar(casilla.getNombre());
         }
 
         // acabar turno
-        if ((comando.equals("acabar turno") && (lanzamientos != 0))
+        else if ((comando.equals("acabar turno") && (lanzamientos != 0))
                 && (dado1.getValorPrevio() != dado2.getValorPrevio())) {
             acabarTurno();
             System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
@@ -132,23 +175,23 @@ public class Menu {
         }
 
         // salir carcel
-        if (comando.equals("salir carcel") && jugador.getEnCarcel()) {
+        else if (comando.equals("salir carcel") && jugador.getEnCarcel()) {
             salirCarcel();
         } else if (comando.equals("salir carcel")) {
             System.out.println("No estás en la cárcel.");
         }
 
         // listar avatares
-        if (comando.equals("listar avatares")) {
+        else if (comando.equals("listar avatares")) {
             listarAvatares();
         }
 
         // listar jugadores
-        if (comando.equals("listar jugadores")) {
+        else if (comando.equals("listar jugadores")) {
             listarJugadores();
         }
 
-        if (comando.contains("describir")) {
+        else if (comando.contains("describir")) {
             // describir jugador <jugador>
             if (comando.contains("describir jugador "))
                 descJugador(comando.replace("describir jugador ", ""));
@@ -162,21 +205,33 @@ public class Menu {
         }
 
         // listar enventa
-        if (comando.equals("listar enventa")) {
+        else if (comando.equals("listar enventa")) {
             listarVenta();
         }
 
         /*
          * DEBUG
          */
-        if (comando.contains("m ")) { // movimiento manual (debug)
-            lanzarDados(Integer.parseInt(comando.replace("m ", "")));
-        }
+            else if (comando.contains("m ")) { // movimiento manual (debug)
+                try {
+                    lanzarDados(Integer.parseInt(comando.replace("m ", "")));
+                } catch (Exception e) {
+                    System.out.println("Uso del comando: m [cantidad de casillas]");
+                }
+            }
 
-        if (comando.contains("f ")) { // fortuna manual (debug)
-            jugador.sumarFortuna(Float.parseFloat(comando.replace("f ", "")));
-            System.out.println("Nueva fortuna: " + jugador.getFortuna());
-        }
+            else if (comando.contains("f ")) { // fortuna manual (debug)
+            
+            try {
+                jugador.sumarFortuna(Float.parseFloat(comando.replace("f ", "")));
+                System.out.println("Nueva fortuna: " + jugador.getFortuna());
+            } catch (Exception e) {
+                System.out.println("Uso del comando: f [fortuna]");
+            }}
+
+        
+        else 
+            System.out.println("Comando inválido.");
 
     }
 
@@ -199,7 +254,7 @@ public class Menu {
             System.out.println("Edificios: ");
             System.out.println("");
         } else
-            System.out.println("No existe un avatar con ese ID.");
+            System.out.println("No existe un jugador con ese nombre.");
     }
 
     private void descJugador(Jugador jugador) {
@@ -216,7 +271,7 @@ public class Menu {
             System.out.println("Edificios: ");
             System.out.println("");
         } else
-            System.out.println("No existe un avatar con ese ID.");
+            System.out.println("No existe el jugador.");
     }
 
     /*

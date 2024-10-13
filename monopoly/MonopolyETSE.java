@@ -4,8 +4,8 @@ public class MonopolyETSE {
 
     public static void main(String[] args) {
 
-        System.out.println("hello world\n");
         Menu menu = new Menu();
+        menu.titulo();
 
         Tablero tablero = new Tablero(menu.getBanca());
         menu.iniciarPartida(tablero);

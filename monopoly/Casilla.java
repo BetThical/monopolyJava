@@ -165,10 +165,12 @@ public class Casilla {
         this.duenho = solicitante;
         solicitante.anhadirPropiedad(this);
 
-        if (getGrupo().esDuenhoGrupo(solicitante)) {
-            System.out.println("El jugador " + solicitante.getNombre() + " es dueño de todas las casillas del grupo "
-                    + getGrupo().getColor() + "!");
-        }
+        if (getTipo().equals("solar"))
+            if (getGrupo().esDuenhoGrupo(solicitante)) {
+                System.out
+                        .println("El jugador " + solicitante.getNombre() + " es dueño de todas las casillas del grupo "
+                                + getGrupo().getColor() + "!");
+            }
     }
 
     /*

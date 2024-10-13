@@ -33,7 +33,7 @@ public class Tablero {
 
     // Función para imprimir el tablero
     public void imprimirTablero() {
-        System.out.print(toString());
+        System.out.println("\n" + toString());
     }
 
     // Método para insertar las casillas del lado sur.
@@ -99,7 +99,7 @@ public class Tablero {
         ladoNorte.add(new Casilla("Serv2", "servicio", 29, 0.75f * Valor.SUMA_VUELTA, banca));
         ladoNorte.add(new Casilla("Solar17", "solar", 30, 1485172, banca));
 
-            // Se crean los grupos correspondientes a esta fila.
+        // Se crean los grupos correspondientes a esta fila.
         grupos.put(Valor.RED,
                 new Grupo(ladoNorte.get(1), ladoNorte.get(3), ladoNorte.get(4), Valor.RED + "Rojo" + Valor.RESET));
         grupos.put(Valor.WHITE,
@@ -137,7 +137,7 @@ public class Tablero {
     // Para imprimir el tablero, modificamos el método toString().
     @Override
     public String toString() {
-        String[][] tableroArr = new String[11][11]; //Se crea el tablero como un array bidimensional 11x11.
+        String[][] tableroArr = new String[11][11]; // Se crea el tablero como un array bidimensional 11x11.
 
         for (int j = 0; j < 40; j++) {
             int fila, col;
@@ -164,11 +164,12 @@ public class Tablero {
                 tableroArr[fila][col] = String.format(Valor.WHITE + c.getNombre() + Valor.RESET);
 
             if (!c.getAvatares().isEmpty()) { // Si hay avatares en la casilla, se añaden al nombre
-                if (c.getAvatares().size() > 3)
-                    tableroArr[fila][col] += String.format("[...]"); // Si hay más de 3, se imprime un [...] por falta de espacio.
-                else {
-                    tableroArr[fila][col] += "&";
+                // if (c.getAvatares().size() > 3)
+                // tableroArr[fila][col] += String.format("[...]"); // Si hay más de 3, se
+                // imprime un [...] por falta de espacio.
+                {
                     for (int i = 0; i < c.getAvatares().size(); i++) {
+                        tableroArr[fila][col] += "&";
                         tableroArr[fila][col] += String.format(c.getAvatares().get(i).getID());
                     }
                 }
@@ -211,7 +212,6 @@ public class Tablero {
         return posiciones.get((int) pos / 10).get(pos % 10);
     }
 
-
     public Casilla getCasilla(String nombre) { // devuelve una casilla a partir de su nombre
         for (int i = 0; i < getPosiciones().size(); i++) {
             if (getCasilla(i).getNombre().equals(nombre))
@@ -220,7 +220,8 @@ public class Tablero {
         return null;
     }
 
-    private String getCodigoColor(Grupo g) { // devuelve el código asociado a un grupo, que permite imprimir texto con color
+    private String getCodigoColor(Grupo g) { // devuelve el código asociado a un grupo, que permite imprimir texto con
+                                             // color
         for (String key : grupos.keySet()) {
             if (grupos.get(key).equals(g))
                 return key;
@@ -238,7 +239,8 @@ public class Tablero {
         posiciones.set((int) pos / 10, lado);
     }
 
-    public void aumentarCoste(Jugador banca) { // Aumenta el coste de todas las casillas sin dueño en un 5%. Se usa cuando los jugadores dan 4 vueltas.
+    public void aumentarCoste(Jugador banca) { // Aumenta el coste de todas las casillas sin dueño en un 5%. Se usa
+                                               // cuando los jugadores dan 4 vueltas.
         for (int i = 0; i < getPosiciones().size(); i++) {
             if (getCasilla(i).getduenhoJugador() == banca) {
                 float valor = (getCasilla(i).getValor() * 0.05f);
@@ -247,6 +249,5 @@ public class Tablero {
         }
 
     }
-
 
 }

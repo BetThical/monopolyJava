@@ -31,8 +31,6 @@ public class Avatar {
         this.generarId(avCreados);
     }
 
-
-
     // A continuación, tenemos otros métodos útiles para el desarrollo del juego.
     /*
      * Método que permite mover a un avatar a una casilla concreta. Parámetros:
@@ -122,13 +120,13 @@ public class Avatar {
         return this.tipo;
     }
 
-
     public void setLugar(Casilla nuevaCasilla) { // Mueve el avatar a una casilla
         lugar.eliminarAvatar(this);
         this.lugar = nuevaCasilla;
     }
 
-    public void setLugar(ArrayList<ArrayList<Casilla>> casillas, int posicion) { // Mueve el avatar a una posición del tablero
+    public void setLugar(ArrayList<ArrayList<Casilla>> casillas, int posicion) { // Mueve el avatar a una posición del
+                                                                                 // tablero
         lugar.eliminarAvatar(this);
         int lado = (posicion / 10);
         int casilla = (posicion % 10);
@@ -138,7 +136,8 @@ public class Avatar {
 
     }
 
-    public boolean get4Voltas() { // Devuelve True si el jugador acaba de completar 4 vueltas en su último movimiento.
+    public boolean get4Voltas() { // Devuelve True si el jugador acaba de completar 4 vueltas en su último
+                                  // movimiento.
         return ultimoMovementoFuiVoltaMultiploDe4;
     }
 }
