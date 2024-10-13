@@ -241,13 +241,12 @@ public class Tablero {
 
     public void aumentarCoste(Jugador banca) { // Aumenta el coste de todas las casillas sin dueño en un 5%. Se usa
                                                // cuando los jugadores dan 4 vueltas.
-        for (int i = 0; i < getPosiciones().size(); i++) {
+        for (int i = 0; i < 40; i++) {
             if (getCasilla(i).getduenhoJugador() == banca) {
                 float valor = (getCasilla(i).getValor() * 0.05f);
                 getCasilla(i).sumarValor(valor);
             }
         }
-
     }
 
 }

@@ -370,6 +370,7 @@ public class Menu {
             }
             if (condicion == true) {
                 System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de las propiedades aumenta."));
+                tablero.aumentarCoste(banca);
             }
         }
 
