@@ -49,6 +49,7 @@ public class Casilla {
      */
     public Casilla(String nombre, int posicion, float impuesto, Jugador duenho) {
         this.nombre = nombre;
+        this.tipo = "imposto";
         this.posicion = posicion;
         this.impuesto = impuesto;
         this.duenho = duenho;
