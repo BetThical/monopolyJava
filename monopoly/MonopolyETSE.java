@@ -11,6 +11,8 @@ public class MonopolyETSE {
         menu.iniciarPartida(tablero);
         menu.loopJugable();
 
+        //pruebaaa
+
     }
 
 }
