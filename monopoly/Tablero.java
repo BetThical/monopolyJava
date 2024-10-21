@@ -1,15 +1,15 @@
 package monopoly;
 
-import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import partida.*;
 
 public class Tablero {
-    private ArrayList<ArrayList<Casilla>> posiciones; // Posiciones del tablero: se define como un arraylist de
+    private final ArrayList<ArrayList<Casilla>> posiciones; // Posiciones del tablero: se define como un arraylist de
                                                       // arraylists de casillas (uno por cada lado del tablero).
-    private HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String (será el
+    private final HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String (será el
                                            // color del grupo).
-    private Jugador banca; // Un jugador que será la banca.
+    private final Jugador banca; // Un jugador que será la banca.
 
     // Constructor: únicamente le pasamos el jugador banca (que se creará desde el
     // menú).

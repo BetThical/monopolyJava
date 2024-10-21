@@ -1,7 +1,7 @@
 package monopoly;
 
-import partida.*;
 import java.util.ArrayList;
+import partida.*;
 
 public class Casilla {
 
@@ -33,12 +33,18 @@ public class Casilla {
         this.tipo = tipo;
         this.posicion = posicion;
         this.valor = valor;
-        if (tipo.equals("solar"))
-            this.impuesto = ((float) (valor * 0.1)); // solar: alquiler (base) = valor / 10
-        else if (tipo.equals("transporte"))
-            this.impuesto = Valor.SUMA_VUELTA; // valor transporte base = cantidad al dar una vuelta
-        else // servicio
-            this.impuesto = (Valor.SUMA_VUELTA / 200); // factor servicio = suma vuelta / 200
+        switch (tipo) {
+            case "solar":
+                this.impuesto = ((float) (valor * 0.1)); // solar: alquiler (base) = valor / 10
+                break;
+            case "transporte":
+                this.impuesto = Valor.SUMA_VUELTA; // valor transporte base = cantidad al dar una vuelta
+                break;
+            default:
+                // servicio
+                this.impuesto = (Valor.SUMA_VUELTA / 200); // factor servicio = suma vuelta / 200
+                break;
+        }
         this.duenho = duenho;
         this.avatares = new ArrayList<>();
     }
@@ -114,7 +120,7 @@ public class Casilla {
             return true;
         }
 
-        if (getTipo() == "imposto") { // Casillas impuesto
+        if ("imposto".equals(getTipo())) { // Casillas impuesto
             banca.añadirAlBote(impuesto);
             return actual.pagar(impuesto);
         }
@@ -132,17 +138,20 @@ public class Casilla {
     // Parámetro: tirada, para las casillas de servicio
     private float calcular_coste(int tirada) {
         float coste;
-        if (tipo.equals("solar")) {
-            coste = getImpuesto();
-            if (getGrupo().esDuenhoGrupo(duenho))
-                coste *= 2;
-        } else if (tipo.equals("transporte")) {
-            coste = (getImpuesto() * (0.25f * duenho.getNumTrans()));
-        } else { // servicio
-            if (duenho.getNumServ() == 1)
-                coste = (getImpuesto() * 4 * tirada);
-            else
-                coste = (getImpuesto() * 10 * tirada);
+        switch (tipo) {
+            case "solar" -> {
+                coste = getImpuesto();
+                if (getGrupo().esDuenhoGrupo(duenho))
+                    coste *= 2;
+            }
+            case "transporte" -> coste = (getImpuesto() * (0.25f * duenho.getNumTrans()));
+            default -> {
+                // servicio
+                if (duenho.getNumServ() == 1)
+                    coste = (getImpuesto() * 4 * tirada);
+                else
+                    coste = (getImpuesto() * 10 * tirada);
+            }
         }
         return coste;
     }
@@ -208,7 +217,7 @@ public class Casilla {
             output.append("- Fianza: ").append(Valor.FORTUNA_INICIAL * 0.25).append("\n");
         }
 
-        if (getAvatares().size() > 0) {
+        if (!getAvatares().isEmpty()) {
             output.append("- Jugadores:\n");
             for (int i = 0; i < getAvatares().size(); i++) {
                 output.append("   · ").append(getAvatares().get(i).getJugador().getNombre()).append("\n");

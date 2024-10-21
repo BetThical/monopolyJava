@@ -3,7 +3,7 @@ package monopoly;
 import java.util.*;
 import partida.*;
 
-public class Menu {
+public final class Menu {
 
     // Atributos
     private ArrayList<Jugador> jugadores; // Jugadores de la partida.
@@ -11,12 +11,12 @@ public class Menu {
     private int turno = 0; // Índice correspondiente a la posición en el arrayList del jugador (y el
                            // avatar) que tienen el turno
     private int lanzamientos = 0; // Variable para contar el número de lanzamientos de un jugador en un turno.
-    private Tablero tablero; // Tablero en el que se juega.
+    private final Tablero tablero; // Tablero en el que se juega.
     private Dado dado1; // Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
-    private Jugador banca; // El jugador banca.
+    private final Jugador banca; // El jugador banca.
     private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
-    private Scanner sc = new Scanner(System.in);
+    private final Scanner sc = new Scanner(System.in);
 
     public Jugador getBanca() {
         return banca;
@@ -92,24 +92,25 @@ public class Menu {
     }
 
     public void loopJugable() {
-        String comando = "";
-        while (!acabarPartida) {
-            tablero.imprimirTablero();
-
-            if (obtenerJugadorTurno().limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
-                                                                               // turno
-                if (!obtenerJugadorTurno().pagarMulta()) {
-                    acabarPartida = true;
-                    break;
+        try (sc) {
+            String comando = "";
+            while (!acabarPartida) {
+                tablero.imprimirTablero();
+                
+                if (obtenerJugadorTurno().limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
+                    // turno
+                    if (!obtenerJugadorTurno().pagarMulta()) {
+                        acabarPartida = true;
+                        break;
+                    }
                 }
+                comando = sc.nextLine();
+                analizarComando(comando);
+                
             }
-            comando = sc.nextLine();
-            analizarComando(comando);
-
+            System.out.println("\nLa partida ha terminado! El jugador " + obtenerJugadorTurno().getNombre()
+                    + " ha declarado la bancarrota.");
         }
-        System.out.println("\nLa partida ha terminado! El jugador " + obtenerJugadorTurno().getNombre()
-                + " ha declarado la bancarrota.");
-        sc.close();
 
     }
 
@@ -172,7 +173,6 @@ public class Menu {
                 && (dado1.getValorPrevio() != dado2.getValorPrevio())) {
             acabarTurno();
             System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
-            return;
         } else if (comando.equals("acabar turno")) {
             System.out.println("Debes lanzar los dados.");
         }
@@ -196,7 +196,8 @@ public class Menu {
 
         // ver tablero
         else if (comando.equals("ver tablero")){
-            return; // No hace nada
+            // No hace nada
+            
         }
 
         else if (comando.contains("describir")) {
@@ -223,7 +224,7 @@ public class Menu {
             else if (comando.contains("m ")) { // movimiento manual (debug)
                 try {
                     lanzarDados(Integer.parseInt(comando.replace("m ", "")));
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Uso del comando: m [cantidad de casillas]");
                 }
             }
@@ -233,7 +234,7 @@ public class Menu {
             try {
                 jugador.sumarFortuna(Float.parseFloat(comando.replace("f ", "")));
                 System.out.println("Nueva fortuna: " + jugador.getFortuna());
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Uso del comando: f [fortuna]");
             }}
 
