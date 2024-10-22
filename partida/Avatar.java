@@ -1,9 +1,8 @@
 package partida;
 
-import monopoly.*;
-
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import monopoly.*;
 
 public class Avatar {
 
@@ -14,6 +13,8 @@ public class Avatar {
     private Casilla lugar; // Los avatares se sitúan en casillas del tablero.
     private boolean ultimoMovementoFuiVoltaMultiploDe4;
 
+    private int[] vecesCaidasCasilla;
+    
     // Constructor vacío
     public Avatar() {
     }
@@ -29,6 +30,7 @@ public class Avatar {
         this.jugador = jugador;
         this.lugar = lugar;
         this.generarId(avCreados);
+        this.vecesCaidasCasilla = new int[40];
     }
 
     // A continuación, tenemos otros métodos útiles para el desarrollo del juego.
@@ -57,17 +59,17 @@ public class Avatar {
         int lado = (nuevaposicion / 10);
 
         int casilla = (nuevaposicion % 10);
-        /*
-         * System.out.println("Posición actual: " + posicionactual);
-         * System.out.println("Valor de la tirada: " + valorTirada);
-         * System.out.println("Nueva posición: " + nuevaposicion);
-         * System.out.println("Lado calculado: " + lado);
-         * System.out.println("Casilla calculada: " + casilla);
-         * 
+
+        /*           System.out.println("Posición actual: " + posicionactual);
+          System.out.println("Valor de la tirada: " + valorTirada);
+          System.out.println("Nueva posición: " + nuevaposicion);
+          System.out.println("Lado calculado: " + lado);
+          System.out.println("Casilla calculada: " + casilla);
+          
          */
         Casilla nuevaCasilla = casillas.get(lado).get(casilla);
         nuevaCasilla.anhadirAvatar(this);
-
+        vecesCaidasCasilla[nuevaposicion] += 1;
         this.lugar = nuevaCasilla;
     }
 
@@ -130,6 +132,8 @@ public class Avatar {
         lugar.eliminarAvatar(this);
         int lado = (posicion / 10);
         int casilla = (posicion % 10);
+        vecesCaidasCasilla[posicion] += 1;
+
         Casilla nuevaCasilla = casillas.get(lado).get(casilla);
         nuevaCasilla.anhadirAvatar(this);
         lugar = nuevaCasilla;
@@ -140,4 +144,9 @@ public class Avatar {
                                   // movimiento.
         return ultimoMovementoFuiVoltaMultiploDe4;
     }
+
+    public int getVecesCaidasEnCasilla(int posicion){
+        return vecesCaidasCasilla[posicion];
+    }
+
 }

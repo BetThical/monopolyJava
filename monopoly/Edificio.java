@@ -1,10 +1,11 @@
 package monopoly;
 
-import partida.*;
+
 
 public class Edificio {
     // Atributos
-    private String tipo;
+    private final String tipo;
+    private float alquiler;
 
 
     public Edificio(String tipo) {
@@ -14,4 +15,14 @@ public class Edificio {
     public String getTipo(){
         return tipo;
     }
+
+    public float getAlquiler() {
+        return alquiler;
+    }
+
+    public void setAlquiler(float a) {
+        alquiler = a;
+    }
+
+
 }
