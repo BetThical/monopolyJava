@@ -18,6 +18,7 @@ public class Casilla {
                             // solares/servicios/transportes o impuestos.
     private float hipoteca; // Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; // Avatares que están situados en la casilla.
+    private ArrayList<Edificio> edificios;
 
     // Constructores:
     public Casilla() {
@@ -239,6 +240,23 @@ public class Casilla {
                     + "€.\n";
         }
         return "Nombre: " + nombre + ", tipo: " + tipo + ", valor: " + valor + "€.\n";
+    }
+
+
+    public float valorEdificio(Edificio e){
+        switch (e.getTipo()){ //nota: impuesto = valorinicial * 0.1
+            case "Casa":
+            case "Hotel":
+                return impuesto*6f;
+            case "Piscina":
+                return impuesto*4f;
+            default: // pista de deporte
+                return impuesto*12.5f; //125% del valor inicial del solar
+        }
+    }
+    public void anhadirEdificio(Edificio e){
+        this.edificios.add(e);
+        duenho.anhadirEdificio(e);
     }
 
     // GETTERS

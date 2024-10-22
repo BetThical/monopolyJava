@@ -17,6 +17,7 @@ public final class Menu {
     private final Jugador banca; // El jugador banca.
     private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
     private final Scanner sc = new Scanner(System.in);
+    private Edificio e;
 
     public Jugador getBanca() {
         return banca;
@@ -238,7 +239,17 @@ public final class Menu {
                 System.out.println("Uso del comando: f [fortuna]");
             }}
 
-        
+        else if (comando.contains("edificar ")){
+            if (casilla.getTipo().equals("solar"))
+            switch (comando.replace("edificar ", "")){
+                case "hotel":{
+                    e = new Edificio("Hotel");
+                    if (jugador.getFortuna() >= casilla.valorEdificio(e)){
+                        System.out.println("");
+                    }
+                    }
+            }
+        }
         else 
             System.out.println("Comando inválido.");
 

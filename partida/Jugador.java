@@ -18,6 +18,7 @@ public class Jugador {
     private ArrayList<Casilla> propiedades; // Propiedades que posee el jugador.
     private float bote; // Usado por la banca para almacenar el bote
 
+    private ArrayList<Edificio> edificios;
     // Constructor vacío. Se usará para crear la banca.
     public Jugador() {
 
@@ -202,6 +203,10 @@ public class Jugador {
 
     public int getVueltas() {
         return vueltas;
+    }
+
+    public void anhadirEdificio(Edificio e){
+        this.edificios.add(e);
     }
 
 }
