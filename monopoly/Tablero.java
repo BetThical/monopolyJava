@@ -43,7 +43,7 @@ public class Tablero {
         ladoSur.add(new Casilla("Salida", "especial", 1, banca));
         ladoSur.add(new Casilla("Solar1", "solar", 2, 600000, banca));
         ladoSur.add(new Casilla("Caja", "comunidad", 3, banca));
-        ladoSur.add(new Casilla("Solar2", "solar", 4, 10000, banca));
+        ladoSur.add(new Casilla("Solar2", "solar", 4, 600000, banca));
         ladoSur.add(new Casilla("Imp1",  5, ((float) (Valor.SUMA_VUELTA * 0.5)), banca));
         ladoSur.add(new Casilla("Trans1", "transporte", 6, Valor.SUMA_VUELTA, banca));
         ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
