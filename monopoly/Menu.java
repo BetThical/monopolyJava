@@ -179,7 +179,7 @@ public final class Menu {
             lanzamientos++;
         } else if (comando.contains("lanzar dados ")
         && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
-            String numeros = comando.replace("lanzar dados ", "");
+            String numeros = comando.replace("lanzar dados ", ""); //Feito pa nores
             String[] numero = numeros.split("\\+");
             lanzarDados(Integer.parseInt(numero[0]),Integer.parseInt(numero[1]));
             lanzamientos++;
