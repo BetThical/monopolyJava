@@ -236,6 +236,11 @@ public final class Menu {
             listarVenta();
         }
 
+        //declarar bancarrota
+        else if (comando.equals("bancarrota")){
+            bancarrota(banca);
+        }
+
         /*
          * DEBUG
          */
@@ -559,5 +564,26 @@ public final class Menu {
     private void acabarTurno() {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
         lanzamientos = 0;
+    }
+
+    private void bancarrota(Jugador jugador){
+        Jugador jugadorTurno = obtenerJugadorTurno();
+        ArrayList<Casilla> array_propiedades;
+        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
+
+        array_propiedades = jugadorTurno.getPropiedades();
+        
+        for (int i=0; i<array_propiedades.size(); i++){
+            
+            if (jugador == banca){
+                array_propiedades.get(i).getEdificios().clear();
+            }
+            array_propiedades.get(i).setDuenho(jugador);
+        }
+        jugadores.remove(jugadorTurno);
+        avatares.remove(jugadorTurno.getAvatar());
+        casilla.getAvatares().remove(jugadorTurno.getAvatar());
+        
+        
     }
 }
