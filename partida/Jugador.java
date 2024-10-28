@@ -17,6 +17,13 @@ public class Jugador {
     private ArrayList<Casilla> propiedades; // Propiedades que posee el jugador.
     private float bote; // Usado por la banca para almacenar el bote
 
+    private float dineroInvertido = 0;
+    private float pagoTasasEImpuestos = 0;
+    private float pagoDeAlquileres = 0;
+    private float cobroDeAlquileres = 0;
+    private float pasarPorCasillaDeSalida = 0;
+    private float vecesEnLaCarcel = 0;
+
     // Constructor vacío. Se usará para crear la banca.
     public Jugador() {
 
@@ -35,7 +42,6 @@ public class Jugador {
         this.nombre = nombre;
         this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
         this.propiedades = new ArrayList<>();
-
 
     }
 
@@ -108,6 +114,10 @@ public class Jugador {
         this.bote -= cantidad;
     }
 
+    public void sumarGastosAlq(float cantidad) {
+        this.dineroInvertido += cantidad;
+    }
+
     // Método al dar una vuelta completa al tablero, cobrando la cantidad
     // correspondiente.
     public void sumarVuelta() {
@@ -159,7 +169,7 @@ public class Jugador {
     // deuda.
     public boolean pagar(float coste, Jugador duenho) {
         if (coste > getFortuna()) {
-            System.out.println("No tienes suficiente dinero. ("+coste+"$)");
+            System.out.println("No tienes suficiente dinero. (" + coste + "$)");
             return false;
         }
         duenho.sumarFortuna(coste);
@@ -203,13 +213,13 @@ public class Jugador {
     public int getVueltas() {
         return vueltas;
     }
-    /* 
-    public void anhadirEdificio(Edificio e){
-        this.edificios.add(e);
-    }
-
-    public ArrayList<Edificio> getEdificios() {
-        return edificios;
-    }
-        */
+    /*
+     * public void anhadirEdificio(Edificio e){
+     * this.edificios.add(e);
+     * }
+     * 
+     * public ArrayList<Edificio> getEdificios() {
+     * return edificios;
+     * }
+     */
 }

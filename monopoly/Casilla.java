@@ -188,7 +188,7 @@ public class Casilla {
      */
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
         banca.sumarFortuna(valor);
-        solicitante.sumarGastos(valor);
+        solicitante.sumarGastosAlq(valor);
         this.duenho = solicitante;
         solicitante.anhadirPropiedad(this);
 
