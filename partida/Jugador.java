@@ -22,7 +22,8 @@ public class Jugador {
     private float pagoDeAlquileres = 0;
     private float cobroDeAlquileres = 0;
     private float pasarPorCasillaDeSalida = 0;
-    private float vecesEnLaCarcel = 0;
+    private float premiosInversionesOBote = 0;
+    private int vecesEnLaCarcel = 0;
 
     // Constructor vacío. Se usará para crear la banca.
     public Jugador() {
@@ -95,6 +96,7 @@ public class Jugador {
     }
 
     public void setEnCarcel(boolean enCarcel) {
+        vecesEnLaCarcel += 1;
         this.enCarcel = enCarcel;
     }
 
@@ -114,14 +116,35 @@ public class Jugador {
         this.bote -= cantidad;
     }
 
-    public void sumarGastosAlq(float cantidad) {
+    public void sumarGastosProp(float cantidad) {
         this.dineroInvertido += cantidad;
+    }
+
+    public void sumarGastosImp(float cantidad) {
+        this.pagoTasasEImpuestos += cantidad;
+    }
+
+    public void sumarGastosAlq(float cantidad) {
+        this.pagoDeAlquileres += cantidad;
+    }
+
+    public void sumarCobreAlq(float cantidad) {
+        this.cobroDeAlquileres += cantidad;
+    }
+
+    public void sumarCobreSal(float cantidad) {
+        this.pasarPorCasillaDeSalida += cantidad;
+    }
+
+    public void sumarGastosBote(float cantidad) {
+        this.premiosInversionesOBote += cantidad;
     }
 
     // Método al dar una vuelta completa al tablero, cobrando la cantidad
     // correspondiente.
     public void sumarVuelta() {
         fortuna += Valor.SUMA_VUELTA;
+        sumarCobreSal(Valor.SUMA_VUELTA);
         vueltas++;
     }
 
@@ -161,6 +184,7 @@ public class Jugador {
     public void cobrarBote(Jugador banca) {
         float bote = banca.getBote();
         sumarFortuna(bote);
+        sumarGastosBote(bote);
         banca.restarDelBote(bote);
         System.out.println("El jugador " + getNombre() + " recibe " + bote + "€ del bote.");
     }
@@ -173,7 +197,7 @@ public class Jugador {
             return false;
         }
         duenho.sumarFortuna(coste);
-        sumarGastos(coste);
+        sumarGastosAlq(coste);
         System.out.println(getNombre() + " ha pagado " + coste + "€ de alquiler a " + duenho.getNombre() + ".");
         return true;
     }
@@ -184,7 +208,7 @@ public class Jugador {
             System.out.println("No tienes suficiente dinero.");
             return false;
         }
-        sumarGastos(coste);
+        sumarGastosImp(coste);
         System.out.println(getNombre() + " ha pagado " + coste + "€ en impuestos.");
         return true;
     }
@@ -200,7 +224,7 @@ public class Jugador {
     public boolean pagarMulta() {
         float multa = 0.25f * Valor.SUMA_VUELTA;
         if (fortuna > multa) {
-            sumarGastos(multa);
+            sumarGastosImp(multa);
             System.out.println("Pagas la multa y sales de la cárcel.");
             salirCarcel();
             return true;
@@ -213,6 +237,18 @@ public class Jugador {
     public int getVueltas() {
         return vueltas;
     }
+
+    public void estadisticas() {
+        System.out.println("Estadísticas del Jugador:");
+        System.out.println("Dinero invertido: " + dineroInvertido);
+        System.out.println("Pago de tasas e impuestos: " + pagoTasasEImpuestos);
+        System.out.println("Pago de alquileres: " + pagoDeAlquileres);
+        System.out.println("Cobro de alquileres: " + cobroDeAlquileres);
+        System.out.println("Pasar por casilla de salida: " + pasarPorCasillaDeSalida);
+        System.out.println("Premios por inversiones o bote: " + premiosInversionesOBote);
+        System.out.println("Veces en la cárcel: " + vecesEnLaCarcel);
+    }
+
     /*
      * public void anhadirEdificio(Edificio e){
      * this.edificios.add(e);
