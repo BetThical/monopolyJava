@@ -188,7 +188,7 @@ public final class Menu {
 
         // acabar turno
         else if ((comando.equals("acabar turno")) // quitei o de lanzamientos!=0 por comodidad
-                ) {
+        ) {
             acabarTurno();
             System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
         } else if (comando.equals("acabar turno")) {
@@ -275,8 +275,7 @@ public final class Menu {
                     casilla.anhadirEdificio(e);
                 }
             }
-        } 
-        else if (comando.contains("destruir ")) {
+        } else if (comando.contains("destruir ")) {
             Set<String> palabrasValidas = new HashSet<>();
             palabrasValidas.add("casa");
             palabrasValidas.add("hotel");
@@ -287,11 +286,34 @@ public final class Menu {
                 System.out.println("Edificios válidos: casa, hotel, piscina, pista.");
             } else {
                 System.out.println("Has vendido un(a) " + comando + " en " + casilla.getNombre() + ", por "
-                + casilla.valorEdificio(comando)/2f + ".");                
+                        + casilla.valorEdificio(comando) / 2f + ".");
                 casilla.destruirEdificio(comando);
-                jugador.sumarFortuna(casilla.valorEdificio(comando)/2f);
+                jugador.sumarFortuna(casilla.valorEdificio(comando) / 2f);
             }
-        } 
+        } else if (comando.contains("deshipotecar ")) {
+            comando = comando.replace("deshipotecar ", "");
+            Casilla aHipotecar;
+            aHipotecar = tablero.getCasilla(comando);
+            if (aHipotecar == null) {
+                System.out.println("Casilla inválida.");
+            } else {
+                if(aHipotecar.puedeDeshipotecar(jugador)){
+                    aHipotecar.deshipotecar();
+                }
+            }
+        } else if (comando.contains("hipotecar ")) {
+            comando = comando.replace("hipotecar ", "");
+            Casilla aHipotecar;
+            aHipotecar = tablero.getCasilla(comando);
+            if (aHipotecar == null) {
+                System.out.println("Casilla inválida.");
+            } else {
+                if (aHipotecar.puedeHipotecar(jugador)){
+                    aHipotecar.hipotecar();
+                }
+            }
+        }
+
         else
             System.out.println("Comando inválido.");
 
@@ -309,17 +331,21 @@ public final class Menu {
             System.out.println("Fortuna: " + jugador.getFortuna());
             System.out.println("Propiedades: ");
             for (int j = 0; j < jugador.getPropiedades().size(); j++) {
-                System.out.print(" ||" + jugador.getPropiedades().get(j).getNombre() + "|| ");
+                System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
+                if (jugador.getPropiedades().get(j).getHipotecada()) System.out.print("[H]");
+                System.out.print("||");
             }
             System.out.println("");
             System.out.println("Hipotecas: ");
-           /*  ArrayList<Edificio> edificios = jugador.getEdificios();
-            if (!edificios.isEmpty()) {
-                System.out.println("- Edificios:\n");
-                for (int i = 0; i < edificios.size(); i++) {
-                    System.out.println("   · " + edificios.get(i).getTipo());
-                }
-            }*/
+            /*
+             * ArrayList<Edificio> edificios = jugador.getEdificios();
+             * if (!edificios.isEmpty()) {
+             * System.out.println("- Edificios:\n");
+             * for (int i = 0; i < edificios.size(); i++) {
+             * System.out.println("   · " + edificios.get(i).getTipo());
+             * }
+             * }
+             */
         } else
             System.out.println("No existe un jugador con ese nombre.");
     }
@@ -329,9 +355,11 @@ public final class Menu {
             System.out.println("Nombre: " + jugador.getNombre());
             System.out.println("Avatar: " + jugador.getAvatar().getID());
             System.out.println("Fortuna: " + jugador.getFortuna());
-            System.out.println("Propiedades: ||");
+            System.out.println("Propiedades:");
             for (int j = 0; j < jugador.getPropiedades().size(); j++) {
-                System.out.print(jugador.getPropiedades().get(j).getNombre() + " || ");
+                System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
+                if (jugador.getPropiedades().get(j).getHipotecada()) System.out.print("[H]");
+                System.out.print("||");
             }
             System.out.println("");
             System.out.println("Hipotecas: ");
