@@ -178,17 +178,11 @@ public final class Menu {
             lanzarDados();
             lanzamientos++;
         } else if (comando.contains("lanzar dados ")
-        && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+                && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             String numeros = comando.replace("lanzar dados ", "");
             String[] numero = numeros.split("\\+");
-            lanzarDados(Integer.parseInt(numero[0]),Integer.parseInt(numero[1]));
+            lanzarDados(Integer.parseInt(numero[0]), Integer.parseInt(numero[1]));
             lanzamientos++;
-        }else if (comando.contains("lanzar dados ")
-            && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
-                String numeros = comando.replace("lanzar dados ", "");
-                String[] numero = numeros.split("\\+");
-                lanzarDados(Integer.parseInt(numero[0]),Integer.parseInt(numero[1]));
-                lanzamientos++;
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
@@ -248,8 +242,8 @@ public final class Menu {
             listarVenta();
         }
 
-        //declarar bancarrota
-        else if (comando.equals("bancarrota")){
+        // declarar bancarrota
+        else if (comando.equals("bancarrota")) {
             bancarrota(banca);
         }
 
@@ -314,7 +308,7 @@ public final class Menu {
             if (aHipotecar == null) {
                 System.out.println("Casilla inválida.");
             } else {
-                if(aHipotecar.puedeDeshipotecar(jugador)){
+                if (aHipotecar.puedeDeshipotecar(jugador)) {
                     aHipotecar.deshipotecar();
                 }
             }
@@ -325,7 +319,7 @@ public final class Menu {
             if (aHipotecar == null) {
                 System.out.println("Casilla inválida.");
             } else {
-                if (aHipotecar.puedeHipotecar(jugador)){
+                if (aHipotecar.puedeHipotecar(jugador)) {
                     aHipotecar.hipotecar();
                 }
             }
@@ -349,7 +343,8 @@ public final class Menu {
             System.out.println("Propiedades: ");
             for (int j = 0; j < jugador.getPropiedades().size(); j++) {
                 System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
-                if (jugador.getPropiedades().get(j).getHipotecada()) System.out.print("[H]");
+                if (jugador.getPropiedades().get(j).getHipotecada())
+                    System.out.print("[H]");
                 System.out.print("||");
             }
             System.out.println("");
@@ -375,7 +370,8 @@ public final class Menu {
             System.out.println("Propiedades:");
             for (int j = 0; j < jugador.getPropiedades().size(); j++) {
                 System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
-                if (jugador.getPropiedades().get(j).getHipotecada()) System.out.print("[H]");
+                if (jugador.getPropiedades().get(j).getHipotecada())
+                    System.out.print("[H]");
                 System.out.print("||");
             }
             System.out.println("");
@@ -480,8 +476,10 @@ public final class Menu {
 
     }
 
-    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar' elejiendo los valores de los dados
-    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados' para valores de tirada concretos
+    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar'
+    // elejiendo los valores de los dados
+    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar
+    // dados' para valores de tirada concretos
     private void lanzarDados(int tirada1, int tirada2) {
 
         Jugador jugador = obtenerJugadorTurno();
@@ -668,16 +666,16 @@ public final class Menu {
         lanzamientos = 0;
     }
 
-    private void bancarrota(Jugador jugador){
+    private void bancarrota(Jugador jugador) {
         Jugador jugadorTurno = obtenerJugadorTurno();
         ArrayList<Casilla> array_propiedades;
         Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
 
         array_propiedades = jugadorTurno.getPropiedades();
-        
-        for (int i=0; i<array_propiedades.size(); i++){
-            
-            if (jugador == banca){
+
+        for (int i = 0; i < array_propiedades.size(); i++) {
+
+            if (jugador == banca) {
                 array_propiedades.get(i).getEdificios().clear();
             }
             array_propiedades.get(i).setDuenho(jugador);
@@ -685,7 +683,6 @@ public final class Menu {
         jugadores.remove(jugadorTurno);
         avatares.remove(jugadorTurno.getAvatar());
         casilla.getAvatares().remove(jugadorTurno.getAvatar());
-        
-        
+
     }
 }
