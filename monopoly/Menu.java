@@ -177,12 +177,21 @@ public final class Menu {
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             lanzarDados();
             lanzamientos++;
+<<<<<<< HEAD
+        } else if (comando.contains("lanzar dados ")
+        && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+            String numeros = comando.replace("lanzar dados ", "");
+            String[] numero = numeros.split("\\+");
+            lanzarDados(Integer.parseInt(numero[0]),Integer.parseInt(numero[1]));
+            lanzamientos++;
+=======
         }else if (comando.contains("lanzar dados ")
             && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
                 String numeros = comando.replace("lanzar dados ", "");
                 String[] numero = numeros.split("\\+");
                 lanzarDados(Integer.parseInt(numero[0]),Integer.parseInt(numero[1]));
                 lanzamientos++;
+>>>>>>> 707ae78dcb535583f001a8d8a46c0ee569b02f7e
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
@@ -240,6 +249,11 @@ public final class Menu {
         // listar enventa
         else if (comando.equals("listar enventa")) {
             listarVenta();
+        }
+
+        //declarar bancarrota
+        else if (comando.equals("bancarrota")){
+            bancarrota(banca);
         }
 
         /*
@@ -469,7 +483,11 @@ public final class Menu {
 
     }
 
+<<<<<<< HEAD
+    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar' elejiendo los valores de los dados
+=======
     // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados' para valores de tirada concretos
+>>>>>>> 707ae78dcb535583f001a8d8a46c0ee569b02f7e
     private void lanzarDados(int tirada1, int tirada2) {
 
         Jugador jugador = obtenerJugadorTurno();
@@ -654,5 +672,26 @@ public final class Menu {
     private void acabarTurno() {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
         lanzamientos = 0;
+    }
+
+    private void bancarrota(Jugador jugador){
+        Jugador jugadorTurno = obtenerJugadorTurno();
+        ArrayList<Casilla> array_propiedades;
+        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
+
+        array_propiedades = jugadorTurno.getPropiedades();
+        
+        for (int i=0; i<array_propiedades.size(); i++){
+            
+            if (jugador == banca){
+                array_propiedades.get(i).getEdificios().clear();
+            }
+            array_propiedades.get(i).setDuenho(jugador);
+        }
+        jugadores.remove(jugadorTurno);
+        avatares.remove(jugadorTurno.getAvatar());
+        casilla.getAvatares().remove(jugadorTurno.getAvatar());
+        
+        
     }
 }
