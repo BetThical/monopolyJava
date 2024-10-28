@@ -1,7 +1,8 @@
 package monopoly;
 
-import partida.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import partida.*;
 
 class Grupo {
 
@@ -75,6 +76,32 @@ class Grupo {
 
     public int getNumCasillas() {
         return numCasillas;
+    }
+
+    public ArrayList<Edificio> getEdificiosGrupo() {
+        ArrayList<Edificio> lista = new ArrayList<>();
+        for (Casilla miembro : miembros) {
+            for (Edificio edificio : miembro.getEdificios()) { 
+                lista.add(edificio);
+            }
+        }
+        
+        return lista;
+    }
+
+    // Método para contar cuántos edificios de cada tipo hay
+    public HashMap<String, Integer> contarEdificiosPorTipo() {
+        HashMap<String, Integer> contador = new HashMap<>();
+        ArrayList<Edificio> edificios = getEdificiosGrupo();
+        
+        for (Edificio edificio : edificios) {
+            String tipo = edificio.getTipo();
+            
+            // Incrementar el contador para el tipo de edificio
+            contador.put(tipo, contador.getOrDefault(tipo, 0) + 1);
+        }
+        
+        return contador;
     }
 
 }

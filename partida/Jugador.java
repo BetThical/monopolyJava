@@ -1,7 +1,6 @@
 package partida;
 
 import java.util.ArrayList;
-
 import monopoly.*;
 
 public class Jugador {
@@ -36,6 +35,7 @@ public class Jugador {
         this.nombre = nombre;
         this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
         this.propiedades = new ArrayList<>();
+
 
     }
 
@@ -159,7 +159,7 @@ public class Jugador {
     // deuda.
     public boolean pagar(float coste, Jugador duenho) {
         if (coste > getFortuna()) {
-            System.out.println("No tienes suficiente dinero.");
+            System.out.println("No tienes suficiente dinero. ("+coste+"$)");
             return false;
         }
         duenho.sumarFortuna(coste);
@@ -203,5 +203,13 @@ public class Jugador {
     public int getVueltas() {
         return vueltas;
     }
+    /* 
+    public void anhadirEdificio(Edificio e){
+        this.edificios.add(e);
+    }
 
+    public ArrayList<Edificio> getEdificios() {
+        return edificios;
+    }
+        */
 }

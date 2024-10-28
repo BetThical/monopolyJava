@@ -3,7 +3,7 @@ package monopoly;
 import java.util.*;
 import partida.*;
 
-public class Menu {
+public final class Menu {
 
     // Atributos
     private ArrayList<Jugador> jugadores; // Jugadores de la partida.
@@ -11,12 +11,13 @@ public class Menu {
     private int turno = 0; // Índice correspondiente a la posición en el arrayList del jugador (y el
                            // avatar) que tienen el turno
     private int lanzamientos = 0; // Variable para contar el número de lanzamientos de un jugador en un turno.
-    private Tablero tablero; // Tablero en el que se juega.
+    private final Tablero tablero; // Tablero en el que se juega.
     private Dado dado1; // Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
-    private Jugador banca; // El jugador banca.
+    private final Jugador banca; // El jugador banca.
     private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
-    private Scanner sc = new Scanner(System.in);
+    private final Scanner sc = new Scanner(System.in);
+    private Edificio e;
 
     public Jugador getBanca() {
         return banca;
@@ -26,40 +27,57 @@ public class Menu {
         this.banca = new Jugador();
         this.tablero = new Tablero(getBanca());
 
-
     }
 
-    public void titulo(){
+    public void titulo() {
 
-        System.out.println("      ___          ___          ___          ___          ___          ___          ___   ___     ");
-        System.out.println("     /\\__\\        /\\  \\        /\\__\\        /\\  \\        /\\  \\        /\\  \\        /\\__\\ |\\__\\    ");
-        System.out.println("    /::|  |      /::\\  \\      /::|  |      /::\\  \\      /::\\  \\      /::\\  \\      /:/  / |:|  |   ");
-        System.out.println("   /:|:|  |     /:/\\:\\  \\    /:|:|  |     /:/\\:\\  \\    /:/\\:\\  \\    /:/\\:\\  \\    /:/  /  |:|  |   ");
-        System.out.println("  /:/|:|__|__  /:/  \\:\\  \\  /:/|:|  |__  /:/  \\:\\  \\  /::\\~\\:\\  \\  /:/  \\:\\  \\  /:/  /   |:|__|__ ");
-        System.out.println(" /:/ |::::\\__/\\:/__/ \\:\\__/\\:/ |:| /\\__/\\:/__/ \\:\\__/\\:/\\:\\ \\:\\__/\\:/__/ \\:\\__/\\:/__/    /::::\\__\\");
-        System.out.println(" \\/__/~~/:/  /\\:\\  \\ /:/  /\\/__|:|/:/  /\\:\\  \\ /:/  /\\/__\\:\\/:/  /\\:\\  \\ /:/  /\\:\\  \\   /:/~~/~   ");
-        System.out.println("       /:/  /  \\:\\  /:/  /     |:/:/  /  \\:\\  /:/  /      \\::/  /  \\:\\  /:/  /  \\:\\  \\ /:/  /     ");
-        System.out.println("      /:/  /    \\:\\/:/  /      |::/  /    \\:\\/:/  /        \\/__/    \\:\\/:/  /    \\:\\  \\/__/      ");
-        System.out.println("     /:/  /      \\::/  /       /:/  /      \\::/  /                   \\::/  /      \\:\\__\\          ");
-        System.out.println("     \\/__/        \\/__/        \\/__/        \\/__/                     \\/__/        \\/__/          ");
-        System.out.println("                                ___       ___          ___          ___                           ");
-        System.out.println("                               /\\  \\     /\\  \\        /\\  \\        /\\  \\                          ");
-        System.out.println("                              /::\\  \\    \\:\\  \\      /::\\  \\      /::\\  \\                         ");
-        System.out.println("                            /::\\~\\:\\  \\   /::\\  \\  _\\:\\~\\ \\  \\  /::\\~\\:\\  \\                       ");
-        System.out.println("                           /:/\\:\\ \\:\\__/ /:/\\:\\__/\\/ \\:\\ \\ \\__/\\:/\\:\\ \\:\\__/                      ");
-        System.out.println("                           \\:\\~\\:\\ \\/__//:/  \\/__/\\:\\ \\:\\ \\/__/\\:\\~\\:\\ \\/__/                      ");
-        System.out.println("                            \\:\\ \\:\\__\\ /:/  /      \\:\\ \\:\\__\\   \\:\\ \\:\\__\\                        ");
-        System.out.println("                             \\:\\ \\/__/ \\/__/        \\:\\/:/  /    \\:\\ \\/__/                        ");
-        System.out.println("                              \\:\\__\\                 \\::/  /      \\:\\__\\                          ");
-        System.out.println("                               \\/__/                  \\/__/        \\/__/                          ");
-    
+        System.out.println(
+                "      ___          ___          ___          ___          ___          ___          ___   ___     ");
+        System.out.println(
+                "     /\\__\\        /\\  \\        /\\__\\        /\\  \\        /\\  \\        /\\  \\        /\\__\\ |\\__\\    ");
+        System.out.println(
+                "    /::|  |      /::\\  \\      /::|  |      /::\\  \\      /::\\  \\      /::\\  \\      /:/  / |:|  |   ");
+        System.out.println(
+                "   /:|:|  |     /:/\\:\\  \\    /:|:|  |     /:/\\:\\  \\    /:/\\:\\  \\    /:/\\:\\  \\    /:/  /  |:|  |   ");
+        System.out.println(
+                "  /:/|:|__|__  /:/  \\:\\  \\  /:/|:|  |__  /:/  \\:\\  \\  /::\\~\\:\\  \\  /:/  \\:\\  \\  /:/  /   |:|__|__ ");
+        System.out.println(
+                " /:/ |::::\\__/\\:/__/ \\:\\__/\\:/ |:| /\\__/\\:/__/ \\:\\__/\\:/\\:\\ \\:\\__/\\:/__/ \\:\\__/\\:/__/    /::::\\__\\");
+        System.out.println(
+                " \\/__/~~/:/  /\\:\\  \\ /:/  /\\/__|:|/:/  /\\:\\  \\ /:/  /\\/__\\:\\/:/  /\\:\\  \\ /:/  /\\:\\  \\   /:/~~/~   ");
+        System.out.println(
+                "       /:/  /  \\:\\  /:/  /     |:/:/  /  \\:\\  /:/  /      \\::/  /  \\:\\  /:/  /  \\:\\  \\ /:/  /     ");
+        System.out.println(
+                "      /:/  /    \\:\\/:/  /      |::/  /    \\:\\/:/  /        \\/__/    \\:\\/:/  /    \\:\\  \\/__/      ");
+        System.out.println(
+                "     /:/  /      \\::/  /       /:/  /      \\::/  /                   \\::/  /      \\:\\__\\          ");
+        System.out.println(
+                "     \\/__/        \\/__/        \\/__/        \\/__/                     \\/__/        \\/__/          ");
+        System.out.println(
+                "                                ___       ___          ___          ___                           ");
+        System.out.println(
+                "                               /\\  \\     /\\  \\        /\\  \\        /\\  \\                          ");
+        System.out.println(
+                "                              /::\\  \\    \\:\\  \\      /::\\  \\      /::\\  \\                         ");
+        System.out.println(
+                "                            /::\\~\\:\\  \\   /::\\  \\  _\\:\\~\\ \\  \\  /::\\~\\:\\  \\                       ");
+        System.out.println(
+                "                           /:/\\:\\ \\:\\__/ /:/\\:\\__/\\/ \\:\\ \\ \\__/\\:/\\:\\ \\:\\__/                      ");
+        System.out.println(
+                "                           \\:\\~\\:\\ \\/__//:/  \\/__/\\:\\ \\:\\ \\/__/\\:\\~\\:\\ \\/__/                      ");
+        System.out.println(
+                "                            \\:\\ \\:\\__\\ /:/  /      \\:\\ \\:\\__\\   \\:\\ \\:\\__\\                        ");
+        System.out.println(
+                "                             \\:\\ \\/__/ \\/__/        \\:\\/:/  /    \\:\\ \\/__/                        ");
+        System.out.println(
+                "                              \\:\\__\\                 \\::/  /      \\:\\__\\                          ");
+        System.out.println(
+                "                               \\/__/                  \\/__/        \\/__/                          ");
 
         System.out.println("\n\n\n                                Pulse ENTER para iniciar una partida.\n\n");
         sc.nextLine();
 
-    
     }
-
 
     // Método para inciar una partida: crea los jugadores y avatares.
     public void iniciarPartida(Tablero t) {
@@ -70,15 +88,15 @@ public class Menu {
         dado1 = new Dado();
         dado2 = new Dado();
 
-        while (numJugadores < 2 || numJugadores > 6){
-        try {
-            System.out.println("Introduzca el número de jugadores (2-6):");
-            numJugadores = sc.nextInt();
-        } catch (Exception e) {
-            numJugadores = 0;
-            sc.nextLine();
+        while (numJugadores < 2 || numJugadores > 6) {
+            try {
+                System.out.println("Introduzca el número de jugadores (2-6):");
+                numJugadores = sc.nextInt();
+            } catch (Exception e) {
+                numJugadores = 0;
+                sc.nextLine();
 
-        }
+            }
         }
 
         sc.nextLine();
@@ -92,31 +110,32 @@ public class Menu {
     }
 
     public void loopJugable() {
-        String comando = "";
-        while (!acabarPartida) {
-            tablero.imprimirTablero();
+        try (sc) {
+            String comando = "";
+            while (!acabarPartida) {
+                tablero.imprimirTablero();
 
-            if (obtenerJugadorTurno().limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
-                                                                               // turno
-                if (!obtenerJugadorTurno().pagarMulta()) {
-                    acabarPartida = true;
-                    break;
+                if (obtenerJugadorTurno().limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
+                    // turno
+                    if (!obtenerJugadorTurno().pagarMulta()) {
+                        acabarPartida = true;
+                        break;
+                    }
                 }
-            }
-            comando = sc.nextLine();
-            analizarComando(comando);
+                comando = sc.nextLine();
+                analizarComando(comando);
 
+            }
+            System.out.println("\nLa partida ha terminado! El jugador " + obtenerJugadorTurno().getNombre()
+                    + " ha declarado la bancarrota.");
         }
-        System.out.println("\nLa partida ha terminado! El jugador " + obtenerJugadorTurno().getNombre()
-                + " ha declarado la bancarrota.");
-        sc.close();
 
     }
 
     private void anhadirJugador() {
 
         Casilla casillaInicio = tablero.getCasilla(0);
-        System.out.println("\nIntroduce el nombre del jugador " +(obtenerNumeroDeJugadores() + 1) + ": ");
+        System.out.println("\nIntroduce el nombre del jugador " + (obtenerNumeroDeJugadores() + 1) + ": ");
         String nombre = sc.nextLine();
         System.out.println("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, sombrero, perro):");
         String tipoAvatar = sc.nextLine();
@@ -138,12 +157,11 @@ public class Menu {
 
         Jugador jugador = obtenerJugadorTurno();
         Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
-
         // añadir jugador
         if (comando.equals("añadir jugador")) {
             if (jugadores.size() >= 6)
                 System.out.println("Número de jugadores máximo alcanzado.");
-            
+
             else
                 anhadirJugador();
         }
@@ -155,7 +173,8 @@ public class Menu {
         }
 
         // lanzar dados
-        else if (comando.equals("lanzar dados") && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
+        else if (comando.equals("lanzar dados")
+                && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             lanzarDados();
             lanzamientos++;
         } else if (comando.equals("lanzar dados")) {
@@ -168,11 +187,10 @@ public class Menu {
         }
 
         // acabar turno
-        else if ((comando.equals("acabar turno") && (lanzamientos != 0))
-                && (dado1.getValorPrevio() != dado2.getValorPrevio())) {
+        else if ((comando.equals("acabar turno")) // quitei o de lanzamientos!=0 por comodidad
+                ) {
             acabarTurno();
             System.out.println("Turno de " + obtenerJugadorTurno().getNombre() + ".");
-            return;
         } else if (comando.equals("acabar turno")) {
             System.out.println("Debes lanzar los dados.");
         }
@@ -195,8 +213,9 @@ public class Menu {
         }
 
         // ver tablero
-        else if (comando.equals("ver tablero")){
-            return; // No hace nada
+        else if (comando.equals("ver tablero")) {
+            // No hace nada
+
         }
 
         else if (comando.contains("describir")) {
@@ -220,25 +239,60 @@ public class Menu {
         /*
          * DEBUG
          */
-            else if (comando.contains("m ")) { // movimiento manual (debug)
-                try {
-                    lanzarDados(Integer.parseInt(comando.replace("m ", "")));
-                } catch (Exception e) {
-                    System.out.println("Uso del comando: m [cantidad de casillas]");
-                }
+        else if (comando.contains("m ")) { // movimiento manual (debug)
+            try {
+                lanzarDados(Integer.parseInt(comando.replace("m ", "")));
+                lanzamientos++;
+            } catch (NumberFormatException e) {
+                System.out.println("Uso del comando: m [cantidad de casillas]");
             }
+        }
 
-            else if (comando.contains("f ")) { // fortuna manual (debug)
-            
+        else if (comando.contains("f ")) { // fortuna manual (debug)
+
             try {
                 jugador.sumarFortuna(Float.parseFloat(comando.replace("f ", "")));
                 System.out.println("Nueva fortuna: " + jugador.getFortuna());
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Uso del comando: f [fortuna]");
-            }}
+            }
+        }
 
-        
-        else 
+        else if (comando.contains("edificar ")) {
+            Set<String> palabrasValidas = new HashSet<>();
+            palabrasValidas.add("casa");
+            palabrasValidas.add("hotel");
+            palabrasValidas.add("piscina");
+            palabrasValidas.add("pista");
+            comando = comando.replace("edificar ", "").toLowerCase();
+            if (!palabrasValidas.contains(comando)) {
+                System.out.println("Edificios válidos: casa, hotel, piscina, pista.");
+            } else {
+                e = new Edificio(comando);
+                if (casilla.puedeConstruir(e, jugador)) {
+                    System.out.println("Has comprado un(a) " + comando + " en " + casilla.getNombre() + ", por "
+                            + casilla.valorEdificio(e.getTipo()) + ".");
+                    casilla.anhadirEdificio(e);
+                }
+            }
+        } 
+        else if (comando.contains("destruir ")) {
+            Set<String> palabrasValidas = new HashSet<>();
+            palabrasValidas.add("casa");
+            palabrasValidas.add("hotel");
+            palabrasValidas.add("piscina");
+            palabrasValidas.add("pista");
+            comando = comando.replace("destruir ", "").toLowerCase();
+            if (!palabrasValidas.contains(comando)) {
+                System.out.println("Edificios válidos: casa, hotel, piscina, pista.");
+            } else {
+                System.out.println("Has vendido un(a) " + comando + " en " + casilla.getNombre() + ", por "
+                + casilla.valorEdificio(comando)/2f + ".");                
+                casilla.destruirEdificio(comando);
+                jugador.sumarFortuna(casilla.valorEdificio(comando)/2f);
+            }
+        } 
+        else
             System.out.println("Comando inválido.");
 
     }
@@ -259,8 +313,13 @@ public class Menu {
             }
             System.out.println("");
             System.out.println("Hipotecas: ");
-            System.out.println("Edificios: ");
-            System.out.println("");
+           /*  ArrayList<Edificio> edificios = jugador.getEdificios();
+            if (!edificios.isEmpty()) {
+                System.out.println("- Edificios:\n");
+                for (int i = 0; i < edificios.size(); i++) {
+                    System.out.println("   · " + edificios.get(i).getTipo());
+                }
+            }*/
         } else
             System.out.println("No existe un jugador con ese nombre.");
     }
