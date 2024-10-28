@@ -177,6 +177,12 @@ public final class Menu {
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             lanzarDados();
             lanzamientos++;
+        } else if (comando.contains("lanzar dados ")
+        && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+            String numeros = comando.replace("lanzar dados ", "");
+            String[] numero = numeros.split("\\+");
+            lanzarDados(Integer.parseInt(numero[0]),Integer.parseInt(numero[1]));
+            lanzamientos++;
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
@@ -381,6 +387,67 @@ public final class Menu {
 
         int tirada1 = dado1.hacerTirada();
         int tirada2 = dado2.hacerTirada();
+        System.out.println("Has sacado: " + tirada1 + " y " + tirada2 + ".");
+
+        int valor_tiradas = tirada1 + tirada2;
+        if (tirada1 == tirada2) {
+            System.out.println("Dobles!");
+        }
+
+        else if (jugador.getEnCarcel()) {
+
+            System.out.println("Continúas en la carcel.");
+            jugador.sumarTiradaCarcel();
+            return;
+        }
+
+        if (jugador.getEnCarcel() && (tirada2 == tirada1)) {
+            System.out.println("Sales de la carcel y vuelves a tirar.");
+            jugador.salirCarcel();
+
+        }
+
+        Casilla casillainicio = avatar.getLugar();
+
+        avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
+
+        Casilla casillafinal = avatar.getLugar();
+
+        System.out.println("El avatar " + avatar.getID() + " avanza " + (valor_tiradas) + " posiciones, desde "
+                + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
+
+        if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)) {
+            System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
+            acabarPartida = true;
+        }
+
+        if (casillafinal.getPosicion() == 31) {
+            jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+            jugador.setEnCarcel(true);
+        }
+
+        if (avatar.get4Voltas() == true) {
+            boolean condicion = true;
+            for (int i = 0; i < jugadores.size(); i++) {
+                if (jugadores.get(i).getVueltas() < jugador.getVueltas()) {
+                    condicion = false;
+                }
+            }
+            if (condicion == true) {
+                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de las propiedades aumenta."));
+                tablero.aumentarCoste(banca);
+            }
+        }
+
+    }
+
+    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar' elejiendo los valores de los dados
+    private void lanzarDados(int tirada1, int tirada2) {
+
+        Jugador jugador = obtenerJugadorTurno();
+
+        Avatar avatar = jugador.getAvatar();
+
         System.out.println("Has sacado: " + tirada1 + " y " + tirada2 + ".");
 
         int valor_tiradas = tirada1 + tirada2;
