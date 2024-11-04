@@ -190,6 +190,7 @@ public final class Menu {
         // lanzar dados
         else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
+
             if (!dobles_seguidos_check){
                 lanzarDados();
                 lanzamientos++;
@@ -241,6 +242,7 @@ public final class Menu {
             String[] numero = numeros.split("\\+");
             lanzarDados(Integer.parseInt(numero[0]), Integer.parseInt(numero[1]));
             lanzamientos++;
+
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
@@ -389,7 +391,7 @@ public final class Menu {
     }
 
     /*
-     * Método que realiza las acciones asociadas al comando 'describir jugador'.
+     * Método que realiza las acciones asociadas al comando /describir jugador'.
      * Parámetro: nombre del jugador
      */
     private void descJugador(String nombre) {
