@@ -179,6 +179,7 @@ public final class Menu {
         // lanzar dados
         else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
+<<<<<<< HEAD
             if (!dobles_seguidos_check){
                 lanzarDados();
                 lanzamientos++;
@@ -222,6 +223,16 @@ public final class Menu {
                     lanzarDados(tirada_anterior1,tirada_anterior2);
                     lanzamientos++;
                 }
+=======
+            lanzarDados();
+            lanzamientos++;
+        } else if (comando.contains("lanzar dados ")
+                && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
+            String numeros = comando.replace("lanzar dados ", "");
+            String[] numero = numeros.split("\\+");
+            lanzarDados(Integer.parseInt(numero[0]), Integer.parseInt(numero[1]));
+            lanzamientos++;
+>>>>>>> e5ba5a9758468e29d633f2da0fb499cce1777a70
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
@@ -279,6 +290,11 @@ public final class Menu {
         // listar enventa
         else if (comando.equals("listar enventa")) {
             listarVenta();
+        }
+
+        // declarar bancarrota
+        else if (comando.equals("bancarrota")) {
+            bancarrota(banca);
         }
 
         /*
@@ -342,7 +358,7 @@ public final class Menu {
             if (aHipotecar == null) {
                 System.out.println("Casilla inválida.");
             } else {
-                if(aHipotecar.puedeDeshipotecar(jugador)){
+                if (aHipotecar.puedeDeshipotecar(jugador)) {
                     aHipotecar.deshipotecar();
                 }
             }
@@ -353,7 +369,7 @@ public final class Menu {
             if (aHipotecar == null) {
                 System.out.println("Casilla inválida.");
             } else {
-                if (aHipotecar.puedeHipotecar(jugador)){
+                if (aHipotecar.puedeHipotecar(jugador)) {
                     aHipotecar.hipotecar();
                 }
             }
@@ -377,7 +393,8 @@ public final class Menu {
             System.out.println("Propiedades: ");
             for (int j = 0; j < jugador.getPropiedades().size(); j++) {
                 System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
-                if (jugador.getPropiedades().get(j).getHipotecada()) System.out.print("[H]");
+                if (jugador.getPropiedades().get(j).getHipotecada())
+                    System.out.print("[H]");
                 System.out.print("||");
             }
             System.out.println("");
@@ -403,7 +420,8 @@ public final class Menu {
             System.out.println("Propiedades:");
             for (int j = 0; j < jugador.getPropiedades().size(); j++) {
                 System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
-                if (jugador.getPropiedades().get(j).getHipotecada()) System.out.print("[H]");
+                if (jugador.getPropiedades().get(j).getHipotecada())
+                    System.out.print("[H]");
                 System.out.print("||");
             }
             System.out.println("");
@@ -508,7 +526,10 @@ public final class Menu {
 
     }
 
-    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados' para valores de tirada concretos
+    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar'
+    // elejiendo los valores de los dados
+    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar
+    // dados' para valores de tirada concretos
     private void lanzarDados(int tirada1, int tirada2) {
 
         Jugador jugador = obtenerJugadorTurno();
@@ -693,5 +714,25 @@ public final class Menu {
     private void acabarTurno() {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
         lanzamientos = 0;
+    }
+
+    private void bancarrota(Jugador jugador) {
+        Jugador jugadorTurno = obtenerJugadorTurno();
+        ArrayList<Casilla> array_propiedades;
+        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
+
+        array_propiedades = jugadorTurno.getPropiedades();
+
+        for (int i = 0; i < array_propiedades.size(); i++) {
+
+            if (jugador == banca) {
+                array_propiedades.get(i).getEdificios().clear();
+            }
+            array_propiedades.get(i).setDuenho(jugador);
+        }
+        jugadores.remove(jugadorTurno);
+        avatares.remove(jugadorTurno.getAvatar());
+        casilla.getAvatares().remove(jugadorTurno.getAvatar());
+
     }
 }
