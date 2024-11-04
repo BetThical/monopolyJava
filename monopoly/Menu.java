@@ -12,6 +12,7 @@ public final class Menu {
                            // avatar) que tienen el turno
     private int lanzamientos = 0; // Variable para contar el número de lanzamientos de un jugador en un turno.
     private int dobles_seguidos = 0; // Variable para contar el número de dobles seguidos de un jugador en un turno.
+    private boolean dobles_seguidos_check = false;
     private int tirada_anterior1; // Variable que guarda el valor de la tirada1 anterior (debug)
     private int tirada_anterior2; // Variable que guarda el valor de la tirada2 anterior (debug)
     private final Tablero tablero; // Tablero en el que se juega.
@@ -178,15 +179,23 @@ public final class Menu {
         // lanzar dados
         else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
-            lanzarDados();
-            lanzamientos++;
+            if (!dobles_seguidos_check){
+                lanzarDados();
+                lanzamientos++;
+            }
             if (dado1.getValorPrevio() == dado2.getValorPrevio()){
                 dobles_seguidos++;
             }
+            if(dobles_seguidos_check){
+                System.out.println("No puedes tirar los dados más veces. Estás en la carcel.");
+            }            
             if (dobles_seguidos == 3){
                 jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
                 jugador.setEnCarcel(true);
                 System.out.println("Has sacado dobles 3 veces te vas a la carcel.");
+                lanzamientos=1;
+                dobles_seguidos=0;
+                return;
             }
         }else if (comando.contains("lanzar dados ")
             && (lanzamientos == 0 || tirada_anterior1 == tirada_anterior2)){
@@ -197,13 +206,22 @@ public final class Menu {
                 if (tirada_anterior1 == tirada_anterior2){
                     dobles_seguidos++;
                 }
+                if(dobles_seguidos_check){
+                    System.out.println("No puedes tirar los dados más veces. Estás en la carcel.");
+                }
                 if (dobles_seguidos == 3){
                     jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
                     jugador.setEnCarcel(true);
                     System.out.println("Has sacado dobles 3 veces te vas a la carcel.");
+                    dobles_seguidos_check = true;
+                    lanzamientos=1;
+                    dobles_seguidos=0;
+                    return;
                 }
-                lanzarDados(tirada_anterior1,tirada_anterior2);
-                lanzamientos++;
+                if (!dobles_seguidos_check){
+                    lanzarDados(tirada_anterior1,tirada_anterior2);
+                    lanzamientos++;
+                }
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
