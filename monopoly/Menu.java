@@ -11,6 +11,9 @@ public final class Menu {
     private int turno = 0; // Índice correspondiente a la posición en el arrayList del jugador (y el
                            // avatar) que tienen el turno
     private int lanzamientos = 0; // Variable para contar el número de lanzamientos de un jugador en un turno.
+    private int dobles_seguidos = 0; // Variable para contar el número de dobles seguidos de un jugador en un turno.
+    private int tirada_anterior1; // Variable que guarda el valor de la tirada1 anterior (debug)
+    private int tirada_anterior2; // Variable que guarda el valor de la tirada2 anterior (debug)
     private final Tablero tablero; // Tablero en el que se juega.
     private Dado dado1; // Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
@@ -177,11 +180,29 @@ public final class Menu {
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             lanzarDados();
             lanzamientos++;
+            if (dado1.getValorPrevio() == dado2.getValorPrevio()){
+                dobles_seguidos++;
+            }
+            if (dobles_seguidos == 3){
+                jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+                jugador.setEnCarcel(true);
+                System.out.println("Has sacado dobles 3 veces te vas a la carcel.");
+            }
         }else if (comando.contains("lanzar dados ")
-            && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())){
+            && (lanzamientos == 0 || tirada_anterior1 == tirada_anterior2)){
                 String numeros = comando.replace("lanzar dados ", "");
                 String[] numero = numeros.split("\\+");
-                lanzarDados(Integer.parseInt(numero[0]),Integer.parseInt(numero[1]));
+                tirada_anterior1 = Integer.parseInt(numero[0]);
+                tirada_anterior2 = Integer.parseInt(numero[1]);
+                if (tirada_anterior1 == tirada_anterior2){
+                    dobles_seguidos++;
+                }
+                if (dobles_seguidos == 3){
+                    jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+                    jugador.setEnCarcel(true);
+                    System.out.println("Has sacado dobles 3 veces te vas a la carcel.");
+                }
+                lanzarDados(tirada_anterior1,tirada_anterior2);
                 lanzamientos++;
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
@@ -418,18 +439,18 @@ public final class Menu {
         System.out.println("Has sacado: " + tirada1 + " y " + tirada2 + ".");
 
         int valor_tiradas = tirada1 + tirada2;
-        if (tirada1 == tirada2) {
+        if ((tirada1 == tirada2) && (dobles_seguidos != 3)) {
             System.out.println("Dobles!");
         }
 
-        else if (jugador.getEnCarcel()) {
+        else if (jugador.getEnCarcel() && (dobles_seguidos != 3)) {
 
             System.out.println("Continúas en la carcel.");
             jugador.sumarTiradaCarcel();
             return;
         }
 
-        if (jugador.getEnCarcel() && (tirada2 == tirada1)) {
+        if (jugador.getEnCarcel() && (tirada2 == tirada1) && (dobles_seguidos != 3)) {
             System.out.println("Sales de la carcel y vuelves a tirar.");
             jugador.salirCarcel();
 
@@ -479,18 +500,18 @@ public final class Menu {
         System.out.println("Has sacado: " + tirada1 + " y " + tirada2 + ".");
 
         int valor_tiradas = tirada1 + tirada2;
-        if (tirada1 == tirada2) {
+        if ((tirada1 == tirada2) && (dobles_seguidos != 3)) {
             System.out.println("Dobles!");
         }
 
-        else if (jugador.getEnCarcel()) {
+        else if (jugador.getEnCarcel() && (dobles_seguidos != 3)) {
 
             System.out.println("Continúas en la carcel.");
             jugador.sumarTiradaCarcel();
             return;
         }
 
-        if (jugador.getEnCarcel() && (tirada2 == tirada1)) {
+        if (jugador.getEnCarcel() && (tirada2 == tirada1) && (dobles_seguidos != 3)) {
             System.out.println("Sales de la carcel y vuelves a tirar.");
             jugador.salirCarcel();
 
