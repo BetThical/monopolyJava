@@ -392,6 +392,10 @@ public final class Menu {
                     aHipotecar.hipotecar();
                 }
             }
+        } else if (comando.contains("estadisticas ")){
+            comando = comando.replace("estadisticas ", "");      
+            Jugador jugadorstats = getJugador(comando);
+            jugadorstats.estadisticas();
         }
 
         else
