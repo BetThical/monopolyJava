@@ -117,8 +117,8 @@ public class Avatar {
         casillaFinal.anhadirAvatar(this);
         vecesCaidasCasilla[posicion] += 1;
         this.lugar = casillaFinal;
-        System.out.println("El avatar " + this.getID() + " avanza " + valorTirada + " posiciones, desde " 
-                    + lugar.getNombre() + " hasta " + casillaFinal.getNombre() + ".");
+        //System.out.println("El avatar " + this.getID() + " avanza " + valorTirada + " posiciones, desde " 
+                    //+ lugar.getNombre() + " hasta " + casillaFinal.getNombre() + ".");
     }
     
     /*

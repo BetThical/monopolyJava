@@ -234,8 +234,6 @@ public final class Menu {
                     lanzarDados(tirada_anterior1,tirada_anterior2);
                     lanzamientos++;
                 }
-            lanzarDados();
-            lanzamientos++;
         } else if (comando.contains("lanzar dados ")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             String numeros = comando.replace("lanzar dados ", "");
