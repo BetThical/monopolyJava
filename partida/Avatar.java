@@ -73,6 +73,54 @@ public class Avatar {
         this.lugar = nuevaCasilla;
     }
 
+
+    public void moverPelota(ArrayList<ArrayList<Casilla>> casillas, int valorTirada, Jugador banca) {
+        ultimoMovementoFuiVoltaMultiploDe4 = false;
+        int posicionActual = lugar.getPosicion();
+        lugar.eliminarAvatar(this);
+        
+        boolean avanzar = valorTirada > 4;
+        int movimientosRestantes = avanzar ? valorTirada : -valorTirada;
+        int posicion = posicionActual;
+        boolean detenerMovimiento = false;
+        
+        while (!detenerMovimiento && movimientosRestantes != 0) {
+            if (avanzar) {
+                posicion = (posicion + 1) % 40;
+                movimientosRestantes--;
+            } else {
+                posicion = (posicion - 1 + 40) % 40;
+                movimientosRestantes++;
+            }
+            
+            Casilla casillaActual = casillas.get(posicion / 10).get(posicion % 10);
+            
+            // Si es casilla impar desde 4, y casilla no es ir a cárcel, ejecutar paradas
+            if ((posicion % 10) % 2 != 0 && posicion >= 4) {
+                System.out.println("El avatar " + this.getID() + " se detiene en la casilla " + casillaActual.getNombre());
+                
+                if (!casillaActual.evaluarCasilla(jugador, banca, valorTirada)) {
+                    System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
+                    return;
+                }
+                
+                if (casillaActual.getPosicion() == 31) {  // Ir a Cárcel
+                    jugador.getAvatar().setLugar(casillas, 10);
+                    jugador.setEnCarcel(true);
+                    return;
+                }
+            }
+        }
+        
+        // Al final del bucle, actualizar la posición final y añadir el avatar a la casilla
+        Casilla casillaFinal = casillas.get(posicion / 10).get(posicion % 10);
+        casillaFinal.anhadirAvatar(this);
+        vecesCaidasCasilla[posicion] += 1;
+        this.lugar = casillaFinal;
+        System.out.println("El avatar " + this.getID() + " avanza " + valorTirada + " posiciones, desde " 
+                    + lugar.getNombre() + " hasta " + casillaFinal.getNombre() + ".");
+    }
+    
     /*
      * Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase
      * (por ello es privado).
