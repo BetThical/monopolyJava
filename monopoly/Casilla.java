@@ -223,6 +223,7 @@ public class Casilla {
         output.append("- Tipo: ").append(getTipo()).append("\n");
 
         if (getTipo().equals("solar")) {
+            output.append("- Dueño: ").append(getduenhoJugador().getNombre()).append("\n");
             output.append("- Grupo: ").append(getGrupo().getColor()).append("\n");
             output.append("- Valor: ").append(getValor()).append("\n");
             output.append("- Alquiler: ").append(getImpuesto()).append("\n");
