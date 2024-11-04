@@ -25,6 +25,8 @@ public class Jugador {
     private float premiosInversionesOBote = 0;
     private int vecesEnLaCarcel = 0;
 
+    private int cocheCalado;
+
     // Constructor vacío. Se usará para crear la banca.
     public Jugador() {
 
@@ -65,6 +67,18 @@ public class Jugador {
     // pasaría un valor negativo.
     public void sumarFortuna(float valor) {
         this.fortuna += valor;
+    }
+
+    public void calarCoche() {
+        cocheCalado = 3;
+    }
+
+    public void reducirCocheCalado() {
+        cocheCalado--;
+    }
+
+    public int getCocheCalado() {
+        return cocheCalado;
     }
 
     public float getFortuna() {

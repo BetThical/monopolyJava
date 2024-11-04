@@ -12,9 +12,10 @@ public class Avatar {
     private Jugador jugador; // Un jugador al que pertenece ese avatar.
     private Casilla lugar; // Los avatares se sitúan en casillas del tablero.
     private boolean ultimoMovementoFuiVoltaMultiploDe4;
-
+    private int tiradasCoche;
+    private boolean haComprado;
     private int[] vecesCaidasCasilla;
-    
+
     // Constructor vacío
     public Avatar() {
     }
@@ -31,6 +32,11 @@ public class Avatar {
         this.lugar = lugar;
         this.generarId(avCreados);
         this.vecesCaidasCasilla = new int[40];
+        this.tiradasCoche = 0;
+    }
+
+    public int getTiradasCoche() {
+        return tiradasCoche;
     }
 
     // A continuación, tenemos otros métodos útiles para el desarrollo del juego.
@@ -59,68 +65,113 @@ public class Avatar {
         int lado = (nuevaposicion / 10);
 
         int casilla = (nuevaposicion % 10);
-
-        /*           System.out.println("Posición actual: " + posicionactual);
-          System.out.println("Valor de la tirada: " + valorTirada);
-          System.out.println("Nueva posición: " + nuevaposicion);
-          System.out.println("Lado calculado: " + lado);
-          System.out.println("Casilla calculada: " + casilla);
-          
-         */
         Casilla nuevaCasilla = casillas.get(lado).get(casilla);
         nuevaCasilla.anhadirAvatar(this);
         vecesCaidasCasilla[nuevaposicion] += 1;
         this.lugar = nuevaCasilla;
     }
 
-
     public void moverPelota(ArrayList<ArrayList<Casilla>> casillas, int valorTirada, Jugador banca) {
         ultimoMovementoFuiVoltaMultiploDe4 = false;
         int posicionActual = lugar.getPosicion();
         lugar.eliminarAvatar(this);
-        
+
         boolean avanzar = valorTirada > 4;
         int movimientosRestantes = avanzar ? valorTirada : -valorTirada;
+        movimientosRestantes--;
         int posicion = posicionActual;
         boolean detenerMovimiento = false;
-        
-        while (!detenerMovimiento && movimientosRestantes != 0) {
+        if (posicion + valorTirada > 40) {
+            System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
+            jugador.sumarVuelta();
+            if (jugador.getVueltas() % 4 == 0) {
+                ultimoMovementoFuiVoltaMultiploDe4 = true;
+            }
+        }
+        while (!detenerMovimiento && Math.abs(movimientosRestantes) > 0) {
+            // Mover hacia adelante o hacia atrás
             if (avanzar) {
                 posicion = (posicion + 1) % 40;
                 movimientosRestantes--;
             } else {
                 posicion = (posicion - 1 + 40) % 40;
-                movimientosRestantes++;
+                movimientosRestantes++; // Aquí se suma para contar el movimiento hacia atrás
             }
-            
+
             Casilla casillaActual = casillas.get(posicion / 10).get(posicion % 10);
-            
+
             // Si es casilla impar desde 4, y casilla no es ir a cárcel, ejecutar paradas
             if ((posicion % 10) % 2 != 0 && posicion >= 4) {
-                System.out.println("El avatar " + this.getID() + " se detiene en la casilla " + casillaActual.getNombre());
-                
+                System.out.println(
+                        "El avatar " + this.getID() + " se detiene en la casilla " + casillaActual.getNombre());
+
                 if (!casillaActual.evaluarCasilla(jugador, banca, valorTirada)) {
                     System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
                     return;
                 }
-                
-                if (casillaActual.getPosicion() == 31) {  // Ir a Cárcel
+
+                if (casillaActual.getPosicion() == 31) { // Ir a Cárcel
                     jugador.getAvatar().setLugar(casillas, 10);
                     jugador.setEnCarcel(true);
                     return;
                 }
             }
         }
-        
-        // Al final del bucle, actualizar la posición final y añadir el avatar a la casilla
+
+        // Al final del bucle, actualizar la posición final y añadir el avatar a la
+        // casilla
         Casilla casillaFinal = casillas.get(posicion / 10).get(posicion % 10);
         casillaFinal.anhadirAvatar(this);
         vecesCaidasCasilla[posicion] += 1;
         this.lugar = casillaFinal;
-        //System.out.println("El avatar " + this.getID() + " avanza " + valorTirada + " posiciones, desde " 
-                    //+ lugar.getNombre() + " hasta " + casillaFinal.getNombre() + ".");
+        // System.out.println("El avatar " + this.getID() + " avanza " + valorTirada + "
+        // posiciones, desde "
+        // + lugar.getNombre() + " hasta " + casillaFinal.getNombre() + ".");
     }
-    
+
+    public void moverCoche(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+        ultimoMovementoFuiVoltaMultiploDe4 = false;
+        int posicionactual = lugar.getPosicion();
+
+        if (valorTirada <= 4) {
+            System.out.println("Comes merda durante 2 turnos.");
+            jugador.calarCoche();
+            valorTirada *= -1;
+        }
+        lugar.eliminarAvatar(this);
+        if (posicionactual + valorTirada > 40) {
+            System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
+            jugador.sumarVuelta();
+            if (jugador.getVueltas() % 4 == 0) {
+                ultimoMovementoFuiVoltaMultiploDe4 = true;
+            }
+        }
+
+        int nuevaposicion = (posicionactual + valorTirada - 1) % 40;
+        if (nuevaposicion < 0)
+            nuevaposicion += 40;
+        int lado = (nuevaposicion / 10);
+
+        int casilla = (nuevaposicion % 10);
+        Casilla nuevaCasilla = casillas.get(lado).get(casilla);
+        nuevaCasilla.anhadirAvatar(this);
+        vecesCaidasCasilla[nuevaposicion] += 1;
+        this.lugar = nuevaCasilla;
+    }
+
+    public void setHaCompradoEnTirada(Boolean t) {
+        haComprado = t;
+    }
+
+    public Boolean haCompradoEnTirada() {
+        return haComprado;
+    }
+
+    // Método para reiniciar tiradas cuando sea necesario
+    public void resetearTiradasCoche() {
+        this.tiradasCoche = 0;
+    }
+
     /*
      * Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase
      * (por ello es privado).
@@ -193,7 +244,7 @@ public class Avatar {
         return ultimoMovementoFuiVoltaMultiploDe4;
     }
 
-    public int getVecesCaidasEnCasilla(int posicion){
+    public int getVecesCaidasEnCasilla(int posicion) {
         return vecesCaidasCasilla[posicion];
     }
 
