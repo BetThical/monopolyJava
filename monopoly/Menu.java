@@ -331,7 +331,7 @@ public final class Menu {
     }
 
     /*
-     * Método que realiza las acciones asociadas al comando 'describir jugador'.
+     * Método que realiza las acciones asociadas al comando /describir jugador'.
      * Parámetro: nombre del jugador
      */
     private void descJugador(String nombre) {
