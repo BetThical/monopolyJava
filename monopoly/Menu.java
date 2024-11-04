@@ -22,7 +22,6 @@ public final class Menu {
     private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
     private final Scanner sc = new Scanner(System.in);
     private Edificio e;
-    private boolean movEspecial;
 
     public Jugador getBanca() {
         return banca;
@@ -170,12 +169,12 @@ public final class Menu {
             else
                 anhadirJugador();
         } else if (comando.equals("cambiar modo")) {
-            if (movEspecial) {
+            if (jugador.movEspecial) {
                 System.out.println("Cambio a modo estándar.");
-                movEspecial = false;
+                jugador.movEspecial = false;
             } else {
                 System.out.println("Cambio a modo avanzado.");
-                movEspecial = true;
+                jugador.movEspecial = true;
 
             }
         }
@@ -187,7 +186,8 @@ public final class Menu {
 
         // lanzar dados
         else if (comando.contains("lanzar dados") && jugador.getCocheCalado() != 0) {
-            System.out.println("No puedes tirar los dados por una previa tirada con el coche.");
+            System.out.printf("No puedes tirar los dados durante %d turnos por una previa tirada con el coche.",
+                    jugador.getCocheCalado());
         } else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
 
@@ -242,21 +242,28 @@ public final class Menu {
             lanzamientos++;
 
         } else if (comando.equals("lanzar dados")) {
-            if (movEspecial && jugador.getAvatar().getTipo().equals("coche")
+            if (jugador.movEspecial && jugador.getAvatar().getTipo().equals("coche")
                     && (dado2.getValorPrevio() + dado1.getValorPrevio()) > 4 && (lanzamientos < 3)) {
                 lanzarDados();
                 lanzamientos++;
             } else {
-
-                System.out.printf(
-                        "Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles. (previas tiradas: %d %d)",
-                        dado1.getValorPrevio(), dado2.getValorPrevio());
+                if (lanzamientos >= 3) {
+                    System.out.printf(
+                            "Se ha alcanzado el máximo de 3 tiradas.");
+                } else
+                    System.out.printf(
+                            "Sólo se pueden lanzar los dados una vez por turno, a no ser que saques dobles. (previas tiradas: %d %d)",
+                            dado1.getValorPrevio(), dado2.getValorPrevio());
             }
         }
 
         // comprar
         else if (comando.equals("comprar")) {
-            comprar(casilla.getNombre());
+            if (!jugador.getPuedeComprar() && jugador.getAvatar().getTipo().equals("coche") && jugador.movEspecial) {
+                System.out.println(
+                        "Al realizar el movimiento especial del coche, sólo puedes comprar una vez por turno.");
+            } else
+                comprar(casilla.getNombre());
         }
 
         // acabar turno
@@ -392,8 +399,8 @@ public final class Menu {
                     aHipotecar.hipotecar();
                 }
             }
-        } else if (comando.contains("estadisticas ")){
-            comando = comando.replace("estadisticas ", "");      
+        } else if (comando.contains("estadisticas ")) {
+            comando = comando.replace("estadisticas ", "");
             Jugador jugadorstats = getJugador(comando);
             jugadorstats.estadisticas();
         }
@@ -516,12 +523,15 @@ public final class Menu {
         }
 
         Casilla casillainicio = avatar.getLugar();
-        if (movEspecial) {
+        if (jugador.movEspecial) {
             if (avatar.getTipo().equals("pelota"))
                 avatar.moverPelota(tablero.getPosiciones(), valor_tiradas, banca);
-            if (avatar.getTipo().equals("coche"))
+            if (avatar.getTipo().equals("coche")) {
                 avatar.moverCoche(tablero.getPosiciones(), valor_tiradas);
-
+                if (valor_tiradas > 4 && lanzamientos < 2) {
+                    System.out.println("Tu tirada continúa! Puedes volver a lanzar los dados.");
+                }
+            }
         } else
             avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
 
@@ -585,12 +595,15 @@ public final class Menu {
         }
 
         Casilla casillainicio = avatar.getLugar();
-        if (movEspecial) {
+        if (jugador.movEspecial) {
             if (avatar.getTipo().equals("pelota"))
                 avatar.moverPelota(tablero.getPosiciones(), valor_tiradas, banca);
-            if (avatar.getTipo().equals("coche"))
+            if (avatar.getTipo().equals("coche")) {
                 avatar.moverCoche(tablero.getPosiciones(), valor_tiradas);
-
+                if (valor_tiradas > 4 && lanzamientos < 2) {
+                    System.out.println("Tu tirada continúa! Puedes volver a lanzar los dados.");
+                }
+            }
         } else
             avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
 
@@ -747,6 +760,7 @@ public final class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
+        obtenerJugadorTurno().setPuedeComprar(true);
         lanzamientos = 0;
     }
 

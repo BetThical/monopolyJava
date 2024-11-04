@@ -24,9 +24,11 @@ public class Jugador {
     private float pasarPorCasillaDeSalida = 0;
     private float premiosInversionesOBote = 0;
     private int vecesEnLaCarcel = 0;
+    public boolean movEspecial;
 
     private int cocheCalado;
 
+    private boolean puedeComprar = true;
     // Constructor vacío. Se usará para crear la banca.
     public Jugador() {
 
@@ -48,6 +50,12 @@ public class Jugador {
 
     }
 
+    public void setPuedeComprar(boolean v){
+        puedeComprar = v;
+    }
+    public boolean getPuedeComprar(){
+        return puedeComprar;
+    }
     // Otros métodos:
     // Método para añadir una propiedad al jugador. Como parámetro, la casilla a
     // añadir.

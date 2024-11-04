@@ -119,13 +119,14 @@ public class Casilla {
      * en caso de no cumplirlas.
      */
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        if (esComprable(actual, banca)) {
+        if (esComprable(actual, banca)
+                && !(!actual.getPuedeComprar() && actual.getAvatar().getTipo().equals("coche") && actual.movEspecial)) {
             System.out.println(
                     "El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor()
                             + " euros. Comprar? (Y/N)");
-                            Scanner scanner = new Scanner(System.in);
-                            String respuesta = scanner.nextLine().trim().toUpperCase();  // Captura la respuesta del jugador
-                    
+            Scanner scanner = new Scanner(System.in);
+            String respuesta = scanner.nextLine().trim().toUpperCase(); // Captura la respuesta del jugador
+
             if (respuesta.equals("Y")) {
                 comprarCasilla(actual, banca); // Llama al método para realizar la compra
                 System.out.println(
@@ -135,11 +136,9 @@ public class Casilla {
             } else {
                 System.out.println("Respuesta inválida. Por favor, introduce 'Y' o 'N'.");
             }
-        } 
+        }
 
-    
-
-    if(getduenhoJugador() != banca && getduenhoJugador() != actual) {// Para solares, servicio o transporte con
+        if (getduenhoJugador() != banca && getduenhoJugador() != actual) {// Para solares, servicio o transporte con
                                                                           // dueño
             if (hipotecada) {
                 System.out.println("El dueño es " + duenho.getNombre() + ", pero la propiedad está hipotecada.");
@@ -177,9 +176,15 @@ public class Casilla {
                 if (getGrupo().esDuenhoGrupo(duenho))
                     coste *= 2;
                 coste += alquilerEdificios();
+                return coste;
             }
-            case "transporte":
+            case "transporte": {
                 coste = (getImpuesto() * (0.25f * duenho.getNumTrans()));
+                // System.out.printf("impuesto:%f, numtrans:%d, total:%f", getImpuesto(),
+                // duenho.getNumTrans(), coste);
+                return coste;
+            }
+
             default: {
                 // servicio
                 if (duenho.getNumServ() == 1)
@@ -216,6 +221,9 @@ public class Casilla {
                         .println("El jugador " + solicitante.getNombre() + " es dueño de todas las casillas del grupo "
                                 + getGrupo().getColor() + "!");
             }
+        if (solicitante.getPuedeComprar()) {
+            solicitante.setPuedeComprar(false);
+        }
     }
 
     /*
