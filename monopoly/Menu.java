@@ -179,7 +179,7 @@ public final class Menu {
         // lanzar dados
         else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
-<<<<<<< HEAD
+
             if (!dobles_seguidos_check){
                 lanzarDados();
                 lanzamientos++;
@@ -223,16 +223,13 @@ public final class Menu {
                     lanzarDados(tirada_anterior1,tirada_anterior2);
                     lanzamientos++;
                 }
-=======
-            lanzarDados();
-            lanzamientos++;
         } else if (comando.contains("lanzar dados ")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
             String numeros = comando.replace("lanzar dados ", "");
             String[] numero = numeros.split("\\+");
             lanzarDados(Integer.parseInt(numero[0]), Integer.parseInt(numero[1]));
             lanzamientos++;
->>>>>>> e5ba5a9758468e29d633f2da0fb499cce1777a70
+
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
