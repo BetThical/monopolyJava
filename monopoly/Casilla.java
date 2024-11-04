@@ -2,6 +2,8 @@ package monopoly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
+
 import partida.*;
 
 public class Casilla {
@@ -20,6 +22,7 @@ public class Casilla {
     private float hipoteca; // Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; // Avatares que están situados en la casilla.
     private ArrayList<Edificio> edificios;
+
     private boolean hipotecada = false; // Indica si la casilla está actualmente hipotecada.
 
     // Constructores:
@@ -36,7 +39,7 @@ public class Casilla {
         this.tipo = tipo;
         this.posicion = posicion;
         this.valor = valor;
-        this.hipoteca = valor/2f;
+        this.hipoteca = valor / 2f;
         switch (tipo) {
             case "solar":
                 this.impuesto = ((float) (valor * 0.1)); // solar: alquiler (base) = valor / 10
@@ -118,17 +121,32 @@ public class Casilla {
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         if (esComprable(actual, banca)) {
             System.out.println(
-                    "El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor() + " euros.");
-        }
+                    "El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor()
+                            + " euros. Comprar? (Y/N)");
+                            Scanner scanner = new Scanner(System.in);
+                            String respuesta = scanner.nextLine().trim().toUpperCase();  // Captura la respuesta del jugador
+                    
+            if (respuesta.equals("Y")) {
+                comprarCasilla(actual, banca); // Llama al método para realizar la compra
+                System.out.println(
+                        "El jugador " + actual.getNombre() + " ha comprado la casilla " + getNombre() + ".");
+            } else if (respuesta.equals("N")) {
+                System.out.println("El jugador " + actual.getNombre() + " ha decidido no comprar la casilla.");
+            } else {
+                System.out.println("Respuesta inválida. Por favor, introduce 'Y' o 'N'.");
+            }
+        } 
 
-        if (getduenhoJugador() != banca && getduenhoJugador() != actual) {// Para solares, servicio o transporte con
-                                                                         // dueño
-            if (hipotecada)
-                {
-                    System.out.println("El dueño es " + duenho.getNombre() + ", pero la propiedad está hipotecada.");
-                    return true;
-                }
-                return actual.pagar(calcular_coste(tirada), duenho);}
+    
+
+    if(getduenhoJugador() != banca && getduenhoJugador() != actual) {// Para solares, servicio o transporte con
+                                                                          // dueño
+            if (hipotecada) {
+                System.out.println("El dueño es " + duenho.getNombre() + ", pero la propiedad está hipotecada.");
+                return true;
+            }
+            return actual.pagar(calcular_coste(tirada), duenho);
+        }
 
         if (getNombre().equals("Parking")) { // Parking
             actual.cobrarBote(banca);
@@ -227,20 +245,18 @@ public class Casilla {
             output.append("- Grupo: ").append(getGrupo().getColor()).append("\n");
             output.append("- Valor: ").append(getValor()).append("\n");
             output.append("- Alquiler: ").append(getImpuesto()).append("\n");
-            if (hipotecada) output.append("[Hipotecada]\n");
-        } 
-        else if (getTipo().equals("transporte")){
+            if (hipotecada)
+                output.append("[Hipotecada]\n");
+        } else if (getTipo().equals("transporte")) {
             output.append("- Valor: ").append(getValor()).append("\n");
             output.append("- Alquiler: ").append(getImpuesto()).append("\n");
-        }
-        else if (getTipo().equals("imposto")) {
+        } else if (getTipo().equals("imposto")) {
             output.append("- Imposto: ").append(getImpuesto()).append("\n");
         } else if (getNombre().equals("parking")) {
             output.append("- Bote: ").append(banca.getBote()).append("\n");
         } else if (getNombre().equals("carcel")) {
             output.append("- Fianza: ").append(Valor.FORTUNA_INICIAL * 0.25).append("\n");
         }
-
 
         if (!getAvatares().isEmpty()) {
             output.append("- Jugadores:\n");
@@ -504,7 +520,7 @@ public class Casilla {
             return false;
         }
 
-        if (hipoteca*1.1f > j.getFortuna()) {
+        if (hipoteca * 1.1f > j.getFortuna()) {
             System.out.println("No tienes fondos para deshipotecarla.");
             return false;
         }
@@ -520,8 +536,9 @@ public class Casilla {
     }
 
     public void deshipotecar() {
-        System.out.println("Se ha deshipotecado " + nombre + ". " + duenho.getNombre() + " ha pagado " + (hipoteca*1.1f)
-                + "€ de la hipoteca.");
+        System.out
+                .println("Se ha deshipotecado " + nombre + ". " + duenho.getNombre() + " ha pagado " + (hipoteca * 1.1f)
+                        + "€ de la hipoteca.");
         setHipotecada(false);
         duenho.sumarGastos(hipoteca);
     }

@@ -22,6 +22,7 @@ public final class Menu {
     private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
     private final Scanner sc = new Scanner(System.in);
     private Edificio e;
+    private boolean movEspecial;
 
     public Jugador getBanca() {
         return banca;
@@ -169,7 +170,17 @@ public final class Menu {
             else
                 anhadirJugador();
         }
+        else if (comando.equals("cambiar modo")){
+            if (movEspecial){
+                System.out.println("Cambio a modo estándar.");
+                movEspecial = false;
+            }
+            else{
+                System.out.println("Cambio a modo avanzado.");
+                movEspecial = true;
 
+            }
+        }
         // jugador
         else if (comando.equals("jugador")) {
             System.out.println(
@@ -179,7 +190,6 @@ public final class Menu {
         // lanzar dados
         else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
-<<<<<<< HEAD
             if (!dobles_seguidos_check){
                 lanzarDados();
                 lanzamientos++;
@@ -223,7 +233,6 @@ public final class Menu {
                     lanzarDados(tirada_anterior1,tirada_anterior2);
                     lanzamientos++;
                 }
-=======
             lanzarDados();
             lanzamientos++;
         } else if (comando.contains("lanzar dados ")
@@ -232,7 +241,6 @@ public final class Menu {
             String[] numero = numeros.split("\\+");
             lanzarDados(Integer.parseInt(numero[0]), Integer.parseInt(numero[1]));
             lanzamientos++;
->>>>>>> e5ba5a9758468e29d633f2da0fb499cce1777a70
         } else if (comando.equals("lanzar dados")) {
             System.out.println("Śolo se pueden lanzar los dados una vez por turno, a no ser que saques dobles.");
         }
@@ -493,11 +501,13 @@ public final class Menu {
         }
 
         Casilla casillainicio = avatar.getLugar();
-
-        avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
+        if (movEspecial){
+            avatar.moverPelota(tablero.getPosiciones(), valor_tiradas, banca);
+        }
+        else
+            avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas);
 
         Casilla casillafinal = avatar.getLugar();
-
         System.out.println("El avatar " + avatar.getID() + " avanza " + (valor_tiradas) + " posiciones, desde "
                 + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
 
@@ -562,6 +572,7 @@ public final class Menu {
 
         Casilla casillafinal = avatar.getLugar();
 
+        
         System.out.println("El avatar " + avatar.getID() + " avanza " + (valor_tiradas) + " posiciones, desde "
                 + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
 
