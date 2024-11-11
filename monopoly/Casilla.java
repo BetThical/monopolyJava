@@ -171,7 +171,7 @@ public class Casilla {
     // propiedad.
     // Funciona para solares, transporte y servicios.
     // Parámetro: tirada, para las casillas de servicio
-    private float calcular_coste(int tirada) {
+    public float calcular_coste(int tirada) {
         float coste;
         switch (tipo) {
             case "solar": {

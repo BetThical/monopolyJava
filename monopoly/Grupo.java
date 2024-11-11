@@ -42,6 +42,11 @@ class Grupo {
         this.numCasillas = 3;
     }
 
+    public String getNombre() {
+        return colorGrupo;
+    }
+
+    
     /*
      * Método que añade una casilla al array de casillas miembro de un grupo.
      * Parámetro: casilla que se quiere añadir.
@@ -81,11 +86,11 @@ class Grupo {
     public ArrayList<Edificio> getEdificiosGrupo() {
         ArrayList<Edificio> lista = new ArrayList<>();
         for (Casilla miembro : miembros) {
-            for (Edificio edificio : miembro.getEdificios()) { 
+            for (Edificio edificio : miembro.getEdificios()) {
                 lista.add(edificio);
             }
         }
-        
+
         return lista;
     }
 
@@ -93,19 +98,80 @@ class Grupo {
     public HashMap<String, Integer> contarEdificiosPorTipo() {
         HashMap<String, Integer> contador = new HashMap<>();
         ArrayList<Edificio> edificios = getEdificiosGrupo();
-        
+
         for (Edificio edificio : edificios) {
             String tipo = edificio.getTipo();
-            
+
             // Incrementar el contador para el tipo de edificio
             contador.put(tipo, contador.getOrDefault(tipo, 0) + 1);
         }
-        
+
         return contador;
     }
 
+<<<<<<< HEAD
     public getRentabilidadGrupo()
 
 }
+=======
+    public void descEdificios() {
+        for (Casilla casilla : miembros) {
+            System.out.println("Propiedad: " + casilla.getNombre());
+            for (Edificio casa : casilla.getEdificios()) {
+                System.out.println("[" + casa.getID() + "], ");
+            }
+            System.out.println("Alquiler: " + casilla.calcular_coste(0));
+        }
+        imprimirEdificiosDisponibles();
+    }
+>>>>>>> dd570207403e066edacd137a7c18edfe48de8d3c
 
+    public void imprimirEdificiosDisponibles() {
+        // Obtiene la cuenta actual de cada tipo de edificio en el grupo
+        HashMap<String, Integer> edificiosGrupo = contarEdificiosPorTipo();
 
+        // Obtiene el número máximo de cada tipo de edificio que se puede construir en
+        // el grupo
+        int maxEdificiosPorTipo = (getNumCasillas() == 2) ? 2 : 3;
+
+        // Calcula cuántos edificios de cada tipo se pueden construir
+        int casasDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("casa", 0);
+        int hotelesDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("hotel", 0);
+        int piscinasDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("piscina", 0);
+        int pistasDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("pista", 0);
+
+        // Imprime cuántos edificios de cada tipo se pueden construir
+        StringBuilder mensaje = new StringBuilder("Aún se pueden edificar ");
+
+        if (casasDisponibles > 0) {
+            mensaje.append(casasDisponibles).append(" casas");
+        } else {
+            mensaje.append("ya no se pueden construir casas");
+        }
+        mensaje.append(", ");
+
+        if (hotelesDisponibles > 0) {
+            mensaje.append(hotelesDisponibles).append(" hoteles");
+        } else {
+            mensaje.append("ya no se pueden construir hoteles");
+        }
+        mensaje.append(", ");
+
+        if (piscinasDisponibles > 0) {
+            mensaje.append(piscinasDisponibles).append(" piscinas");
+        } else {
+            mensaje.append("ya no se pueden construir piscinas");
+        }
+        mensaje.append(", ");
+
+        if (pistasDisponibles > 0) {
+            mensaje.append(pistasDisponibles).append(" pistas de deporte");
+        } else {
+            mensaje.append("ya no se pueden construir pistas de deporte");
+        }
+
+        mensaje.append(".");
+        System.out.println(mensaje.toString());
+    }
+
+}

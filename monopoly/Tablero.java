@@ -2,23 +2,31 @@ package monopoly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Collection;
+
 import partida.*;
 
 public class Tablero {
     private final ArrayList<ArrayList<Casilla>> posiciones; // Posiciones del tablero: se define como un arraylist de
                                                       // arraylists de casillas (uno por cada lado del tablero).
-    private final HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String (será el
-                                           // color del grupo).
+    private final HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String (será el color del grupo).
+
+    private final HashMap<Integer, Carta> barajaSuerte;
+    private final HashMap<Integer, Carta> barajaComunidad;
     private final Jugador banca; // Un jugador que será la banca.
 
     // Constructor: únicamente le pasamos el jugador banca (que se creará desde el
     // menú).
+
     public Tablero(Jugador b) {
         banca = b;
         posiciones = new ArrayList<>();
         grupos = new HashMap<>();
+        barajaSuerte = new HashMap<>();
+        barajaComunidad = new HashMap<>();
 
         generarCasillas();
+        generarBarajas();
 
     }
 
@@ -29,6 +37,22 @@ public class Tablero {
         this.insertarLadoOeste();
         this.insertarLadoNorte();
         this.insertarLadoEste();
+    }
+
+    private void generarBarajas(){
+        barajaSuerte.put(1,new Carta(1, "Ve al Transportes1 y coge un avión. Si pasas por la casilla de Salida, cobra la cantidad habitual.")); 
+        barajaSuerte.put(2,new Carta(2, "Decides hacer un viaje de placer. Avanza hasta Solar15 directamente, sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.")); 
+        barajaSuerte.put(3,new Carta(3, "Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€.")); 
+        barajaSuerte.put(4,new Carta(4, "Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual.")); 
+        barajaSuerte.put(5,new Carta(5, "Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.")); 
+        barajaSuerte.put(6,new Carta(6, "¡Has ganado el bote de la lotería! Recibe 1000000€.")); 
+
+        barajaComunidad.put(7, new Carta(7, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
+        barajaComunidad.put(8, new Carta(8, "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
+        barajaComunidad.put(9, new Carta(9, "Colócate en la casilla de Salida. Cobra la cantidad habitual."));
+        barajaComunidad.put(10, new Carta(10, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€."));
+        barajaComunidad.put(11, new Carta(11, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14."));
+        barajaComunidad.put(12, new Carta(12, "Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador."));
     }
 
     // Función para imprimir el tablero
@@ -44,7 +68,7 @@ public class Tablero {
         ladoSur.add(new Casilla("Solar1", "solar", 2, 600000, banca));
         ladoSur.add(new Casilla("Caja", "comunidad", 3, banca));
         ladoSur.add(new Casilla("Solar2", "solar", 4, 10000, banca));
-        ladoSur.add(new Casilla("Imp1",  5, ((float) (Valor.SUMA_VUELTA * 0.5)), banca));
+        ladoSur.add(new Casilla("Imp1", 5, ((float) (Valor.SUMA_VUELTA * 0.5)), banca));
         ladoSur.add(new Casilla("Trans1", "transporte", 6, Valor.SUMA_VUELTA, banca));
         ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
         ladoSur.add(new Casilla("Suerte", "suerte", 8, banca));
@@ -227,6 +251,16 @@ public class Tablero {
                 return key;
         }
         return "error";
+    }
+    public Collection<Grupo> getGrupos(){
+        return grupos.values();
+    }
+    public Grupo getGrupoNombre(String nombre) { 
+        for (Grupo grupo : grupos.values()){
+            if( grupo.getNombre().contains(nombre)){
+            return grupo;}
+        }                                       
+        return null;
     }
 
     public ArrayList<ArrayList<Casilla>> getPosiciones() {
