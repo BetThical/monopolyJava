@@ -6,13 +6,14 @@ import partida.*;
 
 public class Tablero {
     private final ArrayList<ArrayList<Casilla>> posiciones; // Posiciones del tablero: se define como un arraylist de
-                                                      // arraylists de casillas (uno por cada lado del tablero).
-    private final HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String (será el
-                                           // color del grupo).
+    // arraylists de casillas (uno por cada lado del tablero).
+    private final HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String
+                                                 // (será el
+    // color del grupo).
     private final Jugador banca; // Un jugador que será la banca.
-
     // Constructor: únicamente le pasamos el jugador banca (que se creará desde el
     // menú).
+
     public Tablero(Jugador b) {
         banca = b;
         posiciones = new ArrayList<>();
@@ -44,7 +45,7 @@ public class Tablero {
         ladoSur.add(new Casilla("Solar1", "solar", 2, 600000, banca));
         ladoSur.add(new Casilla("Caja", "comunidad", 3, banca));
         ladoSur.add(new Casilla("Solar2", "solar", 4, 10000, banca));
-        ladoSur.add(new Casilla("Imp1",  5, ((float) (Valor.SUMA_VUELTA * 0.5)), banca));
+        ladoSur.add(new Casilla("Imp1", 5, ((float) (Valor.SUMA_VUELTA * 0.5)), banca));
         ladoSur.add(new Casilla("Trans1", "transporte", 6, Valor.SUMA_VUELTA, banca));
         ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
         ladoSur.add(new Casilla("Suerte", "suerte", 8, banca));
@@ -227,6 +228,14 @@ public class Tablero {
                 return key;
         }
         return "error";
+    }
+
+    public Grupo getGrupoNombre(String nombre) { 
+        for (Grupo grupo : grupos.values()){
+            if( grupo.getNombre().contains(nombre)){
+            return grupo;}
+        }                                       
+        return null;
     }
 
     public ArrayList<ArrayList<Casilla>> getPosiciones() {

@@ -178,6 +178,18 @@ public final class Menu {
 
             }
         }
+
+        else if (comando.contains("listar edificios ")) {
+            comando = comando.replace("listar edificios ", "");
+            try {
+                Grupo grupo = tablero.getGrupoNombre(comando);   
+                grupo.descEdificios();
+            } catch (Exception e) {
+                System.out.println("grupo invalido (" +  comando + ")");
+            }
+
+
+        }
         // jugador
         else if (comando.equals("jugador")) {
             System.out.println(
@@ -355,13 +367,14 @@ public final class Menu {
             if (!palabrasValidas.contains(comando)) {
                 System.out.println("Edificios válidos: casa, hotel, piscina, pista.");
             } else {
-                e = new Edificio(comando);
+                e = new Edificio(comando, casilla);
                 if (casilla.puedeConstruir(e, jugador)) {
                     System.out.println("Has comprado un(a) " + comando + " en " + casilla.getNombre() + ", por "
                             + casilla.valorEdificio(e.getTipo()) + ".");
                     casilla.anhadirEdificio(e);
                 }
             }
+
         } else if (comando.contains("destruir ")) {
             Set<String> palabrasValidas = new HashSet<>();
             palabrasValidas.add("casa");
