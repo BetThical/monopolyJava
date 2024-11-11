@@ -107,6 +107,8 @@ public class Casilla {
         }
     }
 
+    //Pepito
+
     /*
      * Método para luar qué hacer en una casilla concreta. Parámetros:
      * - Jugador cuyo avatar está en esa casilla.
