@@ -3,7 +3,6 @@ package monopoly;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-
 import partida.*;
 
 public class Casilla {
@@ -107,6 +106,8 @@ public class Casilla {
             System.out.println("error: eliminado avatar que no estaba en casilla");
         }
     }
+
+    //Pepito
 
     /*
      * Método para luar qué hacer en una casilla concreta. Parámetros:
@@ -411,18 +412,27 @@ public class Casilla {
                 switch (numCasas) {
                     case 0:
                         alquilerEdificio = 5 * impuesto;
+                        break;
                     case 1:
                         alquilerEdificio = 10 * impuesto; // 2 casas: 15 veces o alquiler
+                        break;
                     case 2:
                         alquilerEdificio = 20 * impuesto; // 3 casas: 35 veces o alquiler
+                        break;
                     case 3:
                         alquilerEdificio = 15 * impuesto; // 4 casas: 50 veces o alquiler
+                        break;
                     default: {
+                        alquilerEdificio = 0;
+                        break;
+                        
                     }
                 }
+                break;
             }
             case "hotel":
                 alquilerEdificio = 70 * impuesto;
+                break;
             case "piscina":
             case "pista": {
                 alquilerEdificio = 25 * impuesto;

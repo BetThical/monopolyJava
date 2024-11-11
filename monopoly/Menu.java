@@ -219,7 +219,6 @@ public final class Menu {
                 System.out.println("Has sacado dobles 3 veces te vas a la carcel.");
                 lanzamientos = 1;
                 dobles_seguidos = 0;
-                return;
             }
         } else if (comando.contains("lanzar dados ")
                 && (lanzamientos == 0 || tirada_anterior1 == tirada_anterior2)) {
