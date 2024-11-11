@@ -104,6 +104,8 @@ class Grupo {
         return contador;
     }
 
+    public getRentabilidadGrupo()
+
 }
 
 
