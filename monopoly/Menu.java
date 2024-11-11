@@ -190,6 +190,10 @@ public final class Menu {
 
 
         }
+        else if (comando.equals("listar edificios")){
+            for(Grupo grupo : tablero.getGrupos())
+                grupo.descEdificios();
+        }
         // jugador
         else if (comando.equals("jugador")) {
             System.out.println(

@@ -2,6 +2,8 @@ package monopoly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Collection;
+
 import partida.*;
 
 public class Tablero {
@@ -250,7 +252,9 @@ public class Tablero {
         }
         return "error";
     }
-
+    public Collection<Grupo> getGrupos(){
+        return grupos.values();
+    }
     public Grupo getGrupoNombre(String nombre) { 
         for (Grupo grupo : grupos.values()){
             if( grupo.getNombre().contains(nombre)){
