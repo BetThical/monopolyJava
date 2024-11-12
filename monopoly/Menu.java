@@ -18,6 +18,7 @@ public final class Menu {
     private final Tablero tablero; // Tablero en el que se juega.
     private Dado dado1; // Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
+    private int dados;
     private final Jugador banca; // El jugador banca.
     private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
     private final Scanner sc = new Scanner(System.in);
@@ -432,6 +433,8 @@ public final class Menu {
                     aHipotecar.hipotecar();
                 }
             }
+        } else if (comando.equals("estadisticas")){
+            estadisticas();
         } else if (comando.contains("estadisticas ")) {
             comando = comando.replace("estadisticas ", "");
             Jugador jugadorstats = getJugador(comando);
@@ -828,5 +831,58 @@ public final class Menu {
         jugadorTurno = obtenerJugadorTurno();
         System.out.println("Turno de " + jugadorTurno.getNombre() + ".");
 
+    }
+
+    private String jugadorMasVueltas(){
+
+        int max = jugadores.get(1).getVueltas();
+        int n = 1;
+
+        for (int i = 0; i < jugadores.size(); i++){
+            if (max < jugadores.get(i).getVueltas()){
+                max = jugadores.get(i).getVueltas();
+                n = i;
+            }
+        }
+
+        return (jugadores.get(n).getNombre());
+    }
+
+    private String casillaMasRentable(){
+
+        float max = tablero.getCasilla(1).GetRentabilidad();
+        int n = 1;        
+
+        for (int i = 0; i < 40; i++){
+            if (max < tablero.getCasilla(i).GetRentabilidad()){
+                max = tablero.getCasilla(i).GetRentabilidad();
+                n = i;
+            }
+        }
+        return tablero.getCasilla(n).getNombre();
+    }
+
+    private String grupoMasRentable(){
+
+        tablero.getGrupo()
+        float max = tablero.getCasilla(1).GetRentabilidad();
+        int n = 1;        
+
+        for (int i = 0; i < 40; i++){
+            if (max < tablero.getCasilla(i).GetRentabilidad()){
+                max = tablero.getCasilla(i).GetRentabilidad();
+                n = i;
+            }
+        }
+        return tablero.getCasilla(n).getNombre();
+    }
+
+    private void estadisticas(){
+        System.out.println("casillaMasRentable: " + casillaMasRentable());
+        System.out.println("grupoMasRentable: " + grupoMasRentable());
+        System.out.println("casillaMasFrecuentada: " + );
+        System.out.println("jugadorMasVueltas: " + jugadorMasVueltas());
+        System.out.println("jugadorMasVecesDados: " + );
+        System.out.println("jugadorEnCabeza: " + );
     }
 }

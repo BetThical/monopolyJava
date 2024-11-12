@@ -21,6 +21,7 @@ public class Casilla {
     private float hipoteca; // Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; // Avatares que están situados en la casilla.
     private ArrayList<Edificio> edificios;
+    private float rentable = 0; //Rentabilidad de las casillas
 
     private boolean hipotecada = false; // Indica si la casilla está actualmente hipotecada.
 
@@ -145,6 +146,7 @@ public class Casilla {
                 System.out.println("El dueño es " + duenho.getNombre() + ", pero la propiedad está hipotecada.");
                 return true;
             }
+            sumarRentable(calcular_coste(tirada));
             return actual.pagar(calcular_coste(tirada), duenho);
         }
 
@@ -599,6 +601,14 @@ public class Casilla {
 
     public void setHipotecada(boolean h) {
         this.hipotecada = h;
+    }
+
+    public float GetRentabilidad(){
+        return rentable;
+    }
+
+    public void sumarRentable(float pago){
+        this.rentable += pago;
     }
 
 }

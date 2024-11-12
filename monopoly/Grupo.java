@@ -107,6 +107,11 @@ class Grupo {
         return contador;
     }
 
+<<<<<<< HEAD
+    public getRentabilidadGrupo()
+
+}
+=======
     public void descEdificios() {
         
         for (Casilla casilla : miembros) {
@@ -120,6 +125,7 @@ class Grupo {
         }
         imprimirEdificiosDisponibles();
     }
+>>>>>>> dd570207403e066edacd137a7c18edfe48de8d3c
 
     public void imprimirEdificiosDisponibles() {
         // Obtiene la cuenta actual de cada tipo de edificio en el grupo
