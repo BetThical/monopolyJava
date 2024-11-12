@@ -22,7 +22,6 @@ class Grupo {
     public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
         this.colorGrupo = colorGrupo;
         this.miembros = new ArrayList<>();
-
         anhadirCasilla(cas2);
         anhadirCasilla(cas1);
         this.numCasillas = 2;
@@ -46,7 +45,6 @@ class Grupo {
         return colorGrupo;
     }
 
-    
     /*
      * Método que añade una casilla al array de casillas miembro de un grupo.
      * Parámetro: casilla que se quiere añadir.
@@ -110,12 +108,15 @@ class Grupo {
     }
 
     public void descEdificios() {
+        
         for (Casilla casilla : miembros) {
-            System.out.println("Propiedad: " + casilla.getNombre());
-            for (Edificio casa : casilla.getEdificios()) {
-                System.out.println("[" + casa.getID() + "], ");
+            if (!casilla.getEdificios().isEmpty()) {
+                System.out.println("Propiedad: " + casilla.getNombre());
+                for (Edificio casa : casilla.getEdificios()) {
+                    System.out.println("[" + casa.getID() + "], ");
+                }
+                System.out.println("Alquiler: " + casilla.calcular_coste(0));
             }
-            System.out.println("Alquiler: " + casilla.calcular_coste(0));
         }
         imprimirEdificiosDisponibles();
     }

@@ -48,12 +48,12 @@ public class Avatar {
      * en la tirada de los dados).
      * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
-    public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+    public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada, boolean cobrarSalida) {
         ultimoMovementoFuiVoltaMultiploDe4 = false;
         int posicionactual = lugar.getPosicion();
 
         lugar.eliminarAvatar(this);
-        if (posicionactual + valorTirada > 40) {
+        if (posicionactual + valorTirada > 40 && cobrarSalida) {
             System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
             jugador.sumarVuelta();
             if (jugador.getVueltas() % 4 == 0) {
@@ -69,6 +69,11 @@ public class Avatar {
         nuevaCasilla.anhadirAvatar(this);
         vecesCaidasCasilla[nuevaposicion] += 1;
         this.lugar = nuevaCasilla;
+    }
+
+    public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, Casilla destino, boolean cobrarSalida) {
+        int valorTirada = (destino.getPosicion() - lugar.getPosicion());
+        moverAvatar(casillas, valorTirada, cobrarSalida);
     }
 
     public void moverPelota(ArrayList<ArrayList<Casilla>> casillas, int valorTirada, Jugador banca) {
@@ -145,6 +150,12 @@ public class Avatar {
             if (jugador.getVueltas() % 4 == 0) {
                 ultimoMovementoFuiVoltaMultiploDe4 = true;
             }
+        }
+
+        if (posicionactual + valorTirada < 0) {
+            System.out.println("Pasas por salida EN EL SENTIDO CONTRARIO y PAGAS " + Valor.SUMA_VUELTA + ".");
+            jugador.pagarVuelta();
+            ultimoMovementoFuiVoltaMultiploDe4 = false;
         }
 
         int nuevaposicion = (posicionactual + valorTirada - 1) % 40;

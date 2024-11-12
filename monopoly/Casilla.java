@@ -107,7 +107,7 @@ public class Casilla {
         }
     }
 
-    //Pepito
+    // Pepito
 
     /*
      * Método para luar qué hacer en una casilla concreta. Parámetros:
@@ -213,6 +213,8 @@ public class Casilla {
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
         banca.sumarFortuna(valor);
         solicitante.sumarGastosAlq(valor);
+        solicitante.sumarGastos(valor);
+
         this.duenho = solicitante;
         solicitante.anhadirPropiedad(this);
 
@@ -365,13 +367,14 @@ public class Casilla {
                         "Se pueden construir un máximo de " + maxEdificiosPorTipo + " hoteles en este grupo.");
                 return false;
             }
-            if (e.getTipo().equals("casa") && edificiosGrupo.getOrDefault("casa", 0) == maxEdificiosPorTipo) {
-                System.out.println("Se pueden construir un máximo de " + grupo.getNumCasillas()
-                        + " casas y hoteles en este grupo.");
-                return false;
-            }
-        }
 
+        }
+        if (e.getTipo().equals("casa") && edificiosGrupo.getOrDefault("casa", 0) == maxEdificiosPorTipo
+                && edificiosGrupo.getOrDefault("hotel", 0) == maxEdificiosPorTipo) {
+            System.out.println("Se pueden construir un máximo de " + grupo.getNumCasillas()
+                    + " casas en este grupo.");
+            return false;
+        }
         if (e.getTipo().equals("piscina")) {
             if (edificiosGrupo.getOrDefault("piscina", 0) == maxEdificiosPorTipo) {
                 System.out.println(
@@ -425,7 +428,7 @@ public class Casilla {
                     default: {
                         alquilerEdificio = 0;
                         break;
-                        
+
                     }
                 }
                 break;

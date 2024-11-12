@@ -26,12 +26,18 @@ public class Jugador {
     private int vecesEnLaCarcel = 0;
     public boolean movEspecial;
 
+    public Jugador enDeuda = null;
+
+    public float fortunaPrevia; // fortuna que ten o xogador cando antes de ter unha deuda que non pode pagar,
+                                // é o que recibirá o xogador ao que lle debe cando declare a bancarrota se a
+                                // declara
     private int cocheCalado;
 
     private boolean puedeComprar = true;
+
     // Constructor vacío. Se usará para crear la banca.
     public Jugador() {
-
+        this.nombre = "la banca";
     }
 
     /*
@@ -50,12 +56,14 @@ public class Jugador {
 
     }
 
-    public void setPuedeComprar(boolean v){
+    public void setPuedeComprar(boolean v) {
         puedeComprar = v;
     }
-    public boolean getPuedeComprar(){
+
+    public boolean getPuedeComprar() {
         return puedeComprar;
     }
+
     // Otros métodos:
     // Método para añadir una propiedad al jugador. Como parámetro, la casilla a
     // añadir.
@@ -170,6 +178,11 @@ public class Jugador {
         vueltas++;
     }
 
+    public void pagarVuelta() {
+        fortuna -= Valor.SUMA_VUELTA;
+        vueltas--;
+    }
+
     // Se sale de la cárcel y se resetea el número de tiradas en la cárcel
     public void salirCarcel() {
         tiradasCarcel = 0;
@@ -214,8 +227,11 @@ public class Jugador {
     // Pagar un alquiler a otro jugador (dueño). Devuelve True si se puede pagar la
     // deuda.
     public boolean pagar(float coste, Jugador duenho) {
-        if (coste > getFortuna()) {
-            System.out.println("No tienes suficiente dinero. (" + coste + "$)");
+        sumarGastos(coste);
+        if (getFortuna() < 0) {
+            fortunaPrevia = (coste + getFortuna());
+            System.out.println("No tienes suficiente dinero. Quedas en deuda con " + duenho.getNombre() + ".");
+            enDeuda = duenho;
             return false;
         }
         duenho.sumarFortuna(coste);
@@ -226,8 +242,12 @@ public class Jugador {
 
     // Pagar un gasto como un impuesto sin que lo reciba otro jugador.
     public boolean pagar(float coste) {
-        if (coste > getFortuna()) {
-            System.out.println("No tienes suficiente dinero.");
+
+        sumarGastos(coste);
+        if (getFortuna() < 0) {
+            fortunaPrevia = (coste + getFortuna());
+            System.out.println("No tienes suficiente dinero. Quedas en deuda con la banca.");
+            enDeuda = null;
             return false;
         }
         sumarGastosImp(coste);
@@ -245,13 +265,14 @@ public class Jugador {
     // puede pagarla, y libera al jugador.
     public boolean pagarMulta() {
         float multa = 0.25f * Valor.SUMA_VUELTA;
-        if (fortuna > multa) {
+        sumarGastos(multa);
+        if (fortuna > 0) {
             sumarGastosImp(multa);
             System.out.println("Pagas la multa y sales de la cárcel.");
             salirCarcel();
             return true;
         }
-        System.out.println("No tienes los fondos necesarios.");
+        System.out.println("No tienes los fondos necesarios para pagar la multa. Quedas en deuda con la banca");
         return false;
 
     }
