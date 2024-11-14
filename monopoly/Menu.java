@@ -43,6 +43,7 @@ public final class Menu {
         System.out.println(
                 "    /::|  |      /::\\  \\      /::|  |      /::\\  \\      /::\\  \\      /::\\  \\      /:/  / |:|  |   ");
         System.out.println(
+        tablero.getGrupo()
                 "   /:|:|  |     /:/\\:\\  \\    /:|:|  |     /:/\\:\\  \\    /:/\\:\\  \\    /:/\\:\\  \\    /:/  /  |:|  |   ");
         System.out.println(
                 "  /:/|:|__|__  /:/  \\:\\  \\  /:/|:|  |__  /:/  \\:\\  \\  /::\\~\\:\\  \\  /:/  \\:\\  \\  /:/  /   |:|__|__ ");
@@ -110,7 +111,7 @@ public final class Menu {
         }
 
         System.out.println("Partida iniciada con " + numJugadores + " jugadores.");
-        System.out.println("Empieza la partida: " + obtenerJugadorTurno().getNombre() + ".");
+        System.out.println("Empieza la partida: " +obtenerJugadorTurno().getNombre() + ".");
 
     }
 
@@ -162,7 +163,110 @@ public final class Menu {
         casillaInicio.anhadirAvatar(jugador.getAvatar());
         System.out.println("Jugador " + nombre + " con avatar " + tipoAvatar + " creado.");
 
+    }    
+
+    public void funcionesCartas(Avatar avatar, Tablero tablero, int id){
+
+        switch (id){
+            case 1:
+
+                if (avatar.getLugar().getPosicion() <= 6) //trans1 es la casilla 6
+                    avatar.moverAvatar(tablero.getPosiciones(), 6 - avatar.getLugar().getPosicion() , true);    
+                else
+                    avatar.moverAvatar(tablero.getPosiciones(), 40 - avatar.getLugar().getPosicion() + 6, true);    
+                break;
+
+            case 2:
+
+                if (avatar.getLugar().getPosicion() <= 27) //Solar15 es la casilla 27
+                    avatar.moverAvatar(tablero.getPosiciones(), 27 - avatar.getLugar().getPosicion() , false);    
+                else
+                    avatar.moverAvatar(tablero.getPosiciones(), 40 - avatar.getLugar().getPosicion() + 27, false);    
+                break;
+
+            case 3:
+
+                avatar.getJugador().sumarFortuna(500000);
+                break;
+
+            case 4:
+
+                if (avatar.getLugar().getPosicion() <= 7) //solar3 es la casilla 7
+                    avatar.moverAvatar(tablero.getPosiciones(), 7 - avatar.getLugar().getPosicion() , true);    
+                else
+                    avatar.moverAvatar(tablero.getPosiciones(), 40 - avatar.getLugar().getPosicion() + 7, true);    
+                break;
+
+            case 5:
+
+                avatar.getJugador().getAvatar().setLugar(tablero.getPosiciones(), 10);
+                avatar.getJugador().setEnCarcel(true);
+                break;
+
+            case 6:
+
+                avatar.getJugador().sumarFortuna(1000000);
+                break;
+
+            case 7:
+                
+                avatar.getJugador().sumarFortuna(-500000);
+                if (avatar.getJugador().getFortuna() < 0) {
+                            float fortunaPrevia = (500000 + avatar.getJugador().getFortuna());
+                            System.out.println("No tienes suficiente dinero. Quedas en deuda con el banco.");
+                            avatar.getJugador().enDeuda = null;
+                }
+                break;
+
+            case 8:
+                
+                avatar.getJugador().getAvatar().setLugar(tablero.getPosiciones(), 10);
+                avatar.getJugador().setEnCarcel(true);
+                break;
+
+            case 9:
+
+                avatar.moverAvatar(tablero.getPosiciones(), 40 - avatar.getLugar().getPosicion() + 1, true);    
+                break;
+
+            case 10:
+
+                avatar.getJugador().sumarFortuna(2000000);
+                break;
+            
+            case 11:
+            
+                avatar.getJugador().sumarFortuna(-1000000);
+                if (avatar.getJugador().getFortuna() < 0) {
+                            float fortunaPrevia = (1000000 + avatar.getJugador().getFortuna());
+                            System.out.println("No tienes suficiente dinero. Quedas en deuda con el banco.");
+                            avatar.getJugador().enDeuda = null;
+                }
+                break;
+
+            case 12:
+
+                for(int i=0; i<jugadores.size(); i++){
+                    if (jugadores.get(i) != avatar.getJugador()){
+                        avatar.getJugador().sumarFortuna(-200000);
+                        jugadores.get(i).sumarFortuna(200000);
+                        
+                        if (avatar.getJugador().getFortuna() < 0) {
+                            float fortunaPrevia = (200000 + avatar.getJugador().getFortuna());
+                            System.out.println("No tienes suficiente dinero. Quedas en deuda con " + jugadores.get(i).getNombre() + ".");
+                            avatar.getJugador().enDeuda = jugadores.get(i);
+                        }
+                    }
+                }
+
+                break;
+        }
+
     }
+
+
+
+
 
     /*
      * Método que interpreta el comando introducido y toma la accion
@@ -752,7 +856,7 @@ public final class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     private void listarJugadores() {
-        for (int i = 0; i < obtenerNumeroDeJugadores(); i++) {
+        for (int i = 0; i <obtenerNumeroDeJugadores(); i++) {
             descJugador(jugadores.get(i));
         }
     }
@@ -864,7 +968,7 @@ public final class Menu {
 
     private String grupoMasRentable(){
 
-        tablero.getGrupo()
+        tablero.getGrupo();
         float max = tablero.getCasilla(1).GetRentabilidad();
         int n = 1;        
 

@@ -10,5 +10,5 @@ public class Carta{
         this.id = id;
         this.texto = texto;
     }
-
+    
 }
