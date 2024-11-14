@@ -28,7 +28,7 @@ public class Tablero {
 
     }
 
-    // Método para crear todas las casillas del tablero. Formado a su vez por cuatro
+      // Método para crear todas las casillas del tablero. Formado a su vez por cuatro
     // métodos (1/lado).
     private void generarCasillas() {
         this.insertarLadoSur();
@@ -43,7 +43,7 @@ public class Tablero {
         barajaSuerte.put(3,new Carta(3, "Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€.")); 
         barajaSuerte.put(4,new Carta(4, "Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual.")); 
         barajaSuerte.put(5,new Carta(5, "Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.")); 
-        barajaSuerte.put(6,new Carta(6, "¡Has ganado el bote de la lotería! Recibe 1000000€.")); 
+        barajaSuerte.put(6,new Carta(6, "¡Has,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ganado el bote de la lotería! Recibe 1000000€.")); 
 
         barajaComunidad.put(7, new Carta(7, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
         barajaComunidad.put(8, new Carta(8, "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
