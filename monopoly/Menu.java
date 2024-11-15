@@ -43,7 +43,6 @@ public final class Menu {
         System.out.println(
                 "    /::|  |      /::\\  \\      /::|  |      /::\\  \\      /::\\  \\      /::\\  \\      /:/  / |:|  |   ");
         System.out.println(
-        tablero.getGrupo()
                 "   /:|:|  |     /:/\\:\\  \\    /:|:|  |     /:/\\:\\  \\    /:/\\:\\  \\    /:/\\:\\  \\    /:/  /  |:|  |   ");
         System.out.println(
                 "  /:/|:|__|__  /:/  \\:\\  \\  /:/|:|  |__  /:/  \\:\\  \\  /::\\~\\:\\  \\  /:/  \\:\\  \\  /:/  /   |:|__|__ ");
@@ -638,6 +637,8 @@ public final class Menu {
 
         Jugador jugador = obtenerJugadorTurno();
 
+        jugador.setTiradas(1);
+
         Avatar avatar = jugador.getAvatar();
 
         int tirada1 = dado1.hacerTirada();
@@ -712,6 +713,8 @@ public final class Menu {
 
         Jugador jugador = obtenerJugadorTurno();
 
+        jugador.setTiradas(1);
+
         Avatar avatar = jugador.getAvatar();
 
         System.out.println("Has sacado: " + tirada1 + " y " + tirada2 + ".");
@@ -778,7 +781,10 @@ public final class Menu {
     }
 
     private void lanzarDados(int valor_tiradas) {
+
         Jugador jugador = obtenerJugadorTurno();
+
+        jugador.setTiradas(1);
 
         Avatar avatar = jugador.getAvatar();
         Casilla casillainicio = avatar.getLugar();
@@ -939,54 +945,143 @@ public final class Menu {
 
     private String jugadorMasVueltas(){
 
-        int max = jugadores.get(1).getVueltas();
-        int n = 1;
+        int max = 0;
+        int n = -1;
 
         for (int i = 0; i < jugadores.size(); i++){
-            if (max < jugadores.get(i).getVueltas()){
-                max = jugadores.get(i).getVueltas();
+            int vueltas = jugadores.get(i).getVueltas();
+            if (max < vueltas){
+                max = vueltas;
                 n = i;
             }
         }
 
-        return (jugadores.get(n).getNombre());
+        if (n != -1){
+
+            return jugadores.get(n).getNombre();
+        } else {
+
+            return "Los jugadores no han dado ninguna vuelta aún.";
+        }
     }
 
     private String casillaMasRentable(){
 
-        float max = tablero.getCasilla(1).GetRentabilidad();
-        int n = 1;        
+        float max = 0;
+        int n = -1;        
 
         for (int i = 0; i < 40; i++){
-            if (max < tablero.getCasilla(i).GetRentabilidad()){
-                max = tablero.getCasilla(i).GetRentabilidad();
+            float rentabilidad = tablero.getCasilla(i).GetRentabilidad();
+            if (max < rentabilidad){
+                max = rentabilidad;
                 n = i;
             }
         }
-        return tablero.getCasilla(n).getNombre();
+
+        if (n != -1){
+
+            return tablero.getCasilla(n).getNombre();
+        } else {
+
+            return "No hay casillas rentables aún.";
+        }
     }
 
     private String grupoMasRentable(){
 
-        tablero.getGrupo();
-        float max = tablero.getCasilla(1).GetRentabilidad();
-        int n = 1;        
+        double max = 0;
+        Grupo grupo_mas_rentable = null;
 
+        for (Grupo grupo : tablero.getGrupos()){
+            double rentabilidad_grupo = grupo.getRentabilidadGrupo();
+            if (max < rentabilidad_grupo){
+                max = rentabilidad_grupo;
+                grupo_mas_rentable = grupo;
+            }
+        }
+
+        if (grupo_mas_rentable != null) {
+
+            return grupo_mas_rentable.getNombre();
+        } else {
+
+            return "No hay grupos rentables aún.";
+        }
+    }
+
+    public String casillaMasFrecuentada(){
+
+        int max = 0;
+        int n = -1;
+    
         for (int i = 0; i < 40; i++){
-            if (max < tablero.getCasilla(i).GetRentabilidad()){
-                max = tablero.getCasilla(i).GetRentabilidad();
+            int visitas = tablero.getCasilla(i).getVisitas();
+            if (max < visitas){
+                max = visitas;
                 n = i;
             }
         }
-        return tablero.getCasilla(n).getNombre();
+    
+        if (n != -1){
+
+            return tablero.getCasilla(n).getNombre();
+        } else {
+
+            return "No hay casillas visitadas aún.";
+        }
     }
+    
+    public String jugadorMasVecesDados(){
+
+        Jugador jugador_mas_veces_dados = null;
+        int max = 0;
+
+        for (int i = 0; i < jugadores.size(); i++){
+            int lanzamientos = jugadores.get(i).getTiradas();
+    
+            if (max < lanzamientos) {
+                max = lanzamientos;
+                jugador_mas_veces_dados = jugadores.get(i);
+            }
+        }
+    
+        if (jugador_mas_veces_dados != null) {
+
+            return jugador_mas_veces_dados.getNombre();
+        } else {
+
+            return "Nadie ha lanzados dados aún.";
+        }
+    }
+    
+    public String jugadorEnCabeza(){
+
+        Jugador jugador_en_cabeza = null;
+        double max = 9543076.28f;
+    
+        for (int i = 0; i < jugadores.size(); i++){
+            float fortuna = jugadores.get(i).getEnCabeza();
+    
+            if (max < fortuna) {
+                max = fortuna;
+                jugador_en_cabeza = jugadores.get(i);
+            }
+        }
+    
+        if (jugador_en_cabeza != null) {
+
+            return jugador_en_cabeza.getNombre();
+        } else {
+            return "No hay jugadores en cabeza.";
+        }
+    }    
 
     private void estadisticas(){
         System.out.println("casillaMasRentable: " + casillaMasRentable());
         System.out.println("grupoMasRentable: " + grupoMasRentable());
-        System.out.println("casillaMasFrecuentada: " + );
+        System.out.println("casillaMasFrecuentada: " + casillaMasFrecuentada());
         System.out.println("jugadorMasVueltas: " + jugadorMasVueltas());
-        System.out.println("jugadorMasVecesDados: " + );
-        System.out.println("jugadorEnCabeza: " + );
+        System.out.println("jugadorMasVecesDados: " + jugadorMasVecesDados());
+        System.out.println("jugadorEnCabeza: " + jugadorEnCabeza());
     }
 }

@@ -22,6 +22,7 @@ public class Casilla {
     private ArrayList<Avatar> avatares; // Avatares que están situados en la casilla.
     private ArrayList<Edificio> edificios;
     private float rentable = 0; //Rentabilidad de las casillas
+    private int visitas = 0;
 
     private boolean hipotecada = false; // Indica si la casilla está actualmente hipotecada.
 
@@ -609,6 +610,14 @@ public class Casilla {
 
     public void sumarRentable(float pago){
         this.rentable += pago;
+    }
+
+    public int getVisitas(){
+        return visitas;
+    }
+
+    public void setVisitas(int p){
+        this.visitas += p;
     }
 
 }

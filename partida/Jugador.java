@@ -26,6 +26,8 @@ public class Jugador {
     private int vecesEnLaCarcel = 0;
     public boolean movEspecial;
 
+    public int tiradas = 0;
+
     public Jugador enDeuda = null;
 
     public float fortunaPrevia; // fortuna que ten o xogador cando antes de ter unha deuda que non pode pagar,
@@ -290,6 +292,18 @@ public class Jugador {
         System.out.println("Pasar por casilla de salida: " + pasarPorCasillaDeSalida);
         System.out.println("Premios por inversiones o bote: " + premiosInversionesOBote);
         System.out.println("Veces en la cárcel: " + vecesEnLaCarcel);
+    }
+
+    public int getTiradas(){
+        return tiradas;
+    }
+
+    public void setTiradas(int p){
+        this.tiradas += p;
+    }
+
+    public float getEnCabeza(){
+        return (fortuna + dineroInvertido);
     }
 
     /*
