@@ -107,9 +107,18 @@ class Grupo {
         return contador;
     }
 
-    public getRentabilidadGrupo();
+    public double getRentabilidadGrupo(){
 
-}
+        double rentabilidad = 0;
+
+        for (Casilla casilla : miembros){
+            rentabilidad += casilla.GetRentabilidad();
+        }
+
+        return rentabilidad;
+    }
+
+
     public void descEdificios() {
         
         for (Casilla casilla : miembros) {
