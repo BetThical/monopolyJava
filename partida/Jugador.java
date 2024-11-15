@@ -228,7 +228,7 @@ public class Jugador {
     // deuda.
     public boolean pagar(float coste, Jugador duenho) {
         sumarGastos(coste);
-        if (getFortuna() < 0) {
+                     if (getFortuna() < 0) {
             fortunaPrevia = (coste + getFortuna());
             System.out.println("No tienes suficiente dinero. Quedas en deuda con " + duenho.getNombre() + ".");
             enDeuda = duenho;
