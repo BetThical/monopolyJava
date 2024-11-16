@@ -263,6 +263,15 @@ public class Tablero {
         return null;
     }
 
+    public HashMap<Integer,Carta> getSuerte() {
+        return barajaSuerte;
+    }
+
+    public HashMap<Integer,Carta> getComunidad() {
+        return barajaComunidad;
+    }
+
+
     public ArrayList<ArrayList<Casilla>> getPosiciones() {
         return posiciones;
     }

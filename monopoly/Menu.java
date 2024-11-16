@@ -209,7 +209,7 @@ public final class Menu {
 
             case 7:
                 
-                avatar.getJugador().sumarFortuna(-500000);
+                avatar.getJugador().sumarGastos(500000);
                 if (avatar.getJugador().getFortuna() < 0) {
                             float fortunaPrevia = (500000 + avatar.getJugador().getFortuna());
                             System.out.println("No tienes suficiente dinero. Quedas en deuda con el banco.");
@@ -235,7 +235,7 @@ public final class Menu {
             
             case 11:
             
-                avatar.getJugador().sumarFortuna(-1000000);
+                avatar.getJugador().sumarGastos(1000000);
                 if (avatar.getJugador().getFortuna() < 0) {
                             float fortunaPrevia = (1000000 + avatar.getJugador().getFortuna());
                             System.out.println("No tienes suficiente dinero. Quedas en deuda con el banco.");
@@ -247,7 +247,7 @@ public final class Menu {
 
                 for(int i=0; i<jugadores.size(); i++){
                     if (jugadores.get(i) != avatar.getJugador()){
-                        avatar.getJugador().sumarFortuna(-200000);
+                        avatar.getJugador().sumarGastos(200000);
                         jugadores.get(i).sumarFortuna(200000);
                         
                         if (avatar.getJugador().getFortuna() < 0) {
@@ -542,6 +542,55 @@ public final class Menu {
             comando = comando.replace("estadisticas ", "");
             Jugador jugadorstats = getJugador(comando);
             jugadorstats.estadisticas();
+
+        } else if (comando.contains("coger carta")){
+            
+            if (comando.contains("suerte")){
+                
+                if (casilla.getTipo() == "suerte"){
+
+                    HashMap<Integer,Carta> suerte = tablero.getSuerte();
+
+                    for (int i = 1; i <= suerte.size(); i++) {
+                        Carta carta = suerte.get(i);
+                        if (carta != null) {
+                            System.out.println(i + ": " + carta.getCarta());
+                        } else {
+                            System.out.println(i + ": Carta no disponible.");
+                        }
+                    }
+                    System.out.println("Escoge una carta por su numero: ");
+                    int opc = sc.nextInt();
+                    funcionesCartas(jugador.getAvatar(), tablero, opc);
+
+                } else {
+                    System.out.println("No estas en una casilla de suerte.");
+                }
+            }
+
+            else if (comando.contains("comunidad")){
+
+
+                if (casilla.getTipo() == "comunidad"){
+                    HashMap<Integer,Carta> comunidad = tablero.getComunidad();
+                    for (int i = 6; i <= 12; i++) {
+                        Carta carta = comunidad.get(i);
+                        if (carta != null) {
+                            System.out.println(i + ": " + carta.getCarta());
+                        } else {
+                            System.out.println(i + ": Carta no disponible.");
+                        }
+                    }
+                    System.out.println("Escoge una carta por su numero: ");
+                    int opc = sc.nextInt();
+                    funcionesCartas(jugador.getAvatar(), tablero, opc);
+
+                } else {
+                    System.out.println("No estas en una casilla de comunidad.");
+                }
+            }
+
+
         }
 
         else

@@ -10,5 +10,9 @@ public class Carta{
         this.id = id;
         this.texto = texto;
     }
+
+    public String getCarta(){
+        return texto;
+    }
     
 }
