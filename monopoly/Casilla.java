@@ -164,6 +164,10 @@ public class Casilla {
         if (getNombre().equals("IrCarcel")) // Casilla 30 (ir a carcel)
             System.out.println("El jugador " + actual.getNombre() + " va a la cárcel.");
 
+        if (getTipo().equals("comunidad") || getTipo().equals("suerte")) {
+            System.out.println("El jugador " + actual.getNombre() + " ha caído en una casilla de " + getTipo() + ". Para coger carta: 'carta'.");
+            return true;
+        }
         return true;
 
     }
@@ -215,7 +219,7 @@ public class Casilla {
      */
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
         banca.sumarFortuna(valor);
-        solicitante.sumarGastosAlq(valor);
+        solicitante.sumarGastosProp(valor);
         solicitante.sumarGastos(valor);
 
         this.duenho = solicitante;
@@ -258,12 +262,12 @@ public class Casilla {
             output.append("- Dueño: ").append(getduenhoJugador().getNombre()).append("\n");
             output.append("- Grupo: ").append(getGrupo().getColor()).append("\n");
             output.append("- Valor: ").append(getValor()).append("\n");
-            output.append("- Alquiler: ").append(getImpuesto()).append("\n");
+            output.append("- Alquiler: ").append(calcular_coste(0)).append("\n");
             if (hipotecada)
                 output.append("[Hipotecada]\n");
         } else if (getTipo().equals("transporte")) {
             output.append("- Valor: ").append(getValor()).append("\n");
-            output.append("- Alquiler: ").append(getImpuesto()).append("\n");
+            output.append("- Alquiler: ").append(calcular_coste(0)).append("\n");
         } else if (getTipo().equals("imposto")) {
             output.append("- Imposto: ").append(getImpuesto()).append("\n");
         } else if (getNombre().equals("parking")) {
@@ -354,7 +358,7 @@ public class Casilla {
         HashMap<String, Integer> edificiosGrupo = grupo.contarEdificiosPorTipo();
         HashMap<String, Integer> edificiosCasilla = contarEdificiosPorTipo();
         int maxEdificiosPorTipo = grupo.getNumCasillas();
-        if (edificiosCasilla.getOrDefault("casa", 0) == 4 && e.getTipo().equals("casa")) {
+        if (edificiosCasilla.getOrDefault("casa", 0) >= 4 && e.getTipo().equals("casa")) {
             System.out.println("Se pueden construir un máximo de 4 casas en un solar.");
             return false;
         }
@@ -364,45 +368,51 @@ public class Casilla {
             return false;
         }
 
-        if (edificiosGrupo.getOrDefault("hotel", 0) == maxEdificiosPorTipo) {
+        if (edificiosGrupo.getOrDefault("hotel", 0) >= maxEdificiosPorTipo) {
             if (e.getTipo().equals("hotel")) {
-                System.out.println(
-                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " hoteles en este grupo.");
-                return false;
+            System.out.println(
+                "Se pueden construir un máximo de " + maxEdificiosPorTipo + " hoteles en este grupo.");
+            return false;
             }
-
         }
-        if (e.getTipo().equals("casa") && edificiosGrupo.getOrDefault("casa", 0) == maxEdificiosPorTipo
-                && edificiosGrupo.getOrDefault("hotel", 0) == maxEdificiosPorTipo) {
+
+        if (e.getTipo().equals("casa") && edificiosGrupo.getOrDefault("casa", 0) >= maxEdificiosPorTipo
+            && edificiosGrupo.getOrDefault("hotel", 0) >= maxEdificiosPorTipo) {
             System.out.println("Se pueden construir un máximo de " + grupo.getNumCasillas()
-                    + " casas en este grupo.");
+                + " casas en este grupo.");
             return false;
         }
+
+        if (e.getTipo().equals("hotel") && edificiosGrupo.getOrDefault("casa", 0)-4 > maxEdificiosPorTipo
+            && edificiosGrupo.getOrDefault("hotel", 0) + 1 >= maxEdificiosPorTipo) {
+            System.out.println("No se puede construir un hotel porque se superaría el número máximo de casas permitido. (se permite superar este límite hasta construir los hoteles)");
+            return false;
+        }
+
         if (e.getTipo().equals("piscina")) {
-            if (edificiosGrupo.getOrDefault("piscina", 0) == maxEdificiosPorTipo) {
-                System.out.println(
-                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " piscinas en este grupo.");
-                return false;
+            if (edificiosGrupo.getOrDefault("piscina", 0) >= maxEdificiosPorTipo) {
+            System.out.println(
+                "Se pueden construir un máximo de " + maxEdificiosPorTipo + " piscinas en este grupo.");
+            return false;
             }
             if (edificiosCasilla.getOrDefault("casa", 0) < 2 || edificiosCasilla.getOrDefault("hotel", 0) < 1) {
-                System.out.println(
-                        "Para construir una piscina, se deben construir antes al menos 2 casas y 1 hotel.");
-                return false;
+            System.out.println(
+                "Para construir una piscina, se deben construir antes al menos 2 casas y 1 hotel.");
+            return false;
             }
-
         }
 
         if (e.getTipo().equals("pista")) {
             if (edificiosGrupo.getOrDefault("pista", 0) == grupo.getNumCasillas()) {
-                System.out.println(
-                        "Se pueden construir un máximo de " + grupo.getNumCasillas()
-                                + " pistas de deporte en este grupo.");
-                return false;
+            System.out.println(
+                "Se pueden construir un máximo de " + grupo.getNumCasillas()
+                    + " pistas de deporte en este grupo.");
+            return false;
             }
             if (edificiosCasilla.getOrDefault("hotel", 0) < 2) {
-                System.out.println(
-                        "Para construir una pista de deporte, se deben construir antes al menos 2 hoteles.");
-                return false;
+            System.out.println(
+                "Para construir una pista de deporte, se deben construir antes al menos 2 hoteles.");
+            return false;
             }
         }
         // System.out.println("Se puede construir el edificio " + e.getTipo() + " en
@@ -449,6 +459,7 @@ public class Casilla {
         this.edificios.add(e);
         // duenho.anhadirEdificio(e);
         duenho.sumarGastos(valorEdificio(e.getTipo()));
+        duenho.sumarGastosProp(valorEdificio(e.getTipo()));
         if (e.getTipo().equals("hotel")) {
             destruirEdificio("casa");
             destruirEdificio("casa");
@@ -474,10 +485,10 @@ public class Casilla {
         HashMap<String, Integer> contador = new HashMap<>();
 
         for (Edificio edificio : edificios) {
-            String tipo = edificio.getTipo();
+            String tipoCasilla = edificio.getTipo();
 
             // Incrementar el contador para el tipo de edificio
-            contador.put(tipo, contador.getOrDefault(tipo, 0) + 1);
+            contador.put(tipoCasilla, contador.getOrDefault(tipoCasilla, 0) + 1);
         }
 
         return contador;

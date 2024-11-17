@@ -84,7 +84,14 @@ public class Jugador {
     // Como parámetro se pide el valor a añadir. Si hay que restar fortuna, se
     // pasaría un valor negativo.
     public void sumarFortuna(float valor) {
+        float fortunaInicial = this.getFortuna();
         this.fortuna += valor;
+        if (fortunaInicial != this.getFortuna() && !"la banca".equals(this.nombre)) {
+            float diferencia = this.getFortuna() - fortunaInicial;
+            String signo = diferencia > 0 ? "+" : "";
+            String color = diferencia > 0 ? Valor.GREEN : Valor.RED;
+            System.out.println(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a " + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
+        }
     }
 
     public void calarCoche() {
@@ -175,13 +182,13 @@ public class Jugador {
     // Método al dar una vuelta completa al tablero, cobrando la cantidad
     // correspondiente.
     public void sumarVuelta() {
-        fortuna += Valor.SUMA_VUELTA;
+        sumarFortuna(Valor.SUMA_VUELTA);
         sumarCobreSal(Valor.SUMA_VUELTA);
         vueltas++;
     }
 
     public void pagarVuelta() {
-        fortuna -= Valor.SUMA_VUELTA;
+        sumarGastos(Valor.SUMA_VUELTA);
         vueltas--;
     }
 
@@ -229,6 +236,7 @@ public class Jugador {
     // Pagar un alquiler a otro jugador (dueño). Devuelve True si se puede pagar la
     // deuda.
     public boolean pagar(float coste, Jugador duenho) {
+        
         sumarGastos(coste);
                      if (getFortuna() < 0) {
             fortunaPrevia = (coste + getFortuna());
@@ -238,6 +246,7 @@ public class Jugador {
         }
         duenho.sumarFortuna(coste);
         sumarGastosAlq(coste);
+        duenho.sumarCobreAlq(coste);
         System.out.println(getNombre() + " ha pagado " + coste + "€ de alquiler a " + duenho.getNombre() + ".");
         return true;
     }
