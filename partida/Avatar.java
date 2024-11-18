@@ -15,7 +15,7 @@ public class Avatar {
     private int tiradasCoche;
     private boolean haComprado;
     private int[] vecesCaidasCasilla;
-
+    public int puedeCogerCarta = 0; // 0 si no puede coger carta, 1 si puede coger carta de su casilla, 2 si puede coger
     // Constructor vacío
     public Avatar() {
     }
@@ -49,6 +49,7 @@ public class Avatar {
      * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada, boolean cobrarSalida) {
+        puedeCogerCarta = 0;
         ultimoMovementoFuiVoltaMultiploDe4 = false;
         int posicionactual = lugar.getPosicion();
 
@@ -78,11 +79,13 @@ public class Avatar {
     }
 
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, Casilla destino, boolean cobrarSalida) {
+        puedeCogerCarta = 0;
         int valorTirada = (destino.getPosicion() - lugar.getPosicion());
         moverAvatar(casillas, valorTirada, cobrarSalida);
     }
 
     public void moverPelota(ArrayList<ArrayList<Casilla>> casillas, int valorTirada, Jugador banca) {
+        puedeCogerCarta = 0;
         ultimoMovementoFuiVoltaMultiploDe4 = false;
         int posicionActual = lugar.getPosicion();
         lugar.eliminarAvatar(this);
@@ -116,6 +119,8 @@ public class Avatar {
                 System.out.println(
                         "El avatar " + this.getID() + " se detiene en la casilla " + casillaActual.getNombre());
 
+                        
+
                 if (!casillaActual.evaluarCasilla(jugador, banca, valorTirada)) {
                     System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
                     return;
@@ -135,12 +140,14 @@ public class Avatar {
         casillaFinal.anhadirAvatar(this);
         vecesCaidasCasilla[posicion] += 1;
         this.lugar = casillaFinal;
+
         // System.out.println("El avatar " + this.getID() + " avanza " + valorTirada + "
         // posiciones, desde "
         // + lugar.getNombre() + " hasta " + casillaFinal.getNombre() + ".");
     }
 
     public void moverCoche(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+        puedeCogerCarta = 0;    
         ultimoMovementoFuiVoltaMultiploDe4 = false;
         int posicionactual = lugar.getPosicion();
 

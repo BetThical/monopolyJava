@@ -23,6 +23,8 @@ public final class Menu {
     private final Scanner sc = new Scanner(System.in);
     private Edificio e;
 
+    private int puedeCogerCarta; //0 - no, 1 - suerte, 2 - comunidad
+
     public Jugador getBanca() {
         return banca;
     }
@@ -138,6 +140,13 @@ public final class Menu {
                 }
                 comando = sc.nextLine();
                 analizarComando(comando);
+                
+                if (jugador.getAvatar().puedeCogerCarta == 2) {
+                    System.out.println("Puedes coger una carta de suerte.");
+                } else if (jugador.getAvatar().puedeCogerCarta == 1) {
+                    System.out.println("Puedes coger una carta de comunidad.");
+                }
+
                 if (jugadores.size() < 2) {
                     System.out.println("El único jugador que queda es " + obtenerJugadorTurno().getNombre() + "!");
                     acabarPartida = true;
@@ -271,6 +280,25 @@ public final class Menu {
 
                 break;
         }
+        Casilla casillafinal = avatar.getLugar();
+
+        if (!casillafinal.evaluarCasilla(jugador, banca, 0)) { //tirada non importa porque ningunha carta che manda a servicio
+            System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
+        }
+
+
+        if (avatar.get4Voltas() == true) {
+            boolean condicion = true;
+            for (int i = 0; i < jugadores.size(); i++) {
+                if (jugadores.get(i).getVueltas() < jugador.getVueltas()) {
+                    condicion = false;
+                }
+            }
+            if (condicion == true) {
+                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de las propiedades aumenta."));
+                tablero.aumentarCoste(banca);
+            }
+        }
 
     }
 
@@ -317,6 +345,10 @@ public final class Menu {
             System.out.println(
                     "Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
         } // lanzar dados
+        
+        else if (comando.contains("lanzar dados") && jugador.getCocheCalado()>0){
+            System.out.println("Tu coche está calado. No puedes lanzar los dados. (Turnos restantes: " + (jugador.getCocheCalado()-1) + ")");
+        }
         else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
 
@@ -539,9 +571,7 @@ public final class Menu {
 
         } else if (comando.contains("carta")) {
 
-            if (casilla.getNombre().equals("Suerte")) {
-
-                if ("suerte".equals(casilla.getTipo())) {
+            if (jugador.getAvatar().puedeCogerCarta == 2) {
 
                     HashMap<Integer, Carta> suerte = tablero.getSuerte();
 
@@ -559,8 +589,8 @@ public final class Menu {
                     System.out.println("Carta seleccionada: " + suerte.get(opc).getCarta());
                     funcionesCartas(jugador.getAvatar(), tablero, opc);
 
-                }
-            } else if (casilla.getNombre().equals("Caja")) {
+                
+            } else if (jugador.getAvatar().puedeCogerCarta == 1) {
                 HashMap<Integer, Carta> comunidad = tablero.getComunidad();
                 for (int i = 7; i <= 12; i++) {
                     Carta carta = comunidad.get(i);
@@ -577,6 +607,9 @@ public final class Menu {
 
                 funcionesCartas(jugador.getAvatar(), tablero, opc);
 
+            }
+            else {
+                System.out.println("No puedes coger cartas.");
             }
 
         } else {

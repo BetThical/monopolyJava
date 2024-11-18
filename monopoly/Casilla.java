@@ -165,7 +165,9 @@ public class Casilla {
             System.out.println("El jugador " + actual.getNombre() + " va a la cárcel.");
 
         if (getTipo().equals("comunidad") || getTipo().equals("suerte")) {
-            System.out.println("El jugador " + actual.getNombre() + " ha caído en una casilla de " + getTipo() + ". Para coger carta: 'carta'.");
+            if (getTipo().equals("comunidad")) actual.getAvatar().puedeCogerCarta = 1;
+            if (getTipo().equals("suerte")) actual.getAvatar().puedeCogerCarta = 2;
+
             return true;
         }
         return true;
