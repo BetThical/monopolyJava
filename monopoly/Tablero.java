@@ -1,9 +1,8 @@
 package monopoly;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Collection;
-
+import java.util.HashMap;
 import partida.*;
 
 public class Tablero {
@@ -30,7 +29,7 @@ public class Tablero {
 
     }
 
-    // Método para crear todas las casillas del tablero. Formado a su vez por cuatro
+      // Método para crear todas las casillas del tablero. Formado a su vez por cuatro
     // métodos (1/lado).
     private void generarCasillas() {
         this.insertarLadoSur();
@@ -262,6 +261,15 @@ public class Tablero {
         }                                       
         return null;
     }
+
+    public HashMap<Integer,Carta> getSuerte() {
+        return barajaSuerte;
+    }
+
+    public HashMap<Integer,Carta> getComunidad() {
+        return barajaComunidad;
+    }
+
 
     public ArrayList<ArrayList<Casilla>> getPosiciones() {
         return posiciones;

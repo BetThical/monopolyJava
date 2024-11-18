@@ -11,4 +11,8 @@ public class Carta{
         this.texto = texto;
     }
 
+    public String getCarta(){
+        return texto;
+    }
+    
 }

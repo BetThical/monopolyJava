@@ -75,6 +75,7 @@ public class Avatar {
         nuevaCasilla.anhadirAvatar(this);
         vecesCaidasCasilla[nuevaposicion] += 1;
         this.lugar = nuevaCasilla;
+        nuevaCasilla.setVisitas(1);
     }
 
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, Casilla destino, boolean cobrarSalida) {
