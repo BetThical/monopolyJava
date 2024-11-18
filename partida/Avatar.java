@@ -53,9 +53,15 @@ public class Avatar {
         int posicionactual = lugar.getPosicion();
 
         lugar.eliminarAvatar(this);
-        if (posicionactual + valorTirada > 40 && cobrarSalida) {
-            System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
-            jugador.sumarVuelta();
+        if (posicionactual + valorTirada > 40) {
+            if (cobrarSalida) {
+                System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
+            }
+            else{
+                System.out.println("Pasas por salida y NO COBRAS NADA.");
+
+            }
+            jugador.sumarVuelta(cobrarSalida);
             if (jugador.getVueltas() % 4 == 0) {
                 ultimoMovementoFuiVoltaMultiploDe4 = true;
             }
@@ -88,7 +94,7 @@ public class Avatar {
         boolean detenerMovimiento = false;
         if (posicion + valorTirada > 40) {
             System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
-            jugador.sumarVuelta();
+            jugador.sumarVuelta(true);
             if (jugador.getVueltas() % 4 == 0) {
                 ultimoMovementoFuiVoltaMultiploDe4 = true;
             }
@@ -146,7 +152,7 @@ public class Avatar {
         lugar.eliminarAvatar(this);
         if (posicionactual + valorTirada > 40) {
             System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
-            jugador.sumarVuelta();
+            jugador.sumarVuelta(true);
             if (jugador.getVueltas() % 4 == 0) {
                 ultimoMovementoFuiVoltaMultiploDe4 = true;
             }

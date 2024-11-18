@@ -21,7 +21,7 @@ public class Casilla {
     private float hipoteca; // Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; // Avatares que están situados en la casilla.
     private ArrayList<Edificio> edificios;
-    private float rentable = 0; //Rentabilidad de las casillas
+    private float rentable = 0; // Rentabilidad de las casillas
 
     private boolean hipotecada = false; // Indica si la casilla está actualmente hipotecada.
 
@@ -371,6 +371,12 @@ public class Casilla {
             }
 
         }
+
+        if (edificiosGrupo.getOrDefault("hotel", 0) == (maxEdificiosPorTipo - 1) && e.getTipo().equals("hotel")
+                && edificiosGrupo.getOrDefault("casa", 0) > maxEdificiosPorTipo) {
+            System.out.println("Construir este hotel haría que se superase el número máximo de casas en esta casilla.");
+            return false;
+        }
         if (e.getTipo().equals("casa") && edificiosGrupo.getOrDefault("casa", 0) == maxEdificiosPorTipo
                 && edificiosGrupo.getOrDefault("hotel", 0) == maxEdificiosPorTipo) {
             System.out.println("Se pueden construir un máximo de " + grupo.getNumCasillas()
@@ -603,11 +609,11 @@ public class Casilla {
         this.hipotecada = h;
     }
 
-    public float GetRentabilidad(){
+    public float GetRentabilidad() {
         return rentable;
     }
 
-    public void sumarRentable(float pago){
+    public void sumarRentable(float pago) {
         this.rentable += pago;
     }
 

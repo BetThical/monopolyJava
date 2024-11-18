@@ -350,7 +350,8 @@ public final class Menu {
 
         // declarar bancarrota
         else if (comando.equals("bancarrota")) {
-            if (jugador.enDeuda==null) jugador.enDeuda = banca;
+            if (jugador.enDeuda == null)
+                jugador.enDeuda = banca;
             System.out.println("Las propiedades y fortuna de " + jugador.getNombre() + " pasan a pertenecer a "
                     + jugador.enDeuda.getNombre() + ".");
             bancarrota(jugador.enDeuda);
@@ -433,7 +434,7 @@ public final class Menu {
                     aHipotecar.hipotecar();
                 }
             }
-        } else if (comando.equals("estadisticas")){
+        } else if (comando.equals("estadisticas")) {
             estadisticas();
         } else if (comando.contains("estadisticas ")) {
             comando = comando.replace("estadisticas ", "");
@@ -813,10 +814,8 @@ public final class Menu {
         array_propiedades = jugadorTurno.getPropiedades();
 
         for (int i = 0; i < array_propiedades.size(); i++) {
-
-            if (jugador == banca) {
-                array_propiedades.get(i).getEdificios().clear();
-            } else {
+            array_propiedades.get(i).getEdificios().clear();
+            if (jugador != banca) {
                 jugador.anhadirPropiedad(array_propiedades.get(i));
                 jugador.sumarFortuna(jugadorTurno.fortunaPrevia);
                 System.out.println("El jugador " + jugador.getNombre() + " recibe los " + jugadorTurno.fortunaPrevia
@@ -833,13 +832,13 @@ public final class Menu {
 
     }
 
-    private String jugadorMasVueltas(){
+    private String jugadorMasVueltas() {
 
         int max = jugadores.get(1).getVueltas();
         int n = 1;
 
-        for (int i = 0; i < jugadores.size(); i++){
-            if (max < jugadores.get(i).getVueltas()){
+        for (int i = 0; i < jugadores.size(); i++) {
+            if (max < jugadores.get(i).getVueltas()) {
                 max = jugadores.get(i).getVueltas();
                 n = i;
             }
@@ -848,13 +847,13 @@ public final class Menu {
         return (jugadores.get(n).getNombre());
     }
 
-    private String casillaMasRentable(){
+    private String casillaMasRentable() {
 
         float max = tablero.getCasilla(1).GetRentabilidad();
-        int n = 1;        
+        int n = 1;
 
-        for (int i = 0; i < 40; i++){
-            if (max < tablero.getCasilla(i).GetRentabilidad()){
+        for (int i = 0; i < 40; i++) {
+            if (max < tablero.getCasilla(i).GetRentabilidad()) {
                 max = tablero.getCasilla(i).GetRentabilidad();
                 n = i;
             }
@@ -862,14 +861,13 @@ public final class Menu {
         return tablero.getCasilla(n).getNombre();
     }
 
-    private String grupoMasRentable(){
+    private String grupoMasRentable() {
 
-        tablero.getGrupo()
         float max = tablero.getCasilla(1).GetRentabilidad();
-        int n = 1;        
+        int n = 1;
 
-        for (int i = 0; i < 40; i++){
-            if (max < tablero.getCasilla(i).GetRentabilidad()){
+        for (int i = 0; i < 40; i++) {
+            if (max < tablero.getCasilla(i).GetRentabilidad()) {
                 max = tablero.getCasilla(i).GetRentabilidad();
                 n = i;
             }
@@ -877,12 +875,12 @@ public final class Menu {
         return tablero.getCasilla(n).getNombre();
     }
 
-    private void estadisticas(){
+    private void estadisticas() {
         System.out.println("casillaMasRentable: " + casillaMasRentable());
         System.out.println("grupoMasRentable: " + grupoMasRentable());
-        System.out.println("casillaMasFrecuentada: " + );
+        System.out.println("casillaMasFrecuentada: ");
         System.out.println("jugadorMasVueltas: " + jugadorMasVueltas());
-        System.out.println("jugadorMasVecesDados: " + );
-        System.out.println("jugadorEnCabeza: " + );
+        System.out.println("jugadorMasVecesDados: ");
+        System.out.println("jugadorEnCabeza: ");
     }
 }

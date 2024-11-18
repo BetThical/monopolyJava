@@ -172,9 +172,11 @@ public class Jugador {
 
     // Método al dar una vuelta completa al tablero, cobrando la cantidad
     // correspondiente.
-    public void sumarVuelta() {
-        fortuna += Valor.SUMA_VUELTA;
-        sumarCobreSal(Valor.SUMA_VUELTA);
+    public void sumarVuelta(boolean cobrar) {
+        if (cobrar) {
+            fortuna += Valor.SUMA_VUELTA;
+            sumarCobreSal(Valor.SUMA_VUELTA);
+        }
         vueltas++;
     }
 

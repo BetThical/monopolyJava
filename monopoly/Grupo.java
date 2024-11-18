@@ -107,25 +107,21 @@ class Grupo {
         return contador;
     }
 
-<<<<<<< HEAD
-    public getRentabilidadGrupo()
+    public void getRentabilidadGrupo() {
 
-}
-=======
+    }
+
     public void descEdificios() {
-        
         for (Casilla casilla : miembros) {
-            if (!casilla.getEdificios().isEmpty()) {
-                System.out.println("Propiedad: " + casilla.getNombre());
-                for (Edificio casa : casilla.getEdificios()) {
-                    System.out.println("[" + casa.getID() + "], ");
-                }
-                System.out.println("Alquiler: " + casilla.calcular_coste(0));
+            System.out.println("Propiedad: " + casilla.getNombre());
+            for (Edificio casa : casilla.getEdificios()) {
+                System.out.println("[" + casa.getID() + "], ");
             }
+            System.out.println("Alquiler: " + casilla.calcular_coste(0));
         }
         imprimirEdificiosDisponibles();
     }
->>>>>>> dd570207403e066edacd137a7c18edfe48de8d3c
+
 
     public void imprimirEdificiosDisponibles() {
         // Obtiene la cuenta actual de cada tipo de edificio en el grupo
