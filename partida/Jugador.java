@@ -90,7 +90,8 @@ public class Jugador {
             float diferencia = this.getFortuna() - fortunaInicial;
             String signo = diferencia > 0 ? "+" : "";
             String color = diferencia > 0 ? Valor.GREEN : Valor.RED;
-            System.out.println(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a " + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
+            System.out.println(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
+                    + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
         }
     }
 
@@ -181,9 +182,11 @@ public class Jugador {
 
     // Método al dar una vuelta completa al tablero, cobrando la cantidad
     // correspondiente.
-    public void sumarVuelta() {
-        sumarFortuna(Valor.SUMA_VUELTA);
-        sumarCobreSal(Valor.SUMA_VUELTA);
+    public void sumarVuelta(boolean cobrar) {
+        if (cobrar) {
+            sumarFortuna(Valor.SUMA_VUELTA);
+            sumarCobreSal(Valor.SUMA_VUELTA);
+        }
         vueltas++;
     }
 
@@ -236,9 +239,9 @@ public class Jugador {
     // Pagar un alquiler a otro jugador (dueño). Devuelve True si se puede pagar la
     // deuda.
     public boolean pagar(float coste, Jugador duenho) {
-        
+
         sumarGastos(coste);
-                     if (getFortuna() < 0) {
+        if (getFortuna() < 0) {
             fortunaPrevia = (coste + getFortuna());
             System.out.println("No tienes suficiente dinero. Quedas en deuda con " + duenho.getNombre() + ".");
             enDeuda = duenho;
@@ -303,15 +306,15 @@ public class Jugador {
         System.out.println("Veces en la cárcel: " + vecesEnLaCarcel);
     }
 
-    public int getTiradas(){
+    public int getTiradas() {
         return tiradas;
     }
 
-    public void setTiradas(int p){
+    public void setTiradas(int p) {
         this.tiradas += p;
     }
 
-    public float getEnCabeza(){
+    public float getEnCabeza() {
         return (fortuna + dineroInvertido);
     }
 

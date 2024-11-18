@@ -226,8 +226,8 @@ public final class Menu {
                 break;
 
             case 8:
-
-                avatar.setLugar(tablero.getPosiciones(), 10);
+                System.out.println("Vas a la cárcel.");
+                avatar.moverAvatar(tablero.getPosiciones(), Math.abs(10 - avatar.getLugar().getPosicion() + 1), false);
                 jugador.setEnCarcel(true);
                 break;
 

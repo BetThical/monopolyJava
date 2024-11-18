@@ -59,7 +59,6 @@ public class Avatar {
             }
             else{
                 System.out.println("Pasas por salida y NO COBRAS NADA.");
-
             }
             jugador.sumarVuelta(cobrarSalida);
             if (jugador.getVueltas() % 4 == 0) {
