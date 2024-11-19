@@ -986,6 +986,7 @@ public final class Menu {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
         obtenerJugadorTurno().setPuedeComprar(true);
         lanzamientos = 0;
+        dobles_seguidos_check = false;
     }
 
     private void bancarrota(Jugador jugador) {
