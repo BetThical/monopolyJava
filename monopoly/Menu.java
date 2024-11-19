@@ -23,7 +23,7 @@ public final class Menu {
     private final Scanner sc = new Scanner(System.in);
     private Edificio e;
 
-    private int puedeCogerCarta; //0 - no, 1 - suerte, 2 - comunidad
+    private int puedeCogerCarta; // 0 - no, 1 - suerte, 2 - comunidad
 
     public Jugador getBanca() {
         return banca;
@@ -128,8 +128,8 @@ public final class Menu {
                     }
                     System.out.println(
                             Valor.RED + "[AVISO]:" + Valor.RESET
-                            + " actualmente estás en deuda (" + obtenerJugadorTurno().getFortuna()
-                            + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+                                    + " actualmente estás en deuda (" + obtenerJugadorTurno().getFortuna()
+                                    + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
                 }
                 if (jugador.limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
                     // turno
@@ -140,7 +140,7 @@ public final class Menu {
                 }
                 comando = sc.nextLine();
                 analizarComando(comando);
-                
+
                 if (jugador.getAvatar().puedeCogerCarta == 2) {
                     System.out.println("Puedes coger una carta de suerte.");
                 } else if (jugador.getAvatar().puedeCogerCarta == 1) {
@@ -163,8 +163,16 @@ public final class Menu {
         Casilla casillaInicio = tablero.getCasilla(0);
         System.out.println("\nIntroduce el nombre del jugador " + (obtenerNumeroDeJugadores() + 1) + ": ");
         String nombre = sc.nextLine();
-        System.out.println("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, sombrero, perro):");
+        System.out.println("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, pelota):");
         String tipoAvatar = sc.nextLine();
+        if (tipoAvatar.equals("a") || tipoAvatar.equals("c")) {
+            System.out.println(Valor.YELLOW + "El avatar seleccionado es el coche." + Valor.RESET);
+            tipoAvatar = "coche";
+        }
+        if (tipoAvatar.equals("b") || tipoAvatar.equals("p")) {
+            System.out.println(Valor.YELLOW + "El avatar seleccionado es la pelota." + Valor.RESET);
+            tipoAvatar = "pelota";
+        }
         Jugador jugador = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
         jugador.sumarFortuna((float) Valor.FORTUNA_INICIAL);
         jugadores.add(jugador);
@@ -180,7 +188,7 @@ public final class Menu {
         switch (id) {
             case 1:
 
-                if (avatar.getLugar().getPosicion() <= 6) //trans1 es la casilla 6
+                if (avatar.getLugar().getPosicion() <= 6) // trans1 es la casilla 6
                 {
                     avatar.moverAvatar(tablero.getPosiciones(), 6 - avatar.getLugar().getPosicion(), true);
                 } else {
@@ -190,7 +198,7 @@ public final class Menu {
 
             case 2:
 
-                if (avatar.getLugar().getPosicion() <= 27) //Solar15 es la casilla 27
+                if (avatar.getLugar().getPosicion() <= 27) // Solar15 es la casilla 27
                 {
                     avatar.moverAvatar(tablero.getPosiciones(), 27 - avatar.getLugar().getPosicion(), false);
                 } else {
@@ -205,7 +213,7 @@ public final class Menu {
 
             case 4:
 
-                if (avatar.getLugar().getPosicion() <= 7) //solar3 es la casilla 7
+                if (avatar.getLugar().getPosicion() <= 7) // solar3 es la casilla 7
                 {
                     avatar.moverAvatar(tablero.getPosiciones(), 7 - avatar.getLugar().getPosicion(), true);
                 } else {
@@ -270,8 +278,10 @@ public final class Menu {
                         if (jugador.getFortuna() < 0) {
                             jugador.fortunaPrevia = (200000 + jugador.getFortuna());
                             System.out.println("No tienes suficiente dinero. Quedas en deuda con el banco.");
-                            // do glosario de dubidas: Na carta de comunidade 6 (Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador), 
-                            // se o xogador non tén diñeiro para afrontar este pago e decide declararse en bancarrota, toda a súa fortuna e propiedades pasan á banca.
+                            // do glosario de dubidas: Na carta de comunidade 6 (Alquilas a tus compañeros
+                            // una villa en Solar7 durante una semana. Paga 200000€ a cada jugador),
+                            // se o xogador non tén diñeiro para afrontar este pago e decide declararse en
+                            // bancarrota, toda a súa fortuna e propiedades pasan á banca.
                             jugador.enDeuda = banca;
                             break;
                         }
@@ -282,10 +292,10 @@ public final class Menu {
         }
         Casilla casillafinal = avatar.getLugar();
 
-        if (!casillafinal.evaluarCasilla(jugador, banca, 0)) { //tirada non importa porque ningunha carta che manda a servicio
+        if (!casillafinal.evaluarCasilla(jugador, banca, 0)) { // tirada non importa porque ningunha carta che manda a
+                                                               // servicio
             System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
         }
-
 
         if (avatar.get4Voltas() == true) {
             boolean condicion = true;
@@ -303,9 +313,9 @@ public final class Menu {
     }
 
     /*
-         * Método que interpreta el comando introducido y toma la accion
-         * correspondiente.
-         * Parámetro: cadena de caracteres (el comando).
+     * Método que interpreta el comando introducido y toma la accion
+     * correspondiente.
+     * Parámetro: cadena de caracteres (el comando).
      */
     private void analizarComando(String comando) {
 
@@ -323,7 +333,7 @@ public final class Menu {
                 System.out.println("Cambio a modo estándar.");
                 jugador.movEspecial = false;
             } else {
-                System.out.println("Cambio a modo avanzado.");
+                System.out.println("Cambio a modo avanzado [" + jugador.getAvatar().getTipo() + "].");
                 jugador.movEspecial = true;
 
             }
@@ -345,11 +355,11 @@ public final class Menu {
             System.out.println(
                     "Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
         } // lanzar dados
-        
-        else if (comando.contains("lanzar dados") && jugador.getCocheCalado()>0){
-            System.out.println("Tu coche está calado. No puedes lanzar los dados. (Turnos restantes: " + (jugador.getCocheCalado()-1) + ")");
-        }
-        else if (comando.equals("lanzar dados")
+
+        else if (comando.contains("lanzar dados") && jugador.getCocheCalado() > 0) {
+            System.out.println("Tu coche está calado. No puedes lanzar los dados. (Turnos restantes: "
+                    + (jugador.getCocheCalado() - 1) + ")");
+        } else if (comando.equals("lanzar dados")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
 
             if (!dobles_seguidos_check) {
@@ -391,8 +401,15 @@ public final class Menu {
                 return;
             }
             if (!dobles_seguidos_check) {
-                lanzarDados(tirada_anterior1, tirada_anterior2);
-                lanzamientos++;
+                if (lanzamientos >= 4 && jugador.movEspecial && jugador.getAvatar().getTipo().equals("coche")) {
+                    System.out.println("Has alcanzado el máximo de 4 tiradas con el coche.");
+                } else if (lanzamientos >= 3) {
+                    System.out.printf(
+                            "Se ha alcanzado el máximo de 3 tiradas.");
+                } else {
+                    lanzarDados(tirada_anterior1, tirada_anterior2);
+                    lanzamientos++;
+                }
             }
         } else if (comando.contains("lanzar dados ")
                 && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
@@ -403,11 +420,13 @@ public final class Menu {
 
         } else if (comando.equals("lanzar dados")) {
             if (jugador.movEspecial && jugador.getAvatar().getTipo().equals("coche")
-                    && (dado2.getValorPrevio() + dado1.getValorPrevio()) > 4 && (lanzamientos < 3)) {
+                    && (dado2.getValorPrevio() + dado1.getValorPrevio()) > 4 && (lanzamientos < 4)) {
                 lanzarDados();
                 lanzamientos++;
             } else {
-                if (lanzamientos >= 3) {
+                if (lanzamientos >= 4 && jugador.movEspecial && jugador.getAvatar().getTipo().equals("coche")) {
+                    System.out.println("Has alcanzado el máximo de 4 tiradas con el coche.");
+                } else if (lanzamientos >= 3) {
                     System.out.printf(
                             "Se ha alcanzado el máximo de 3 tiradas.");
                 } else {
@@ -426,7 +445,7 @@ public final class Menu {
             }
         } // acabar turno
         else if ((comando.equals("acabar turno")) // quitei o de lanzamientos!=0 por comodidadRcom
-                ) {
+        ) {
             if (jugador.getFortuna() < 0) {
                 System.out.println(
                         "Actualmente estás en deuda. Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
@@ -478,8 +497,8 @@ public final class Menu {
                     + jugador.enDeuda.getNombre() + ".");
             bancarrota(jugador.enDeuda);
         } /*
-         * DEBUG
-         */ else if (comando.contains("m ")) { // movimiento manual (debug)
+           * DEBUG
+           */ else if (comando.contains("m ")) { // movimiento manual (debug)
             try {
                 lanzarDados(Integer.parseInt(comando.replace("m ", "")));
                 lanzamientos++;
@@ -562,7 +581,7 @@ public final class Menu {
                     aHipotecar.hipotecar();
                 }
             }
-        } else if (comando.equals("estadisticas"))  {
+        } else if (comando.equals("estadisticas")) {
             estadisticas();
         } else if (comando.contains("estadisticas ")) {
             comando = comando.replace("estadisticas ", "");
@@ -573,23 +592,22 @@ public final class Menu {
 
             if (jugador.getAvatar().puedeCogerCarta == 2) {
 
-                    HashMap<Integer, Carta> suerte = tablero.getSuerte();
+                HashMap<Integer, Carta> suerte = tablero.getSuerte();
 
-                    for (int i = 1; i <= suerte.size(); i++) {
-                        Carta carta = suerte.get(i);
-                        if (carta != null) {
-                            System.out.println(i + ": " + carta.getCarta());
-                        } else {
-                            System.out.println(i + ": Carta no disponible.");
-                        }
+                for (int i = 1; i <= suerte.size(); i++) {
+                    Carta carta = suerte.get(i);
+                    if (carta != null) {
+                        System.out.println(i + ": " + carta.getCarta());
+                    } else {
+                        System.out.println(i + ": Carta no disponible.");
                     }
-                    System.out.println("Escoge una carta por su numero: ");
-                    int opc = sc.nextInt();
-                    sc.nextLine(); // Consume newline
-                    System.out.println("Carta seleccionada: " + suerte.get(opc).getCarta());
-                    funcionesCartas(jugador.getAvatar(), tablero, opc);
+                }
+                System.out.println("Escoge una carta por su numero: ");
+                int opc = sc.nextInt();
+                sc.nextLine(); // Consume newline
+                System.out.println("Carta seleccionada: " + suerte.get(opc).getCarta());
+                funcionesCartas(jugador.getAvatar(), tablero, opc);
 
-                
             } else if (jugador.getAvatar().puedeCogerCarta == 1) {
                 HashMap<Integer, Carta> comunidad = tablero.getComunidad();
                 for (int i = 7; i <= 12; i++) {
@@ -607,8 +625,7 @@ public final class Menu {
 
                 funcionesCartas(jugador.getAvatar(), tablero, opc);
 
-            }
-            else {
+            } else {
                 System.out.println("No puedes coger cartas.");
             }
 
@@ -743,7 +760,7 @@ public final class Menu {
             }
             if (avatar.getTipo().equals("coche")) {
                 avatar.moverCoche(tablero.getPosiciones(), valor_tiradas);
-                if (valor_tiradas > 4 && lanzamientos < 2) {
+                if (valor_tiradas > 4 && lanzamientos < 3) {
                     System.out.println("Tu tirada continúa! Puedes volver a lanzar los dados.");
                 }
             }
