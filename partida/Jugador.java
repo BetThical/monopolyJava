@@ -12,7 +12,7 @@ public class Jugador {
     private float gastos; // Gastos realizados a lo largo del juego.
     private boolean enCarcel; // Será true si el jugador está en la carcel
     private int tiradasCarcel; // Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí
-                               // para intentar salir (se usa para limitar el numero de intentos).
+    // para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; // Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades; // Propiedades que posee el jugador.
     private float bote; // Usado por la banca para almacenar el bote
@@ -24,16 +24,59 @@ public class Jugador {
     private float pasarPorCasillaDeSalida = 0;
     private float premiosInversionesOBote = 0;
     private int vecesEnLaCarcel = 0;
-    public boolean movEspecial;
-
-    public int tiradas = 0;
-
-    public Jugador enDeuda = null;
-
-    public float fortunaPrevia; // fortuna que ten o xogador cando antes de ter unha deuda que non pode pagar,
-                                // é o que recibirá o xogador ao que lle debe cando declare a bancarrota se a
-                                // declara
+    private boolean movEspecial;
+    private int tiradas = 0;
+    private Jugador enDeuda = null;
+    private float fortunaPrevia; // fortuna que ten o xogador cando antes de ter unha deuda que non pode pagar,
+    // é o que recibirá o xogador ao que lle debe cando declare a bancarrota se a
+    // declara
     private int cocheCalado;
+
+    public float getPremiosInversionesOBote() {
+        return premiosInversionesOBote;
+    }
+
+    public void setPremiosInversionesOBote(float premiosInversionesOBote) {
+        this.premiosInversionesOBote = premiosInversionesOBote;
+    }
+
+    public int getVecesEnLaCarcel() {
+        return vecesEnLaCarcel;
+    }
+
+    public void setVecesEnLaCarcel(int vecesEnLaCarcel) {
+        this.vecesEnLaCarcel = vecesEnLaCarcel;
+    }
+
+    public boolean getMovEspecial() {
+        return movEspecial;
+    }
+    public void setFortuna(float fortuna) {
+        this.fortuna = fortuna;
+    }
+    public void setMovEspecial(boolean movEspecial) {
+        this.movEspecial = movEspecial;
+    }
+
+    public Jugador getEnDeuda() {
+        return enDeuda;
+    }
+
+    public void setEnDeuda(Jugador enDeuda) {
+        this.enDeuda = enDeuda;
+    }
+
+    public float getFortunaPrevia() {
+        return fortunaPrevia;
+    }
+
+    public void setFortunaPrevia(float fortunaPrevia) {
+        this.fortunaPrevia = fortunaPrevia;
+    }
+
+    public void setCocheCalado(int cocheCalado) {
+        this.cocheCalado = cocheCalado;
+    }
 
     private boolean puedeComprar = true;
 
@@ -70,14 +113,16 @@ public class Jugador {
     // Método para añadir una propiedad al jugador. Como parámetro, la casilla a
     // añadir.
     public void anhadirPropiedad(Casilla casilla) {
-        if (!propiedades.contains(casilla))
+        if (!propiedades.contains(casilla)) {
             this.propiedades.add(casilla);
+        }
     }
 
     // Método para eliminar una propiedad del arraylist de propiedades de jugador.
     public void eliminarPropiedad(Casilla casilla) {
-        if (propiedades.contains(casilla))
+        if (propiedades.contains(casilla)) {
             this.propiedades.remove(casilla);
+        }
     }
 
     // Método para añadir fortuna a un jugador
@@ -212,8 +257,9 @@ public class Jugador {
     public int getNumTrans() { // número de casillas de transporte que posee
         int j = 0;
         for (int i = 0; i < propiedades.size(); i++) {
-            if (propiedades.get(i).getTipo().equals("transporte"))
+            if (propiedades.get(i).getTipo().equals("transporte")) {
                 j++;
+            }
         }
         return j;
     }
@@ -221,8 +267,9 @@ public class Jugador {
     public int getNumServ() { // número de casillas de servicio que posee
         int j = 0;
         for (int i = 0; i < propiedades.size(); i++) {
-            if (propiedades.get(i).getTipo().equals("servicio"))
+            if (propiedades.get(i).getTipo().equals("servicio")) {
                 j++;
+            }
         }
         return j;
     }

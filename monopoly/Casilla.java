@@ -121,9 +121,10 @@ public class Casilla {
      * deudas), y false
      * en caso de no cumplirlas.
      */
+    @SuppressWarnings("ConvertToStringSwitch")
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         if (esComprable(actual, banca)
-                && !(!actual.getPuedeComprar() && actual.getAvatar().getTipo().equals("coche") && actual.movEspecial)) {
+                && !(!actual.getPuedeComprar() && actual.getAvatar().getTipo().equals("coche") && actual.getMovEspecial())) {
             System.out.println(
                     "El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor()
                             + " euros. Comprar? (Y/N)");
