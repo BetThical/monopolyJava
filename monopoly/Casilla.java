@@ -10,14 +10,14 @@ public class Casilla {
     // Atributos:
     private String nombre; // Nombre de la casilla
     private String tipo; // Tipo de casilla (Solar, Especial, Transporte, Servicios, Comunidad, Sorte,
-                         // Impostos).
+    // Impostos).
     private float valor; // Valor de esa casilla (en la mayoría será valor de compra, en la casilla
-                         // parking se usará como el bote).
+    // parking se usará como el bote).
     private int posicion; // Posición que ocupa la casilla en el tablero (entero entre 1 y 40).
     private Jugador duenho; // Dueño de la casilla (por defecto sería la banca).
     private Grupo grupo; // Grupo al que pertenece la casilla (si es solar).
     private float impuesto; // Cantidad a pagar por caer en la casilla: el alquiler en
-                            // solares/servicios/transportes o impuestos.
+    // solares/servicios/transportes o impuestos.
     private float hipoteca; // Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; // Avatares que están situados en la casilla.
     private ArrayList<Edificio> edificios;
@@ -93,18 +93,18 @@ public class Casilla {
 
     // Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
-        if (!avatares.contains(av))
+        if (!avatares.contains(av)) {
             avatares.add(av);
-        else {
+        } else {
             System.out.println("error: añadido avatar que ya estaba en casilla");
         }
     }
 
     // Método utilizado para eliminar un avatar del array de avatares en casilla.
     public void eliminarAvatar(Avatar av) {
-        if (avatares.contains(av))
+        if (avatares.contains(av)) {
             avatares.remove(av);
-        else {
+        } else {
             System.out.println("error: eliminado avatar que no estaba en casilla");
         }
     }
@@ -127,7 +127,7 @@ public class Casilla {
                 && !(!actual.getPuedeComprar() && actual.getAvatar().getTipo().equals("coche") && actual.getMovEspecial())) {
             System.out.println(
                     "El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor()
-                            + " euros. Comprar? (Y/N)");
+                    + " euros. Comprar? (Y/N)");
             Scanner scanner = new Scanner(System.in);
             String respuesta = scanner.nextLine().trim().toUpperCase(); // Captura la respuesta del jugador
 
@@ -143,7 +143,7 @@ public class Casilla {
         }
 
         if (getduenhoJugador() != banca && getduenhoJugador() != actual) {// Para solares, servicio o transporte con
-                                                                          // dueño
+            // dueño
             if (hipotecada) {
                 System.out.println("El dueño es " + duenho.getNombre() + ", pero la propiedad está hipotecada.");
                 return true;
@@ -162,12 +162,22 @@ public class Casilla {
             return actual.pagar(impuesto);
         }
 
-        if (getNombre().equals("IrCarcel")) // Casilla 30 (ir a carcel)
+        if (getNombre().equals("IrCarcel")) { // Casilla 30 (ir a carcel)
             System.out.println("El jugador " + actual.getNombre() + " va a la cárcel.");
-
+            actual.setEnCarcel(true);  //esto envía un aviso al menú, que encarcelará al jugador (sólo menú puede encarcelar)
+        }
         if (getTipo().equals("comunidad") || getTipo().equals("suerte")) {
-            if (getTipo().equals("comunidad")) actual.getAvatar().puedeCogerCarta = 1;
-            if (getTipo().equals("suerte")) actual.getAvatar().puedeCogerCarta = 2;
+            if (getTipo().equals("comunidad") && actual.puedeCogerCarta() == 0) {
+                System.out.println("El jugador " + actual.getNombre() + " ha caído en una casilla de comunidad. Puede sacar una carta.");
+                actual.setCartaDisponible(1);
+            }
+
+            if (getTipo().equals("suerte") && actual.puedeCogerCarta() == 0) {
+                {
+                    System.out.println("El jugador " + actual.getNombre() + " ha caído en una casilla de suerte. Puede sacar una carta.");
+                    actual.setCartaDisponible(2);
+                }
+            }
 
             return true;
         }
@@ -184,8 +194,9 @@ public class Casilla {
         switch (tipo) {
             case "solar": {
                 coste = getImpuesto();
-                if (getGrupo().esDuenhoGrupo(duenho))
+                if (getGrupo().esDuenhoGrupo(duenho)) {
                     coste *= 2;
+                }
                 coste += alquilerEdificios();
                 return coste;
             }
@@ -198,10 +209,11 @@ public class Casilla {
 
             default: {
                 // servicio
-                if (duenho.getNumServ() == 1)
+                if (duenho.getNumServ() == 1) {
                     coste = (getImpuesto() * 4 * tirada);
-                else
+                } else {
                     coste = (getImpuesto() * 10 * tirada);
+                }
             }
         }
         return coste;
@@ -228,12 +240,13 @@ public class Casilla {
         this.duenho = solicitante;
         solicitante.anhadirPropiedad(this);
 
-        if (getTipo().equals("solar"))
+        if (getTipo().equals("solar")) {
             if (getGrupo().esDuenhoGrupo(solicitante)) {
                 System.out
                         .println("El jugador " + solicitante.getNombre() + " es dueño de todas las casillas del grupo "
                                 + getGrupo().getColor() + "!");
             }
+        }
         if (solicitante.getPuedeComprar()) {
             solicitante.setPuedeComprar(false);
         }
@@ -266,8 +279,9 @@ public class Casilla {
             output.append("- Grupo: ").append(getGrupo().getColor()).append("\n");
             output.append("- Valor: ").append(getValor()).append("\n");
             output.append("- Alquiler: ").append(calcular_coste(0)).append("\n");
-            if (hipotecada)
+            if (hipotecada) {
                 output.append("[Hipotecada]\n");
+            }
         } else if (getTipo().equals("transporte")) {
             output.append("- Valor: ").append(getValor()).append("\n");
             output.append("- Alquiler: ").append(calcular_coste(0)).append("\n");
@@ -319,8 +333,8 @@ public class Casilla {
             default:
                 return impuesto * 12.5f;
         }// nota: impuesto = valorinicial * 0.1
-         // pista de deporte
-         // 125% del valor inicial del solar
+        // pista de deporte
+        // 125% del valor inicial del solar
     }
 
     public boolean puedeConstruir(Edificio e, Jugador constructor) {
@@ -336,7 +350,6 @@ public class Casilla {
         // el máximo número de edificios que se pueden construir en un grupo es
         // 3 hoteles, 3 casas, 3 piscinas y 3 pistas, o 2 de cada si el grupo es de 2
         // casillas.
-
         if (!tipo.equals("solar")) {
             System.out.println("No se puede construir en esta casilla.");
             return false;
@@ -373,9 +386,9 @@ public class Casilla {
 
         if (edificiosGrupo.getOrDefault("hotel", 0) >= maxEdificiosPorTipo) {
             if (e.getTipo().equals("hotel")) {
-            System.out.println(
-                "Se pueden construir un máximo de " + maxEdificiosPorTipo + " hoteles en este grupo.");
-            return false;
+                System.out.println(
+                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " hoteles en este grupo.");
+                return false;
             }
         }
 
@@ -386,42 +399,42 @@ public class Casilla {
         }
 
         if (e.getTipo().equals("casa") && edificiosGrupo.getOrDefault("casa", 0) >= maxEdificiosPorTipo
-            && edificiosGrupo.getOrDefault("hotel", 0) >= maxEdificiosPorTipo) {
+                && edificiosGrupo.getOrDefault("hotel", 0) >= maxEdificiosPorTipo) {
             System.out.println("Se pueden construir un máximo de " + grupo.getNumCasillas()
-                + " casas en este grupo.");
+                    + " casas en este grupo.");
             return false;
         }
 
-        if (e.getTipo().equals("hotel") && edificiosGrupo.getOrDefault("casa", 0)-4 > maxEdificiosPorTipo
-            && edificiosGrupo.getOrDefault("hotel", 0) + 1 >= maxEdificiosPorTipo) {
+        if (e.getTipo().equals("hotel") && edificiosGrupo.getOrDefault("casa", 0) - 4 > maxEdificiosPorTipo
+                && edificiosGrupo.getOrDefault("hotel", 0) + 1 >= maxEdificiosPorTipo) {
             System.out.println("No se puede construir un hotel porque se superaría el número máximo de casas permitido. (se permite superar este límite hasta construir los hoteles)");
             return false;
         }
 
         if (e.getTipo().equals("piscina")) {
             if (edificiosGrupo.getOrDefault("piscina", 0) >= maxEdificiosPorTipo) {
-            System.out.println(
-                "Se pueden construir un máximo de " + maxEdificiosPorTipo + " piscinas en este grupo.");
-            return false;
+                System.out.println(
+                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " piscinas en este grupo.");
+                return false;
             }
             if (edificiosCasilla.getOrDefault("casa", 0) < 2 || edificiosCasilla.getOrDefault("hotel", 0) < 1) {
-            System.out.println(
-                "Para construir una piscina, se deben construir antes al menos 2 casas y 1 hotel.");
-            return false;
+                System.out.println(
+                        "Para construir una piscina, se deben construir antes al menos 2 casas y 1 hotel.");
+                return false;
             }
         }
 
         if (e.getTipo().equals("pista")) {
             if (edificiosGrupo.getOrDefault("pista", 0) == grupo.getNumCasillas()) {
-            System.out.println(
-                "Se pueden construir un máximo de " + grupo.getNumCasillas()
-                    + " pistas de deporte en este grupo.");
-            return false;
+                System.out.println(
+                        "Se pueden construir un máximo de " + grupo.getNumCasillas()
+                        + " pistas de deporte en este grupo.");
+                return false;
             }
             if (edificiosCasilla.getOrDefault("hotel", 0) < 2) {
-            System.out.println(
-                "Para construir una pista de deporte, se deben construir antes al menos 2 hoteles.");
-            return false;
+                System.out.println(
+                        "Para construir una pista de deporte, se deben construir antes al menos 2 hoteles.");
+                return false;
             }
         }
         // System.out.println("Se puede construir el edificio " + e.getTipo() + " en
@@ -632,11 +645,11 @@ public class Casilla {
         this.rentable += pago;
     }
 
-    public int getVisitas(){
+    public int getVisitas() {
         return visitas;
     }
 
-    public void setVisitas(int p){
+    public void addVisitas(int p) {
         this.visitas += p;
     }
 

@@ -15,7 +15,6 @@ public class Avatar {
     private int tiradasCoche;
     private boolean haComprado;
     private int[] vecesCaidasCasilla;
-    public int puedeCogerCarta = 0; // 0 si no puede coger carta, 1 si puede coger carta de su casilla, 2 si puede coger
     private int[] movimientosPelota;
     // Constructor vacío
 
@@ -49,7 +48,6 @@ public class Avatar {
      * arrayList de casillas (uno por lado).
      * - Un entero que indica el numero de casillas a moverse (será el valor sacado
      * en la tirada de los dados).
-     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada, boolean cobrarSalida) {
 
@@ -67,20 +65,28 @@ public class Avatar {
                 ultimoMovementoFuiVoltaMultiploDe4 = true;
             }
         }
-        int nuevaposicion = (posicionactual + valorTirada - 1) % 40;
+        if (posicionactual + valorTirada < 0) {
+            System.out.println("Pasas por salida EN EL SENTIDO CONTRARIO y PAGAS " + Valor.SUMA_VUELTA + ".");
+            jugador.pagarVuelta();
+            ultimoMovementoFuiVoltaMultiploDe4 = false;
+            valorTirada = (posicionactual + valorTirada) % 40;
+        }
+        int nuevaposicion = (posicionactual + valorTirada) % 40 - 1;// se resta 1 porque las posiciones van del 1-40, pero los índices del array del 0-9.
+        if (nuevaposicion < 0) {
+            nuevaposicion += 40;
+        }
 
         int lado = (nuevaposicion / 10);
-
-        int casilla = (nuevaposicion % 10);
+        int casilla = (nuevaposicion % 10); 
         Casilla nuevaCasilla = casillas.get(lado).get(casilla);
+        System.out.println("El jugador " + getJugador().getNombre() + " avanza de " + lugar.getNombre() + " a " + nuevaCasilla.getNombre() + ". (Posiciones desplazadas: " + valorTirada + ")");
         nuevaCasilla.anhadirAvatar(this);
         vecesCaidasCasilla[nuevaposicion] += 1;
         this.lugar = nuevaCasilla;
-        nuevaCasilla.setVisitas(1);
+        nuevaCasilla.addVisitas(1);
     }
 
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, Casilla destino, boolean cobrarSalida) {
-        puedeCogerCarta = 0;
         int valorTirada = (destino.getPosicion() - lugar.getPosicion());
         moverAvatar(casillas, valorTirada, cobrarSalida);
     }
@@ -91,13 +97,44 @@ public class Avatar {
         }
     }
 
+    //devuelve el siguiente movimiento de la pelota, si no hay mas movimientos devuelve 0
+    // si gastarMovimiento es true, se elimina el movimiento de la lista
+    public int siguienteMovPelota(boolean gastarMovimiento) {
+        for (int i = 0; i < movimientosPelota.length; i++) {
+            if (movimientosPelota[i] != 0) {
+                int mov = movimientosPelota[i];
+                if (gastarMovimiento) {
+                    movimientosPelota[i] = 0;
+                }
+                return mov;
+            }
+        }
+        return 0;
+    }
+
+    public void avanzar(ArrayList<ArrayList<Casilla>> casillas, Jugador banca) { //movimiento parcial asociado al movimiento de la pelota. banca se necesita para evaluar casilla
+        int mov = siguienteMovPelota(true);
+        moverAvatar(casillas, mov, true);
+
+        int movimientosRestantes = 0;
+        for (int movimiento : movimientosPelota) {
+            movimientosRestantes += movimiento;
+        }
+        lugar.evaluarCasilla(getJugador(), banca, mov);
+        if (movimientosRestantes == 0) {
+            System.out.println("No quedan más movimientos de pelota.");
+        } else {
+            System.out.println("Quedan " + movimientosRestantes + " casillas que moverse con pelota.");
+        }
+    }
+
     public void moverPelota(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
         // se genera un array (cola) con la lista de movimientos parciales que debe realizar la pelota
         // cada vez que el jugador llame a 'avanzar', se avanzará la posición que indique el primero de la cola
         //el movimiento acaba cuando termine la cola
 
         resetMovPelota();
-        int i = 0;
+        int i;
         if (valorTirada > 4) {
             movimientosPelota[0] = 5;
             valorTirada -= 5;
@@ -106,14 +143,10 @@ public class Avatar {
                 valorTirada -= 2;
             }
 
-        } else if (valorTirada == 4) {
-            movimientosPelota[0] = 4;
-            valorTirada -= 4;
         } else {
             movimientosPelota[0] = -1;
             valorTirada *= -1;
-
-            valorTirada +=1;
+            valorTirada += 1;
             for (i = 1; valorTirada < -1; i++) {
                 movimientosPelota[i] = -2;
                 valorTirada += 2;
@@ -128,39 +161,12 @@ public class Avatar {
 
     public void moverCoche(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
 
-        int posicionactual = lugar.getPosicion();
-
         if (valorTirada <= 4) {
             System.out.println("No puedes tirar durante dos turnos.");
             jugador.calarCoche();
             valorTirada *= -1;
         }
-        lugar.eliminarAvatar(this);
-        if (posicionactual + valorTirada > 40) {
-            System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
-            jugador.sumarVuelta(true);
-            if (jugador.getVueltas() % 4 == 0) {
-                ultimoMovementoFuiVoltaMultiploDe4 = true;
-            }
-        }
-
-        if (posicionactual + valorTirada < 0) {
-            System.out.println("Pasas por salida EN EL SENTIDO CONTRARIO y PAGAS " + Valor.SUMA_VUELTA + ".");
-            jugador.pagarVuelta();
-            ultimoMovementoFuiVoltaMultiploDe4 = false;
-        }
-
-        int nuevaposicion = (posicionactual + valorTirada - 1) % 40;
-        if (nuevaposicion < 0) {
-            nuevaposicion += 40;
-        }
-        int lado = (nuevaposicion / 10);
-
-        int casilla = (nuevaposicion % 10);
-        Casilla nuevaCasilla = casillas.get(lado).get(casilla);
-        nuevaCasilla.anhadirAvatar(this);
-        vecesCaidasCasilla[nuevaposicion] += 1;
-        this.lugar = nuevaCasilla;
+        moverAvatar(casillas, valorTirada, true);
     }
 
     public void setHaCompradoEnTirada(Boolean t) {

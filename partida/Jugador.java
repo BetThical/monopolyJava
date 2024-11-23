@@ -31,6 +31,7 @@ public class Jugador {
     // é o que recibirá o xogador ao que lle debe cando declare a bancarrota se a
     // declara
     private int cocheCalado;
+    private int cartaDisponible = 0;
 
     public float getPremiosInversionesOBote() {
         return premiosInversionesOBote;
@@ -43,7 +44,13 @@ public class Jugador {
     public int getVecesEnLaCarcel() {
         return vecesEnLaCarcel;
     }
+    public int puedeCogerCarta() {
+        return cartaDisponible;
+    }
 
+    public void setCartaDisponible(int cartaDisponible) {
+        this.cartaDisponible = cartaDisponible;
+    }
     public void setVecesEnLaCarcel(int vecesEnLaCarcel) {
         this.vecesEnLaCarcel = vecesEnLaCarcel;
     }
@@ -250,6 +257,9 @@ public class Jugador {
         return tiradasCarcel;
     }
 
+    public void setTiradasCarcel(int tiradasCarcel) {
+        this.tiradasCarcel = tiradasCarcel;
+    }
     public void sumarTiradaCarcel() {
         tiradasCarcel++;
     }
@@ -357,7 +367,7 @@ public class Jugador {
         return tiradas;
     }
 
-    public void setTiradas(int p) {
+    public void addTiradas(int p) {
         this.tiradas += p;
     }
 

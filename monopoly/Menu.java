@@ -12,9 +12,6 @@ public final class Menu {
     // avatar) que tienen el turno
     private int lanzamientos = 0; // Variable para contar el número de lanzamientos de un jugador en un turno.
     private int dobles_seguidos = 0; // Variable para contar el número de dobles seguidos de un jugador en un turno.
-    private boolean dobles_seguidos_check = false;
-    private int tirada_anterior1; // Variable que guarda el valor de la tirada1 anterior (debug)
-    private int tirada_anterior2; // Variable que guarda el valor de la tirada2 anterior (debug)
     private final Tablero tablero; // Tablero en el que se juega.
     private Dado dado1; // Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
@@ -139,12 +136,6 @@ public final class Menu {
                 comando = sc.nextLine();
                 analizarComando(comando);
 
-                if (jugador.getAvatar().puedeCogerCarta == 2) {
-                    System.out.println("Puedes coger una carta de suerte.");
-                } else if (jugador.getAvatar().puedeCogerCarta == 1) {
-                    System.out.println("Puedes coger una carta de comunidad.");
-                }
-
                 if (jugadores.size() < 2) {
                     System.out.println("El único jugador que queda es " + obtenerJugadorTurno().getNombre() + "!");
                     acabarPartida = true;
@@ -221,8 +212,7 @@ public final class Menu {
 
             case 5:
 
-                avatar.setLugar(tablero.getPosiciones(), 10);
-                jugador.setEnCarcel(true);
+                encarcelar(jugador);
                 break;
 
             case 6:
@@ -242,8 +232,8 @@ public final class Menu {
 
             case 8:
                 System.out.println("Vas a la cárcel.");
-                avatar.moverAvatar(tablero.getPosiciones(), Math.abs(10 - avatar.getLugar().getPosicion() + 1), false);
-                jugador.setEnCarcel(true);
+                encarcelar(jugador);
+
                 break;
 
             case 9:
@@ -324,13 +314,17 @@ public final class Menu {
                 anhadirJugador();
             }
         } else if (comando.equals("cambiar modo")) {
-            if (jugador.getMovEspecial()) {
-                System.out.println("Cambio a modo estándar.");
-                jugador.setMovEspecial(false);
+            if (lanzamientos > 0) {
+                System.out.println("No puedes cambiar de modo después de lanzar los dados.");
             } else {
-                System.out.println("Cambio a modo avanzado [" + jugador.getAvatar().getTipo() + "].");
-                jugador.setMovEspecial(true);
+                if (jugador.getMovEspecial()) {
+                    System.out.println("Cambio a modo estándar.");
+                    jugador.setMovEspecial(false);
+                } else {
+                    System.out.println("Cambio a modo avanzado [" + jugador.getAvatar().getTipo() + "].");
+                    jugador.setMovEspecial(true);
 
+                }
             }
         } else if (comando.contains("listar edificios ")) {
             comando = comando.replace("listar edificios ", "");
@@ -350,86 +344,32 @@ public final class Menu {
             System.out.println(
                     "Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
         } // lanzar dados
-        else if (comando.contains("lanzar dados") && jugador.getCocheCalado() > 0) {
-            System.out.println("Tu coche está calado. No puedes lanzar los dados. (Turnos restantes: " + (jugador.getCocheCalado() - 1) + ")");
-        } else if (comando.equals("lanzar dados")
-                && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
-
-            if (!dobles_seguidos_check) {
+        else if (comando.equals("lanzar dados")) { //lanzar dados random
+            if (puedeLanzarDados()) {
                 lanzarDados();
-                lanzamientos++;
             }
-            if (dado1.getValorPrevio() == dado2.getValorPrevio()) {
-                dobles_seguidos++;
-            }
-            if (dobles_seguidos_check) {
-                System.out.println("No puedes tirar los dados más veces. Estás en la carcel.");
-            }
-            if (dobles_seguidos == 3) {
-                jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
-                jugador.setEnCarcel(true);
-                System.out.println("Has sacado dobles 3 veces te vas a la carcel.");
-                lanzamientos = 1;
-                dobles_seguidos = 0;
-            }
-        } else if (comando.contains("lanzar dados ")
-                && (lanzamientos == 0 || tirada_anterior1 == tirada_anterior2)) {
-            String numeros = comando.replace("lanzar dados ", "");
-            String[] numero = numeros.split("\\+");
-            tirada_anterior1 = Integer.parseInt(numero[0]);
-            tirada_anterior2 = Integer.parseInt(numero[1]);
-            if (tirada_anterior1 == tirada_anterior2) {
-                dobles_seguidos++;
-            }
-            if (dobles_seguidos_check) {
-                System.out.println("No puedes tirar los dados más veces. Estás en la carcel.");
-            }
-            if (dobles_seguidos == 3) {
-                jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
-                jugador.setEnCarcel(true);
-                System.out.println("Has sacado dobles 3 veces te vas a la carcel.");
-                dobles_seguidos_check = true;
-                lanzamientos = 1;
-                dobles_seguidos = 0;
-                return;
-            }
-            if (!dobles_seguidos_check) {
-                if (lanzamientos >= 4 && jugador.getMovEspecial() && jugador.getAvatar().getTipo().equals("coche")) {
-                    System.out.println("Has alcanzado el máximo de 4 tiradas con el coche.");
-                } else if (lanzamientos >= 3) {
-                    System.out.printf(
-                            "Se ha alcanzado el máximo de 3 tiradas.");
-                } else {
-                    lanzarDados(tirada_anterior1, tirada_anterior2);
-                    lanzamientos++;
+        } else if (comando.contains("lanzar dados ")) { // lanzar dados random
+            if (puedeLanzarDados()) {
+                try {
+                    comando = comando.replace("lanzar dados ", "");
+                    String[] valores = comando.split("\\+");
+                    int tirada1 = Integer.parseInt(valores[0]);
+                    int tirada2 = Integer.parseInt(valores[1]);
+                    lanzarDados(tirada1, tirada2);
+                } catch (NumberFormatException ex) {
+                    System.out.println("Uso del comando: lanzar dados [tirada1]+[tirada2]");
                 }
             }
-        } else if (comando.contains("lanzar dados ")
-                && (lanzamientos == 0 || dado1.getValorPrevio() == dado2.getValorPrevio())) {
-            String numeros = comando.replace("lanzar dados ", "");
-            String[] numero = numeros.split("\\+");
-            lanzarDados(Integer.parseInt(numero[0]), Integer.parseInt(numero[1]));
-            lanzamientos++;
-
-        } else if (comando.equals("lanzar dados")) {
-            if (jugador.getMovEspecial() && jugador.getAvatar().getTipo().equals("coche")
-                    && (dado2.getValorPrevio() + dado1.getValorPrevio()) > 4 && (lanzamientos < 4)) {
-                lanzarDados();
-                lanzamientos++;
-            } else {
-                if (lanzamientos >= 4 && jugador.getMovEspecial() && jugador.getAvatar().getTipo().equals("coche")) {
-                    System.out.println("Has alcanzado el máximo de 4 tiradas con el coche.");
-                } else if (lanzamientos >= 3) {
-                    System.out.printf(
-                            "Se ha alcanzado el máximo de 3 tiradas.");
-                } else {
-                    System.out.printf(
-                            "Sólo se pueden lanzar los dados una vez por turno, a no ser que saques dobles. (previas tiradas: %d %d)",
-                            dado1.getValorPrevio(), dado2.getValorPrevio());
-                }
+        } else if (comando.equals("avanzar")) {
+            if (!jugador.getAvatar().getTipo().equals("pelota") || !jugador.getMovEspecial()) {
+                System.out.println("El comando avanzar solo está disponible para el avatar pelota en modo avanzado.");
+            } else if (puedeAvanzar()) {
+                jugador.getAvatar().avanzar(tablero.getPosiciones(), banca);
             }
-        } // comprar
-        else if (comando.equals("comprar")) {
+            else{
+                System.out.println("No puedes avanzar.");
+            }
+        } else if (comando.equals("comprar")) {
             if (!jugador.getPuedeComprar() && jugador.getAvatar().getTipo().equals("coche") && jugador.getMovEspecial()) {
                 System.out.println(
                         "Al realizar el movimiento especial del coche, sólo puedes comprar una vez por turno.");
@@ -494,7 +434,7 @@ public final class Menu {
          * DEBUG
          */ else if (comando.contains("m ")) { // movimiento manual (debug)
             try {
-                lanzarDados(Integer.parseInt(comando.replace("m ", "")));
+                lanzarDados(Integer.parseInt(comando.replace("m ", "")), 0);
                 lanzamientos++;
             } catch (NumberFormatException ex) {
                 System.out.println("Uso del comando: m [cantidad de casillas]");
@@ -591,7 +531,7 @@ public final class Menu {
 
         } else if (comando.contains("carta")) {
 
-            if (jugador.getAvatar().puedeCogerCarta == 2) {
+            if (jugador.puedeCogerCarta() == 2) {
 
                 HashMap<Integer, Carta> suerte = tablero.getSuerte();
 
@@ -608,8 +548,9 @@ public final class Menu {
                 sc.nextLine(); // Consume newline
                 System.out.println("Carta seleccionada: " + suerte.get(opc).getCarta());
                 funcionesCartas(jugador.getAvatar(), tablero, opc);
+                jugador.setCartaDisponible(0);
 
-            } else if (jugador.getAvatar().puedeCogerCarta == 1) {
+            } else if (jugador.puedeCogerCarta() == 1) {
                 HashMap<Integer, Carta> comunidad = tablero.getComunidad();
                 for (int i = 7; i <= 12; i++) {
                     Carta carta = comunidad.get(i);
@@ -625,6 +566,7 @@ public final class Menu {
                 System.out.println("Carta seleccionada: " + comunidad.get(opc).getCarta());
 
                 funcionesCartas(jugador.getAvatar(), tablero, opc);
+                jugador.setCartaDisponible(0);
 
             } else {
                 System.out.println("No puedes coger cartas.");
@@ -724,140 +666,146 @@ public final class Menu {
         }
     }
 
-    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar
-    // dados'.
-    private void lanzarDados() {
-
+    private boolean puedeLanzarDados() {
         Jugador jugador = obtenerJugadorTurno();
-
-        jugador.setTiradas(1);
-
         Avatar avatar = jugador.getAvatar();
 
-        int tirada1 = dado1.hacerTirada();
-        int tirada2 = dado2.hacerTirada();
-        System.out.println("Has sacado: " + tirada1 + " y " + tirada2 + ".");
-
-        int valor_tiradas = tirada1 + tirada2;
-        if ((tirada1 == tirada2) && (dobles_seguidos != 3)) {
-            System.out.println("Dobles!");
-        } else if (jugador.getEnCarcel() && (dobles_seguidos != 3)) {
-
-            System.out.println("Continúas en la carcel.");
-            jugador.sumarTiradaCarcel();
-            return;
-        }
-
-        if (jugador.getEnCarcel() && (tirada2 == tirada1) && (dobles_seguidos != 3)) {
-            System.out.println("Sales de la carcel y vuelves a tirar.");
-            jugador.salirCarcel();
-
-        }
-
-        Casilla casillainicio = avatar.getLugar();
-        if (jugador.getMovEspecial()) {
-            if (avatar.getTipo().equals("pelota")) {
-                avatar.moverPelota(tablero.getPosiciones(), valor_tiradas);
+        if (jugador.getEnCarcel()) {
+            if (jugador.getTiradasCarcel() > 2) {
+                System.out.println("Has pasado 3 turnos en la cárcel. Debes pagar la multa.");
+                return false;
+            } else if (lanzamientos > 0) {
+                System.out.println("Sólo puedes intentar salir de la cárcel al inicio de tu turno, una vez por turno");
+                return false;
             }
-            if (avatar.getTipo().equals("coche")) {
-                avatar.moverCoche(tablero.getPosiciones(), valor_tiradas);
-                if (valor_tiradas > 4 && lanzamientos < 3) {
-                    System.out.println("Tu tirada continúa! Puedes volver a lanzar los dados.");
-                }
+        }
+        if (lanzamientos > 0 && dobles_seguidos == 0 && (!avatar.getTipo().equals("coche") || !jugador.getMovEspecial())) {
+            System.out.println("Ya has lanzado los dados en este turno.");
+            return false;
+        }
+        if (jugador.getCocheCalado() > 0) {
+            System.out.println("Por una previa tirada con el coche, no puedes tirar durante " + jugador.getCocheCalado() + " turnos.");
+            return false;
+        }
+        if (avatar.getTipo().equals("coche") && jugador.getMovEspecial() && lanzamientos > 3) {
+            if (dobles_seguidos == 0) {
+                System.out.println("Ya has lanzado los dados 4 veces en este turno.");
+                return false;
             }
-        } else {
-            avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas, true);
-        }
-
-        Casilla casillafinal = avatar.getLugar();
-        System.out.println("El avatar " + avatar.getID() + " avanza " + (valor_tiradas) + " posiciones, desde "
-                + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
-
-        if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)) {
-            System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
-        }
-
-        if (casillafinal.getPosicion() == 31) {
-            Casilla carcel = tablero.getCasilla("Carcel");
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), carcel, false);
-            jugador.setEnCarcel(true);
-        }
-
-        if (avatar.get4Voltas() == true) {
-            boolean condicion = true;
-            for (int i = 0; i < jugadores.size(); i++) {
-                if (jugadores.get(i).getVueltas() < jugador.getVueltas()) {
-                    condicion = false;
-                }
-            }
-            if (condicion == true) {
-                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de las propiedades aumenta."));
-                tablero.aumentarCoste(banca);
+            if (lanzamientos > 4) {
+                System.out.println("Sacar dobles en la última tirada del coche te permite sólo una tirada adicional.");
+                return false;
             }
         }
 
+        if (jugador.getMovEspecial() && avatar.getTipo().equals("pelota")) {
+            if (avatar.siguienteMovPelota(false) != 0) {
+                System.out.println("Utiliza el comando 'avanzar' para moverte.");
+                return false;
+            }
+            return true; //la primera tirada de la pelota no implica moverse, no es necesario comprobar si se puede avanzar
+        }
+        return puedeAvanzar();
+    }
+
+    //similar a puedeLanzarDados pero comprueba si el avatar puede moverse actualmente, sea con una tirada normal de dados o con avanzar
+    private boolean puedeAvanzar() {
+        Jugador jugador = obtenerJugadorTurno();
+        Avatar avatar = jugador.getAvatar();
+
+        if (jugador.getFortuna() < 0) {
+            System.out.println("Actualmente estás en deuda. Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+            return false;
+        }
+        if (jugador.puedeCogerCarta() != 0) {
+            System.out.println("Debes coger la carta primero.");
+            return false;
+        }
+
+        if (jugador.getMovEspecial() && avatar.getTipo().equals("pelota") && avatar.siguienteMovPelota(false) == 0) {
+            return false; //no puede avanzar más
+        }
+        return true;
     }
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar'
     // elejiendo los valores de los dados
+    private void lanzarDados() {
+        int tirada1 = dado1.hacerTirada();
+        int tirada2 = dado2.hacerTirada();
+        lanzarDados(tirada1, tirada2);
+    }
+
     // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar
     // dados' para valores de tirada concretos
     private void lanzarDados(int tirada1, int tirada2) {
 
         Jugador jugador = obtenerJugadorTurno();
 
-        jugador.setTiradas(1);
-
         Avatar avatar = jugador.getAvatar();
 
         System.out.println("Has sacado: " + tirada1 + " y " + tirada2 + ".");
 
         int valor_tiradas = tirada1 + tirada2;
-        if ((tirada1 == tirada2) && (dobles_seguidos != 3)) {
+        lanzamientos++;
+        jugador.addTiradas(1);
+        //manejo de dobles
+        if (tirada1 == tirada2) {
             System.out.println("Dobles!");
-        } else if (jugador.getEnCarcel() && (dobles_seguidos != 3)) {
-
-            System.out.println("Continúas en la carcel.");
-            jugador.sumarTiradaCarcel();
-            return;
+            dobles_seguidos++;
+            if (jugador.getEnCarcel()) {
+                System.out.println("Sales de la carcel y vuelves a tirar.");
+                jugador.salirCarcel();
+            }
+            if (dobles_seguidos == 3) {
+                System.out.println("Has sacado dobles 3 veces seguidas! Vas a la carcel.");
+                encarcelar(jugador);
+                return;
+            }
+        } else {
+            dobles_seguidos = 0;
+            if (jugador.getEnCarcel()) {
+                jugador.sumarTiradaCarcel();
+                System.out.println("Continúas en la carcel. (Tiradas en cárcel: " + jugador.getTiradasCarcel() + ")");
+                return;
+            }
         }
 
-        if (jugador.getEnCarcel() && (tirada2 == tirada1) && (dobles_seguidos != 3)) {
-            System.out.println("Sales de la carcel y vuelves a tirar.");
-            jugador.salirCarcel();
-
-        }
-
-        Casilla casillainicio = avatar.getLugar();
+        //manejo de movimientos especiales
         if (jugador.getMovEspecial()) {
             if (avatar.getTipo().equals("pelota")) {
                 avatar.moverPelota(tablero.getPosiciones(), valor_tiradas);
+                System.out.println("Utiliza el comando 'avanzar' para moverte.");
             }
             if (avatar.getTipo().equals("coche")) {
                 avatar.moverCoche(tablero.getPosiciones(), valor_tiradas);
-                if (valor_tiradas > 4 && lanzamientos < 3) {
+                if (valor_tiradas > 4 && lanzamientos < 4) {
                     System.out.println("Tu tirada continúa! Puedes volver a lanzar los dados.");
+                }
+                if (valor_tiradas == 4 && lanzamientos == 4) {
+                    System.out.println("Has sacado dobles en la última tirada! Puedes volver a lanzar los dados.");
                 }
             }
         } else {
             avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas, true);
         }
 
-        Casilla casillafinal = avatar.getLugar();
+        //llamada a evaluar casilla
+        Casilla casillaFinal = avatar.getLugar();
+        if (!(jugador.getMovEspecial() && avatar.getTipo().equals("pelota"))) //porque el (primer) movimiento especial de la pelota no implica moverse, no se evalua la casilla
+            casillaFinal.evaluarCasilla(jugador, banca, valor_tiradas);
+        if (jugador.getEnCarcel()) {
+            encarcelar(jugador); //comprobación de si cae en 'ir a cárcel'
 
-        System.out.println("El avatar " + avatar.getID() + " avanza " + (valor_tiradas) + " posiciones, desde "
-                + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
-
-        if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)) {
-            System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
         }
+        comprobacion4Vueltas();
 
-        if (casillafinal.getPosicion() == 31) {
-            Casilla carcel = tablero.getCasilla("Carcel");
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), carcel, false);
-            jugador.setEnCarcel(true);
-        }
+    }
 
+    private void comprobacion4Vueltas() {
+
+        Jugador jugador = obtenerJugadorTurno();
+        Avatar avatar = jugador.getAvatar();
         if (avatar.get4Voltas() == true) {
             boolean condicion = true;
             for (int i = 0; i < jugadores.size(); i++) {
@@ -870,46 +818,6 @@ public final class Menu {
                 tablero.aumentarCoste(banca);
             }
         }
-
-    }
-
-    private void lanzarDados(int valor_tiradas) {
-
-        Jugador jugador = obtenerJugadorTurno();
-
-        jugador.setTiradas(1);
-
-        Avatar avatar = jugador.getAvatar();
-        Casilla casillainicio = avatar.getLugar();
-
-        avatar.moverAvatar(tablero.getPosiciones(), valor_tiradas, true);
-
-        Casilla casillafinal = avatar.getLugar();
-        System.out.println("El avatar " + avatar.getID() + " avanza " + (valor_tiradas) + " posiciones, desde "
-                + casillainicio.getNombre() + " hasta " + casillafinal.getNombre() + ".");
-
-        if (!casillafinal.evaluarCasilla(jugador, banca, valor_tiradas)) {
-            System.out.println("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
-        }
-
-        if (casillafinal.getPosicion() == 31) {
-            Casilla carcel = tablero.getCasilla("Carcel");
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), carcel, false);
-            jugador.setEnCarcel(true);
-        }
-        if (avatar.get4Voltas() == true) {
-            boolean condicion = true;
-            for (int i = 0; i < jugadores.size(); i++) {
-                if (jugadores.get(i).getVueltas() < jugador.getVueltas()) {
-                    condicion = false;
-                }
-            }
-            if (condicion == true) {
-                System.out.println(("Todos los jugadores han dado 4 vueltas! El precio de los solares aumenta."));
-                tablero.aumentarCoste(banca);
-            }
-        }
-
     }
 
     /*
@@ -1004,7 +912,7 @@ public final class Menu {
         turno = (turno + 1) % obtenerNumeroDeJugadores();
         obtenerJugadorTurno().setPuedeComprar(true);
         lanzamientos = 0;
-        dobles_seguidos_check = false;
+        dobles_seguidos = 0;
     }
 
     private void bancarrota(Jugador jugador) {
@@ -1184,5 +1092,15 @@ public final class Menu {
         System.out.println("jugadorMasVueltas: " + jugadoresMasVueltas());
         System.out.println("jugadorMasVecesDados: " + jugadoresMasVecesDados());
         System.out.println("jugadorEnCabeza: " + jugadoresEnCabeza());
+    }
+
+    private void encarcelar(Jugador jugador) {
+        jugador.setEnCarcel(true);
+        jugador.setTiradasCarcel(0);
+        jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
+        if (jugador.getAvatar().siguienteMovPelota(false) != 0) {
+            jugador.getAvatar().resetMovPelota();
+            System.out.println("Tu tirada de la pelota ha sido interrumpida por haber caído en la cárcel.");
+        }
     }
 }
