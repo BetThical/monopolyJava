@@ -16,7 +16,7 @@ public class Jugador {
     private int vueltas; // Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades; // Propiedades que posee el jugador.
     private float bote; // Usado por la banca para almacenar el bote
-
+    private String color;
     private float dineroInvertido = 0;
     private float pagoTasasEImpuestos = 0;
     private float pagoDeAlquileres = 0;
@@ -44,13 +44,19 @@ public class Jugador {
     public int getVecesEnLaCarcel() {
         return vecesEnLaCarcel;
     }
+
     public int puedeCogerCarta() {
         return cartaDisponible;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     public void setCartaDisponible(int cartaDisponible) {
         this.cartaDisponible = cartaDisponible;
     }
+
     public void setVecesEnLaCarcel(int vecesEnLaCarcel) {
         this.vecesEnLaCarcel = vecesEnLaCarcel;
     }
@@ -58,9 +64,11 @@ public class Jugador {
     public boolean getMovEspecial() {
         return movEspecial;
     }
+
     public void setFortuna(float fortuna) {
         this.fortuna = fortuna;
     }
+
     public void setMovEspecial(boolean movEspecial) {
         this.movEspecial = movEspecial;
     }
@@ -105,6 +113,22 @@ public class Jugador {
         this.nombre = nombre;
         this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
         this.propiedades = new ArrayList<>();
+        this.color = switch (avCreados.size()+1) {
+            case 1 ->
+                Valor.RED;
+            case 2 ->
+                Valor.BLUE;
+            case 3 ->
+                Valor.YELLOW;
+            case 4 ->
+                Valor.GREEN;
+            case 5 ->
+                Valor.PURPLE;
+            case 6 ->
+                Valor.CYAN;
+            default ->
+                Valor.WHITE;
+        };
 
     }
 
@@ -142,7 +166,7 @@ public class Jugador {
             float diferencia = this.getFortuna() - fortunaInicial;
             String signo = diferencia > 0 ? "+" : "";
             String color = diferencia > 0 ? Valor.GREEN : Valor.RED;
-            System.out.println(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
+            Juego.consola.imprimir(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
                     + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
         }
     }
@@ -260,6 +284,7 @@ public class Jugador {
     public void setTiradasCarcel(int tiradasCarcel) {
         this.tiradasCarcel = tiradasCarcel;
     }
+
     public void sumarTiradaCarcel() {
         tiradasCarcel++;
     }
@@ -290,7 +315,7 @@ public class Jugador {
         sumarFortuna(bote);
         sumarGastosBote(bote);
         banca.restarDelBote(bote);
-        System.out.println("El jugador " + getNombre() + " recibe " + bote + "€ del bote.");
+        Juego.consola.imprimir("El jugador " + getNombre() + " recibe " + bote + "€ del bote.");
     }
 
     // Pagar un alquiler a otro jugador (dueño). Devuelve True si se puede pagar la
@@ -300,14 +325,14 @@ public class Jugador {
         sumarGastos(coste);
         if (getFortuna() < 0) {
             fortunaPrevia = (coste + getFortuna());
-            System.out.println("No tienes suficiente dinero. Quedas en deuda con " + duenho.getNombre() + ".");
+            Juego.consola.imprimir("No tienes suficiente dinero. Quedas en deuda con " + duenho.getNombre() + ".");
             enDeuda = duenho;
             return false;
         }
         duenho.sumarFortuna(coste);
         sumarGastosAlq(coste);
         duenho.sumarCobreAlq(coste);
-        System.out.println(getNombre() + " ha pagado " + coste + "€ de alquiler a " + duenho.getNombre() + ".");
+        Juego.consola.imprimir(getNombre() + " ha pagado " + coste + "€ de alquiler a " + duenho.getNombre() + ".");
         return true;
     }
 
@@ -317,12 +342,12 @@ public class Jugador {
         sumarGastos(coste);
         if (getFortuna() < 0) {
             fortunaPrevia = (coste + getFortuna());
-            System.out.println("No tienes suficiente dinero. Quedas en deuda con la banca.");
+            Juego.consola.imprimir("No tienes suficiente dinero. Quedas en deuda con la banca.");
             enDeuda = null;
             return false;
         }
         sumarGastosImp(coste);
-        System.out.println(getNombre() + " ha pagado " + coste + "€ en impuestos.");
+        Juego.consola.imprimir(getNombre() + " ha pagado " + coste + "€ en impuestos.");
         return true;
     }
 
@@ -339,11 +364,11 @@ public class Jugador {
         sumarGastos(multa);
         if (fortuna > 0) {
             sumarGastosImp(multa);
-            System.out.println("Pagas la multa y sales de la cárcel.");
+            Juego.consola.imprimir("Pagas la multa y sales de la cárcel.");
             salirCarcel();
             return true;
         }
-        System.out.println("No tienes los fondos necesarios para pagar la multa. Quedas en deuda con la banca");
+        Juego.consola.imprimir("No tienes los fondos necesarios para pagar la multa. Quedas en deuda con la banca");
         return false;
 
     }
@@ -353,14 +378,14 @@ public class Jugador {
     }
 
     public void estadisticas() {
-        System.out.println("Estadísticas del Jugador:");
-        System.out.println("Dinero invertido: " + dineroInvertido);
-        System.out.println("Pago de tasas e impuestos: " + pagoTasasEImpuestos);
-        System.out.println("Pago de alquileres: " + pagoDeAlquileres);
-        System.out.println("Cobro de alquileres: " + cobroDeAlquileres);
-        System.out.println("Pasar por casilla de salida: " + pasarPorCasillaDeSalida);
-        System.out.println("Premios por inversiones o bote: " + premiosInversionesOBote);
-        System.out.println("Veces en la cárcel: " + vecesEnLaCarcel);
+        Juego.consola.imprimir("Estadísticas del Jugador:");
+        Juego.consola.imprimir("Dinero invertido: " + dineroInvertido);
+        Juego.consola.imprimir("Pago de tasas e impuestos: " + pagoTasasEImpuestos);
+        Juego.consola.imprimir("Pago de alquileres: " + pagoDeAlquileres);
+        Juego.consola.imprimir("Cobro de alquileres: " + cobroDeAlquileres);
+        Juego.consola.imprimir("Pasar por casilla de salida: " + pasarPorCasillaDeSalida);
+        Juego.consola.imprimir("Premios por inversiones o bote: " + premiosInversionesOBote);
+        Juego.consola.imprimir("Veces en la cárcel: " + vecesEnLaCarcel);
     }
 
     public int getTiradas() {

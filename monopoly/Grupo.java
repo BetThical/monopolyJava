@@ -121,11 +121,11 @@ class Grupo {
 
     public void descEdificios() {
         for (Casilla casilla : miembros) {
-            System.out.println("Propiedad: " + casilla.getNombre());
+            Juego.consola.imprimir("Propiedad: " + casilla.getNombre());
             for (Edificio casa : casilla.getEdificios()) {
-                System.out.println("[" + casa.getID() + "], ");
+                Juego.consola.imprimir("[" + casa.getID() + "], ");
             }
-            System.out.println("Alquiler: " + casilla.calcular_coste(0));
+            Juego.consola.imprimir("Alquiler: " + casilla.calcular_coste(0));
         }
         imprimirEdificiosDisponibles();
     }
@@ -175,7 +175,7 @@ class Grupo {
         }
 
         mensaje.append(".");
-        System.out.println(mensaje.toString());
+        Juego.consola.imprimir(mensaje.toString());
     }
 
 }

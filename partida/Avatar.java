@@ -56,9 +56,9 @@ public class Avatar {
         lugar.eliminarAvatar(this);
         if (posicionactual + valorTirada > 40) {
             if (cobrarSalida) {
-                System.out.println("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
+                Juego.consola.imprimir("Pasas por salida y cobras " + Valor.SUMA_VUELTA + ".");
             } else {
-                System.out.println("Pasas por salida y NO COBRAS NADA.");
+                Juego.consola.imprimir("Pasas por salida y NO COBRAS NADA.");
             }
             jugador.sumarVuelta(cobrarSalida);
             if (jugador.getVueltas() % 4 == 0) {
@@ -66,7 +66,7 @@ public class Avatar {
             }
         }
         if (posicionactual + valorTirada < 0) {
-            System.out.println("Pasas por salida EN EL SENTIDO CONTRARIO y PAGAS " + Valor.SUMA_VUELTA + ".");
+            Juego.consola.imprimir("Pasas por salida EN EL SENTIDO CONTRARIO y PAGAS " + Valor.SUMA_VUELTA + ".");
             jugador.pagarVuelta();
             ultimoMovementoFuiVoltaMultiploDe4 = false;
             valorTirada = (posicionactual + valorTirada) % 40;
@@ -79,7 +79,7 @@ public class Avatar {
         int lado = (nuevaposicion / 10);
         int casilla = (nuevaposicion % 10); 
         Casilla nuevaCasilla = casillas.get(lado).get(casilla);
-        System.out.println("El jugador " + getJugador().getNombre() + " avanza de " + lugar.getNombre() + " a " + nuevaCasilla.getNombre() + ". (Posiciones desplazadas: " + valorTirada + ")");
+        Juego.consola.imprimir("El jugador " + getJugador().getNombre() + " avanza de " + lugar.getNombre() + " a " + nuevaCasilla.getNombre() + ". (Posiciones desplazadas: " + valorTirada + ")");
         nuevaCasilla.anhadirAvatar(this);
         vecesCaidasCasilla[nuevaposicion] += 1;
         this.lugar = nuevaCasilla;
@@ -122,9 +122,9 @@ public class Avatar {
         }
         lugar.evaluarCasilla(getJugador(), banca, mov);
         if (movimientosRestantes == 0) {
-            System.out.println("No quedan más movimientos de pelota.");
+            Juego.consola.imprimir("No quedan más movimientos de pelota.");
         } else {
-            System.out.println("Quedan " + movimientosRestantes + " casillas que moverse con pelota.");
+            Juego.consola.imprimir("Quedan " + movimientosRestantes + " casillas que moverse con pelota.");
         }
     }
 
@@ -162,7 +162,7 @@ public class Avatar {
     public void moverCoche(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
 
         if (valorTirada <= 4) {
-            System.out.println("No puedes tirar durante dos turnos.");
+            Juego.consola.imprimir("No puedes tirar durante dos turnos.");
             jugador.calarCoche();
             valorTirada *= -1;
         }
