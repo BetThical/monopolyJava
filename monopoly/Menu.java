@@ -365,8 +365,7 @@ public final class Menu {
                 System.out.println("El comando avanzar solo está disponible para el avatar pelota en modo avanzado.");
             } else if (puedeAvanzar()) {
                 jugador.getAvatar().avanzar(tablero.getPosiciones(), banca);
-            }
-            else{
+            } else {
                 System.out.println("No puedes avanzar.");
             }
         } else if (comando.equals("comprar")) {
@@ -531,42 +530,8 @@ public final class Menu {
 
         } else if (comando.contains("carta")) {
 
-            if (jugador.puedeCogerCarta() == 2) {
-
-                HashMap<Integer, Carta> suerte = tablero.getSuerte();
-
-                for (int i = 1; i <= suerte.size(); i++) {
-                    Carta carta = suerte.get(i);
-                    if (carta != null) {
-                        System.out.println(i + ": " + carta.getCarta());
-                    } else {
-                        System.out.println(i + ": Carta no disponible.");
-                    }
-                }
-                System.out.println("Escoge una carta por su numero: ");
-                int opc = sc.nextInt();
-                sc.nextLine(); // Consume newline
-                System.out.println("Carta seleccionada: " + suerte.get(opc).getCarta());
-                funcionesCartas(jugador.getAvatar(), tablero, opc);
-                jugador.setCartaDisponible(0);
-
-            } else if (jugador.puedeCogerCarta() == 1) {
-                HashMap<Integer, Carta> comunidad = tablero.getComunidad();
-                for (int i = 7; i <= 12; i++) {
-                    Carta carta = comunidad.get(i);
-                    if (carta != null) {
-                        System.out.println(i + ": " + carta.getCarta());
-                    } else {
-                        System.out.println(i + ": Carta no disponible.");
-                    }
-                }
-                System.out.println("Escoge una carta por su numero: ");
-                int opc = sc.nextInt();
-                sc.nextLine(); // Consume newline
-                System.out.println("Carta seleccionada: " + comunidad.get(opc).getCarta());
-
-                funcionesCartas(jugador.getAvatar(), tablero, opc);
-                jugador.setCartaDisponible(0);
+            if (jugador.puedeCogerCarta() != 0) {
+                cogerCarta(jugador);
 
             } else {
                 System.out.println("No puedes coger cartas.");
@@ -576,6 +541,37 @@ public final class Menu {
             System.out.println("Comando inválido.");
         }
 
+    }
+
+    private void cogerCarta(Jugador jugador) {
+        int cartaDisponible = jugador.puedeCogerCarta();
+        HashMap<Integer, Carta> cartas; // 1: comunidad, 2: suerte
+        if (cartaDisponible == 1) {
+            cartas = tablero.getComunidad();
+            System.out.println("Has cogido una carta de la comunidad.");
+        } else {
+            System.out.println("Has cogido una carta de la suerte.");
+            cartas = tablero.getSuerte();
+
+        }
+        System.out.println("Cartas disponibles:");
+        for (Map.Entry<Integer, Carta> entry : cartas.entrySet()) {
+            if (cartaDisponible == 1) { // suerte en amarillo, comunidad en azul
+                System.out.println(Valor.BLUE + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getCarta());
+            } else {
+                System.out.println(Valor.YELLOW + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getCarta());
+            }
+        }
+        System.out.println("Introduce un número entre 1 y 6:");
+        int numero = sc.nextInt();
+        sc.nextLine(); 
+        if (numero < 1 || numero > 6) {
+            System.out.println("Número inválido.");
+        } else {
+            Carta carta = cartas.get(numero);
+            System.out.println("Has seleccionado: " + carta.getCarta());
+            funcionesCartas(jugador.getAvatar(), tablero, numero);
+        }
     }
 
     /*
@@ -597,7 +593,6 @@ public final class Menu {
                 System.out.print("||");
             }
             System.out.println("");
-            System.out.println("Hipotecas: ");
             /*
              * ArrayList<Edificio> edificios = jugador.getEdificios();
              * if (!edificios.isEmpty()) {
@@ -793,7 +788,9 @@ public final class Menu {
         //llamada a evaluar casilla
         Casilla casillaFinal = avatar.getLugar();
         if (!(jugador.getMovEspecial() && avatar.getTipo().equals("pelota"))) //porque el (primer) movimiento especial de la pelota no implica moverse, no se evalua la casilla
+        {
             casillaFinal.evaluarCasilla(jugador, banca, valor_tiradas);
+        }
         if (jugador.getEnCarcel()) {
             encarcelar(jugador); //comprobación de si cae en 'ir a cárcel'
 

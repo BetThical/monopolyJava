@@ -46,12 +46,12 @@ public class Tablero {
         barajaSuerte.put(5,new Carta(5, "Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.")); 
         barajaSuerte.put(6,new Carta(6, "¡Has ganado el bote de la lotería! Recibe 1000000€.")); 
 
-        barajaComunidad.put(7, new Carta(7, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
-        barajaComunidad.put(8, new Carta(8, "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
-        barajaComunidad.put(9, new Carta(9, "Colócate en la casilla de Salida. Cobra la cantidad habitual."));
-        barajaComunidad.put(10, new Carta(10, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€."));
-        barajaComunidad.put(11, new Carta(11, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14."));
-        barajaComunidad.put(12, new Carta(12, "Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador."));
+        barajaComunidad.put(1, new Carta(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
+        barajaComunidad.put(2, new Carta(2, "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
+        barajaComunidad.put(3, new Carta(3, "Colócate en la casilla de Salida. Cobra la cantidad habitual."));
+        barajaComunidad.put(4, new Carta(4, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€."));
+        barajaComunidad.put(5, new Carta(5, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14."));
+        barajaComunidad.put(6, new Carta(6, "Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador."));
     }
 
     // Función para imprimir el tablero
