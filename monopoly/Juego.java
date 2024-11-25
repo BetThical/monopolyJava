@@ -16,16 +16,13 @@ public final class Juego {
     private Dado dado1; // Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private final Jugador banca; // El jugador banca.
-    private boolean acabarPartida; // Booleano para comprobar si hai que acabar la partida.
-    public static final Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
     private Edificio e; // Edificio para construir en una casilla.
     private static final List<String> EDIFICIOS_VALIDOS = Arrays.asList("casa", "hotel", "piscina", "pista", "4casas");
     // Constantes
     private static final int MAX_JUGADORES = 6; // Número máximo de jugadores en una partida.
-
-    public Jugador getBanca() {
-        return banca;
-    }
+                                                
+    //objetos
+    public final Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
 
     public void listar(String args) {
         switch (args) {
@@ -83,55 +80,7 @@ public final class Juego {
         avatares = new ArrayList<>();
     }
 
-    public void titulo() {
-
-        consola.imprimir(
-                "      ___          ___          ___          ___          ___          ___          ___   ___     ");
-        consola.imprimir(
-                "     /\\__\\        /\\  \\        /\\__\\        /\\  \\        /\\  \\        /\\  \\        /\\__\\ |\\__\\    ");
-        consola.imprimir(
-                "    /::|  |      /::\\  \\      /::|  |      /::\\  \\      /::\\  \\      /::\\  \\      /:/  / |:|  |   ");
-        consola.imprimir(
-                "   /:|:|  |     /:/\\:\\  \\    /:|:|  |     /:/\\:\\  \\    /:/\\:\\  \\    /:/\\:\\  \\    /:/  /  |:|  |   ");
-        consola.imprimir(
-                "  /:/|:|__|__  /:/  \\:\\  \\  /:/|:|  |__  /:/  \\:\\  \\  /::\\~\\:\\  \\  /:/  \\:\\  \\  /:/  /   |:|__|__ ");
-        consola.imprimir(
-                " /:/ |::::\\__/\\:/__/ \\:\\__/\\:/ |:| /\\__/\\:/__/ \\:\\__/\\:/\\:\\ \\:\\__/\\:/__/ \\:\\__/\\:/__/    /::::\\__\\");
-        consola.imprimir(
-                " \\/__/~~/:/  /\\:\\  \\ /:/  /\\/__|:|/:/  /\\:\\  \\ /:/  /\\/__\\:\\/:/  /\\:\\  \\ /:/  /\\:\\  \\   /:/~~/~   ");
-        consola.imprimir(
-                "       /:/  /  \\:\\  /:/  /     |:/:/  /  \\:\\  /:/  /      \\::/  /  \\:\\  /:/  /  \\:\\  \\ /:/  /     ");
-        consola.imprimir(
-                "      /:/  /    \\:\\/:/  /      |::/  /    \\:\\/:/  /        \\/__/    \\:\\/:/  /    \\:\\  \\/__/      ");
-        consola.imprimir(
-                "     /:/  /      \\::/  /       /:/  /      \\::/  /                   \\::/  /      \\:\\__\\          ");
-        consola.imprimir(
-                "     \\/__/        \\/__/        \\/__/        \\/__/                     \\/__/        \\/__/          ");
-        consola.imprimir(
-                "                                ___       ___          ___          ___                           ");
-        consola.imprimir(
-                "                               /\\  \\     /\\  \\        /\\  \\        /\\  \\                          ");
-        consola.imprimir(
-                "                              /::\\  \\    \\:\\  \\      /::\\  \\      /::\\  \\                         ");
-        consola.imprimir(
-                "                            /::\\~\\:\\  \\   /::\\  \\  _\\:\\~\\ \\  \\  /::\\~\\:\\  \\                       ");
-        consola.imprimir(
-                "                           /:/\\:\\ \\:\\__/ /:/\\:\\__/\\/ \\:\\ \\ \\__/\\:/\\:\\ \\:\\__/                      ");
-        consola.imprimir(
-                "                           \\:\\~\\:\\ \\/__//:/  \\/__/\\:\\ \\:\\ \\/__/\\:\\~\\:\\ \\/__/                      ");
-        consola.imprimir(
-                "                            \\:\\ \\:\\__\\ /:/  /      \\:\\ \\:\\__\\   \\:\\ \\:\\__\\                        ");
-        consola.imprimir(
-                "                             \\:\\ \\/__/ \\/__/        \\:\\/:/  /    \\:\\ \\/__/                        ");
-        consola.imprimir(
-                "                              \\:\\__\\                 \\::/  /      \\:\\__\\                          ");
-        consola.imprimir(
-                "                               \\/__/                  \\/__/        \\/__/                          ");
-
-        consola.leer("\n\n\n                                Pulse ENTER para iniciar una partida.\n\n");
-
-    }
-
+   
     // Método para inciar una partida: crea los jugadores y avatares.
     public void iniciarPartida(Tablero t) {
 
@@ -150,50 +99,17 @@ public final class Juego {
         }
 
         consola.imprimir("Partida iniciada con " + numjugadores() + " jugadores.");
-        consola.imprimir("Empieza la partida: " + obtenerJugadorTurno().getNombre() + ".");
+        consola.imprimir("Empieza la partida: " + getJugadorTurno().getNombre() + ".");
 
     }
 
-    public void loopJugable() {
-        String comando = "";
-        while (!acabarPartida) {
-            Jugador jugador = obtenerJugadorTurno();
-            tablero.imprimirTablero();
-
-            if (jugador.getFortuna() < 0) {
-                if (jugador.getEnDeuda() == null) {
-                    jugador.setEnDeuda(banca);
-                }
-                consola.imprimir(
-                        Valor.RED + "[AVISO]:" + Valor.RESET
-                        + " actualmente estás en deuda (" + obtenerJugadorTurno().getFortuna()
-                        + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
-            }
-            if (jugador.limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
-                // turno
-                if (!jugador.pagarMulta()) {
-                    jugador.setEnDeuda(banca);
-                    break;
-                }
-            }
-            comando = consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
-            analizarComando(comando);
-
-            if (jugadores.size() < 2) {
-                consola.imprimir("El único jugador que queda es " + obtenerJugadorTurno().getNombre() + "!");
-                acabarPartida = true;
-            }
-
-        }
-        consola.imprimir("La partida ha terminado! El ganador es " + obtenerJugadorTurno().getNombre() + ".");
-    }
-
+    
     private void anhadirJugador() {
         if (jugadores.size() >= MAX_JUGADORES) {
             return;
         }
         Casilla casillaInicio = tablero.getCasilla(0);
-        String nombre = consola.leer("\nIntroduce el nombre del jugador " + (obtenerNumeroDeJugadores() + 1) + ": ");
+        String nombre = consola.leer("\nIntroduce el nombre del jugador " + (getNumeroDeJugadores() + 1) + ": ");
         String tipoAvatar = consola.leer("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, pelota):");
         /// DEBUG (para ir mas rapido en test) ///
         if (tipoAvatar.equals("a")) {
@@ -459,140 +375,7 @@ public final class Juego {
         }
     }
 
-    /*
-         * Método que interpreta el comando introducido y toma la accion
-         * correspondiente.
-         * Parámetro: cadena de caracteres (el comando).
-     */
-    private void analizarComando(String input) {
-        Jugador jugador = obtenerJugadorTurno();
-        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
-        String[] partesComando = input.split(" ");
-
-        switch (partesComando[0]) {
-            // --- jugadores --- //
-            case "añadir":
-                if (input.equals("añadir jugador")) {
-                    anhadirJugador();
-                }
-                break;
-
-            case "jugador":
-                jugadorActual(jugador);
-                break;
-
-            // - - - movimientos --- //
-            case "lanzar":
-                if (input.equals("lanzar dados")) { // lanzar dados aleatorio
-                    if (puedeLanzarDados()) {
-                        lanzarDados();
-                    }
-                } else if (input.contains("lanzar dados ")) { // DEBUG: lanzar dados manual (lanzar dados [x]+[y])
-                    if (puedeLanzarDados()) {
-                        try {
-                            String[] valores = partesComando[2].split("\\+");
-                            lanzarDados(Integer.parseInt(valores[0]), Integer.parseInt(valores[1]));
-                        } catch (NumberFormatException ex) {
-                            consola.imprimir("Uso del comando: lanzar dados [tirada1]+[tirada2]");
-                        }
-                    }
-                }
-                break;
-
-            case "avanzar": // 'avanzar' usado en mov pelota
-                avanzar(jugador);
-                break;
-
-            case "m": // DEBUG: moverse manualmente (m [x])
-                try {
-                    lanzarDados(Integer.parseInt(partesComando[1]), 0);
-                    lanzamientos++;
-                } catch (NumberFormatException ex) {
-                    consola.imprimir("Uso del comando: m [cantidad de casillas]");
-                }
-                break;
-
-            // - - - manejo propiedades --- //
-            case "comprar":
-                comprar(casilla);
-                break;
-
-            case "edificar":
-                edificar(partesComando[1], jugador, casilla);
-                break;
-
-            case "destruir":
-                destruir(partesComando[1], jugador, casilla);
-                break;
-
-            case "hipotecar":
-                hipotecar(partesComando[1], jugador);
-                break;
-
-            case "deshipotecar":
-                deshipotecar(partesComando[1], jugador);
-                break;
-
-            // - - - acciones misceláneas --- //
-            case "cambiar":
-                if (input.equals("cambiar modo")) {
-                    cambiarModo(jugador);
-                }
-                break;
-
-            case "carta":
-                cogerCarta(jugador);
-                break;
-            case "salir":
-                if (input.equals("salir carcel")) {
-                    salirCarcel(jugador);
-                }
-                break;
-
-            case "bancarrota":
-                bancarrota(jugador, jugador.getEnDeuda());
-                break;
-
-            case "acabar":
-                if (input.equals("acabar turno")) {
-                    acabarTurno(jugador);
-                }
-                break;
-
-            // - - - info partida --- //
-            case "listar":
-                listar(partesComando[1]);
-                break;
-
-            case "describir": // incluye describir avatar, jugador o casilla
-                describir(input.replace("describir ", ""));
-                break;
-
-            case "estadisticas":
-                if (input.equals("estadisticas")) {
-                    estadisticas(); // estadisticas partida
-                } else if (input.contains("estadisticas ")) {
-                    estadisticasJugador(partesComando[1]); // estadisticas jugador
-                }
-                break;
-
-            case "ver":
-                if (input.equals("ver tablero")) {
-                    // no hace nada
-                }
-                break;
-
-            case "f": // fortuna manual (debug)
-                fortunaManual(partesComando[1], jugador);
-                break;
-
-            default:
-                consola.imprimir("Comando inválido.");
-                break;
-        }
-    }
-
-    private void cogerCarta(Jugador jugador) {
+    public void cogerCarta(Jugador jugador) {
 
         if (jugador.puedeCogerCarta() == 0) {
             consola.imprimir("No puedes coger cartas.");
@@ -632,7 +415,7 @@ public final class Juego {
      * Método que realiza las acciones asociadas al comando /describir jugador'.
      * Parámetro: nombre del jugador
      */
-    private void descJugador(String nombre) {
+    public void descJugador(String nombre) {
         Jugador jugador = getJugador(nombre);
         if (!(jugador == null)) {
             consola.imprimir("Nombre: " + jugador.getNombre());
@@ -661,7 +444,7 @@ public final class Juego {
         }
     }
 
-    private void descJugador(Jugador jugador) {
+    public void descJugador(Jugador jugador) {
         if (!(jugador == null)) {
             consola.imprimir("Nombre: " + jugador.getNombre());
             consola.imprimir("Avatar: " + jugador.getAvatar().getID());
@@ -687,7 +470,7 @@ public final class Juego {
      * Método que realiza las acciones asociadas al comando 'describir avatar'.
      * Parámetro: id del avatar a describir.
      */
-    private void descAvatar(String ID) {
+    public void descAvatar(String ID) {
         Avatar avatar = getAvatar(ID);
         if (!(avatar == null)) {
             consola.imprimir("- ID: " + avatar.getID());
@@ -706,7 +489,7 @@ public final class Juego {
      * nombre_casilla'.
      * Parámetros: nombre de la casilla a describir.
      */
-    private void descCasilla(String nombre) {
+    public void descCasilla(String nombre) {
         Casilla casilla = tablero.getCasilla(nombre);
         if (!(casilla == (null))) {
             consola.imprimir(casilla.infoCasilla(banca));
@@ -715,8 +498,8 @@ public final class Juego {
         }
     }
 
-    private boolean puedeLanzarDados() {
-        Jugador jugador = obtenerJugadorTurno();
+    public boolean puedeLanzarDados() {
+        Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
         if (jugador.getEnCarcel()) {
@@ -759,7 +542,7 @@ public final class Juego {
 
     //similar a puedeLanzarDados pero comprueba si el avatar puede moverse actualmente, sea con una tirada normal de dados o con avanzar
     private boolean puedeAvanzar() {
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
         if (jugador.getFortuna() < 0) {
@@ -779,7 +562,7 @@ public final class Juego {
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar'
     // elejiendo los valores de los dados
-    private void lanzarDados() {
+    public void lanzarDados() {
         int tirada1 = dado1.hacerTirada();
         int tirada2 = dado2.hacerTirada();
         lanzarDados(tirada1, tirada2);
@@ -787,9 +570,9 @@ public final class Juego {
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar
     // dados' para valores de tirada concretos
-    private void lanzarDados(int tirada1, int tirada2) {
+    public void lanzarDados(int tirada1, int tirada2) {
 
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
 
         Avatar avatar = jugador.getAvatar();
 
@@ -856,7 +639,7 @@ public final class Juego {
 
     private void comprobacion4Vueltas() {
 
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
         if (avatar.get4Voltas() == true) {
             boolean condicion = true;
@@ -877,8 +660,8 @@ public final class Juego {
      * nombre_casilla'.
      * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
-    private void comprar(Casilla casilla) {
-        Jugador jugador = obtenerJugadorTurno();
+    public void comprar(Casilla casilla) {
+        Jugador jugador = getJugadorTurno();
         if (!jugador.getPuedeComprar() && jugador.getAvatar().getTipo().equals("coche") && jugador.getMovEspecial()) {
             consola.imprimir(
                     "Al realizar el movimiento especial del coche, sólo puedes comprar una vez por turno.");
@@ -895,7 +678,7 @@ public final class Juego {
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'salir
     // carcel'.
-    private boolean salirCarcel(Jugador jugador) {
+    public boolean salirCarcel(Jugador jugador) {
         if (!jugador.getEnCarcel()) {
             consola.imprimir("No estás en la cárcel.");
             return false;
@@ -905,12 +688,12 @@ public final class Juego {
             return false;
         }
 
-        return obtenerJugadorTurno().pagarMulta();
+        return getJugadorTurno().pagarMulta();
 
     }
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
-    private void listarVenta() {
+    public void listarVenta() {
         banca.getPropiedades();
         Casilla casilla_aux;
         for (int i = 0; i < 40; i++) {
@@ -923,52 +706,24 @@ public final class Juego {
     }
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
-    private void listarJugadores() {
-        for (int i = 0; i < obtenerNumeroDeJugadores(); i++) {
+    public void listarJugadores() {
+        for (int i = 0; i < getNumeroDeJugadores(); i++) {
             descJugador(jugadores.get(i));
         }
     }
 
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
-    private void listarAvatares() {
-        for (int i = 0; i < obtenerNumeroDeAvatares(); i++) {
+    public void listarAvatares() {
+        for (int i = 0; i < getNumeroDeAvatares(); i++) {
             descAvatar(avatares.get(i).getID());
 
         }
     }
 
-    public Jugador obtenerJugadorTurno() {
-        return jugadores.get(turno);
-    }
-
-    public int obtenerNumeroDeJugadores() {
-        return jugadores.size();
-    }
-
-    public int obtenerNumeroDeAvatares() {
-        return avatares.size();
-    }
-
-    public Avatar getAvatar(String id) {
-        for (int i = 0; i < avatares.size(); i++) {
-            if (avatares.get(i).getID().equals(id)) {
-                return avatares.get(i);
-            }
-        }
-        return null;
-    }
-
-    public Jugador getJugador(String nombre) {
-        for (int i = 0; i < jugadores.size(); i++) {
-            if (jugadores.get(i).getNombre().equals(nombre)) {
-                return jugadores.get(i);
-            }
-        }
-        return null;
-    }
+    
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
-    private void acabarTurno(Jugador jugador) {
+    public void acabarTurno(Jugador jugador) {
 
         if (jugador.getFortuna() < 0) {
             consola.imprimir(
@@ -979,21 +734,21 @@ public final class Juego {
             jugador.reducirCocheCalado();
         }
 
-        turno = (turno + 1) % obtenerNumeroDeJugadores();
-        obtenerJugadorTurno().setPuedeComprar(true);
+        turno = (turno + 1) % getNumeroDeJugadores();
+        getJugadorTurno().setPuedeComprar(true);
         lanzamientos = 0;
         dobles_seguidos = 0;
-        consola.imprimir("Turno de " + obtenerJugadorTurno().getNombre() + ".");
+        consola.imprimir("Turno de " + getJugadorTurno().getNombre() + ".");
 
     }
 
-    private void bancarrota(Jugador jugadorBancarrota, Jugador jugadorRecibe) {
+    public void bancarrota(Jugador jugadorBancarrota, Jugador jugadorRecibe) {
 
         if (jugadorBancarrota.getEnDeuda() == null) {
             jugadorBancarrota.setEnDeuda(banca);
         }
         ArrayList<Casilla> array_propiedades;
-        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
+        Casilla casilla = getJugadorTurno().getAvatar().getLugar();
         consola.imprimir(
                 "El jugador " + jugadorBancarrota.getNombre() + " ha declarado la bancarrota y abandona la partida!");
         consola.imprimir("Las propiedades y fortuna de " + jugadorBancarrota.getNombre() + " pasan a pertenecer a "
@@ -1019,7 +774,7 @@ public final class Juego {
         if (turno > jugadores.size() - 1) {
             turno = 0;
         }
-        consola.imprimir("Turno de " + obtenerJugadorTurno().getNombre() + ".");
+        consola.imprimir("Turno de " + getJugadorTurno().getNombre() + ".");
 
     }
 
@@ -1067,7 +822,7 @@ public final class Juego {
 
     }
 
-    private String gruposMasRentables() {
+    public String gruposMasRentables() {
         double max = 0;
         List<String> gruposEmpatados = new ArrayList<>();
 
@@ -1156,7 +911,7 @@ public final class Juego {
         }
     }
 
-    private void estadisticas() {
+    public void estadisticas() {
         consola.imprimir("casillaMasRentable: " + casillasMasRentables());
         consola.imprimir("grupoMasRentable: " + gruposMasRentables());
         consola.imprimir("casillaMasFrecuentada: " + casillasMasFrecuentadas());
@@ -1165,7 +920,7 @@ public final class Juego {
         consola.imprimir("jugadorEnCabeza: " + jugadoresEnCabeza());
     }
 
-    private void estadisticasJugador(String args) {
+    public void estadisticasJugador(String args) {
         Jugador jugador = getJugador(args);
         if (jugador == null) {
             consola.imprimir("Jugador no encontrado.");
@@ -1184,4 +939,55 @@ public final class Juego {
             consola.imprimir("Tu tirada de la pelota ha sido interrumpida por haber caído en la cárcel.");
         }
     }
+    //SETTERS
+    
+    public void setLanzamientos(Integer newLanzamientos){
+        lanzamientos = newLanzamientos;
+    }
+
+    // GETTERS
+
+    public Tablero getTablero(){
+        return tablero;
+    }
+
+    public Jugador getBanca() {
+        return banca;
+    }
+
+    public Integer getLanzamientos(){
+        return 
+            lanzamientos;
+    }
+    public Jugador getJugadorTurno() {
+        return jugadores.get(turno);
+    }
+
+    public int getNumeroDeJugadores() {
+        return jugadores.size();
+    }
+
+    public int getNumeroDeAvatares() {
+        return avatares.size();
+    }
+
+    public Avatar getAvatar(String id) {
+        for (int i = 0; i < avatares.size(); i++) {
+            if (avatares.get(i).getID().equals(id)) {
+                return avatares.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Jugador getJugador(String nombre) {
+        for (int i = 0; i < jugadores.size(); i++) {
+            if (jugadores.get(i).getNombre().equals(nombre)) {
+                return jugadores.get(i);
+            }
+        }
+        return null;
+    }
+
+
 }
