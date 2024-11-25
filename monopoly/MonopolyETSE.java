@@ -4,12 +4,12 @@ public class MonopolyETSE {
 
     public static void main(String[] args) {
 
-        Juego menu = new Juego();
-        menu.titulo();
+        Juego juego = new Juego();
+        juego.titulo();
 
         Tablero tablero = new Tablero(menu.getBanca());
-        menu.iniciarPartida(tablero);
-        menu.loopJugable();
+        juego.iniciarPartida(tablero);
+        juego.loopJugable();
 
     }
 
