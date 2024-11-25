@@ -95,7 +95,7 @@ public final class Juego {
         }
 
         consola.imprimir("Partida iniciada con " + numjugadores() + " jugadores.");
-        consola.imprimir("Empieza la partida: " + obtenerJugadorTurno().getNombre() + ".");
+        consola.imprimir("Empieza la partida: " + getJugadorTurno().getNombre() + ".");
 
     }
 
@@ -105,7 +105,7 @@ public final class Juego {
             return;
         }
         Casilla casillaInicio = tablero.getCasilla(0);
-        String nombre = consola.leer("\nIntroduce el nombre del jugador " + (obtenerNumeroDeJugadores() + 1) + ": ");
+        String nombre = consola.leer("\nIntroduce el nombre del jugador " + (getNumeroDeJugadores() + 1) + ": ");
         String tipoAvatar = consola.leer("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, pelota):");
         if (tipoAvatar.equals("a") || tipoAvatar.equals("c")) {
             consola.imprimir(Valor.YELLOW + "El avatar seleccionado es el coche." + Valor.RESET);
@@ -487,7 +487,7 @@ public final class Juego {
     }
 
     public boolean puedeLanzarDados() {
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
         if (jugador.getEnCarcel()) {
@@ -530,7 +530,7 @@ public final class Juego {
 
     //similar a puedeLanzarDados pero comprueba si el avatar puede moverse actualmente, sea con una tirada normal de dados o con avanzar
     private boolean puedeAvanzar() {
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
         if (jugador.getFortuna() < 0) {
@@ -560,7 +560,7 @@ public final class Juego {
     // dados' para valores de tirada concretos
     public void lanzarDados(int tirada1, int tirada2) {
 
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
 
         Avatar avatar = jugador.getAvatar();
 
@@ -626,7 +626,7 @@ public final class Juego {
 
     private void comprobacion4Vueltas() {
 
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
         if (avatar.get4Voltas() == true) {
             boolean condicion = true;
@@ -648,7 +648,7 @@ public final class Juego {
      * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
     public void comprar(Casilla casilla) {
-        Jugador jugador = obtenerJugadorTurno();
+        Jugador jugador = getJugadorTurno();
         if (!jugador.getPuedeComprar() && jugador.getAvatar().getTipo().equals("coche") && jugador.getMovEspecial()) {
             consola.imprimir(
                     "Al realizar el movimiento especial del coche, sólo puedes comprar una vez por turno.");
@@ -675,7 +675,7 @@ public final class Juego {
             return false;
         }
 
-        return obtenerJugadorTurno().pagarMulta();
+        return getJugadorTurno().pagarMulta();
 
     }
 
@@ -694,48 +694,20 @@ public final class Juego {
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     public void listarJugadores() {
-        for (int i = 0; i < obtenerNumeroDeJugadores(); i++) {
+        for (int i = 0; i < getNumeroDeJugadores(); i++) {
             descJugador(jugadores.get(i));
         }
     }
 
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
     public void listarAvatares() {
-        for (int i = 0; i < obtenerNumeroDeAvatares(); i++) {
+        for (int i = 0; i < getNumeroDeAvatares(); i++) {
             descAvatar(avatares.get(i).getID());
 
         }
     }
 
-    public Jugador obtenerJugadorTurno() {
-        return jugadores.get(turno);
-    }
-
-    public int obtenerNumeroDeJugadores() {
-        return jugadores.size();
-    }
-
-    public int obtenerNumeroDeAvatares() {
-        return avatares.size();
-    }
-
-    public Avatar getAvatar(String id) {
-        for (int i = 0; i < avatares.size(); i++) {
-            if (avatares.get(i).getID().equals(id)) {
-                return avatares.get(i);
-            }
-        }
-        return null;
-    }
-
-    public Jugador getJugador(String nombre) {
-        for (int i = 0; i < jugadores.size(); i++) {
-            if (jugadores.get(i).getNombre().equals(nombre)) {
-                return jugadores.get(i);
-            }
-        }
-        return null;
-    }
+    
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     public void acabarTurno(Jugador jugador) {
@@ -749,11 +721,11 @@ public final class Juego {
             jugador.reducirCocheCalado();
         }
 
-        turno = (turno + 1) % obtenerNumeroDeJugadores();
-        obtenerJugadorTurno().setPuedeComprar(true);
+        turno = (turno + 1) % getNumeroDeJugadores();
+        getJugadorTurno().setPuedeComprar(true);
         lanzamientos = 0;
         dobles_seguidos = 0;
-        consola.imprimir("Turno de " + obtenerJugadorTurno().getNombre() + ".");
+        consola.imprimir("Turno de " + getJugadorTurno().getNombre() + ".");
 
     }
 
@@ -763,7 +735,7 @@ public final class Juego {
             jugadorBancarrota.setEnDeuda(banca);
         }
         ArrayList<Casilla> array_propiedades;
-        Casilla casilla = obtenerJugadorTurno().getAvatar().getLugar();
+        Casilla casilla = getJugadorTurno().getAvatar().getLugar();
         consola.imprimir(
                 "El jugador " + jugadorBancarrota.getNombre() + " ha declarado la bancarrota y abandona la partida!");
         consola.imprimir("Las propiedades y fortuna de " + jugadorBancarrota.getNombre() + " pasan a pertenecer a "
@@ -789,7 +761,7 @@ public final class Juego {
         if (turno > jugadores.size() - 1) {
             turno = 0;
         }
-        consola.imprimir("Turno de " + obtenerJugadorTurno().getNombre() + ".");
+        consola.imprimir("Turno de " + getJugadorTurno().getNombre() + ".");
 
     }
 
@@ -965,11 +937,43 @@ public final class Juego {
     public Tablero getTablero(){
         return tablero;
     }
+
     public Jugador getBanca() {
         return banca;
     }
+
     public Integer getLanzamientos(){
-        return lanzamientos;
+        return 
+            lanzamientos;
+    }
+    public Jugador getJugadorTurno() {
+        return jugadores.get(turno);
+    }
+
+    public int getNumeroDeJugadores() {
+        return jugadores.size();
+    }
+
+    public int getNumeroDeAvatares() {
+        return avatares.size();
+    }
+
+    public Avatar getAvatar(String id) {
+        for (int i = 0; i < avatares.size(); i++) {
+            if (avatares.get(i).getID().equals(id)) {
+                return avatares.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Jugador getJugador(String nombre) {
+        for (int i = 0; i < jugadores.size(); i++) {
+            if (jugadores.get(i).getNombre().equals(nombre)) {
+                return jugadores.get(i);
+            }
+        }
+        return null;
     }
 
 

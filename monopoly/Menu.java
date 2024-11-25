@@ -9,7 +9,7 @@ public final class Menu{
     
     private boolean acabarPartida=false; // Booleano para comprobar si hai que acabar la partida.
 
-    public static final Juego juego = new Juego();
+    public final Juego juego = new Juego();
     
     public void titulo() {
 
@@ -63,7 +63,7 @@ public final class Menu{
     public void loopJugable() {
         String comando = "";
         while (!acabarPartida) {
-            Jugador jugador = juego.obtenerJugadorTurno();
+            Jugador jugador = juego.getJugadorTurno();
             juego.getTablero().imprimirTablero();
 
             if (jugador.getFortuna() < 0) {
@@ -72,7 +72,7 @@ public final class Menu{
                 }
                 juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
-                        + " actualmente estás en deuda (" + juego.obtenerJugadorTurno().getFortuna()
+                        + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
                         + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             }
             if (jugador.limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
@@ -86,12 +86,12 @@ public final class Menu{
             analizarComando(comando);
 
             if (jugadores.size() < 2) {
-                juego.consola.imprimir("El único jugador que queda es " + juego.obtenerJugadorTurno().getNombre() + "!");
+                juego.consola.imprimir("El único jugador que queda es " + juego.getJugadorTurno().getNombre() + "!");
                 acabarPartida = true;
             }
 
         }
-        juego.consola.imprimir("La partida ha terminado! El ganador es " + juego.obtenerJugadorTurno().getNombre() + ".");
+        juego.consola.imprimir("La partida ha terminado! El ganador es " + juego.getJugadorTurno().getNombre() + ".");
     }
 
 /*
@@ -100,8 +100,8 @@ public final class Menu{
          * Parámetro: cadena de caracteres (el comando).
      */
     private void analizarComando(String input) {
-        Jugador jugador = juego.obtenerJugadorTurno();
-        Casilla casilla = juego.obtenerJugadorTurno().getAvatar().getLugar();
+        Jugador jugador = juego.getJugadorTurno();
+        Casilla casilla = juego.getJugadorTurno().getAvatar().getLugar();
         String[] partesComando = input.split(" ");
 
         switch (partesComando[0]) {
