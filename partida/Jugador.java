@@ -113,22 +113,29 @@ public class Jugador {
         this.nombre = nombre;
         this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
         this.propiedades = new ArrayList<>();
-        this.color = switch (avCreados.size()+1) {
-            case 1 ->
-                Valor.RED;
-            case 2 ->
-                Valor.BLUE;
-            case 3 ->
-                Valor.YELLOW;
-            case 4 ->
-                Valor.GREEN;
-            case 5 ->
-                Valor.PURPLE;
-            case 6 ->
-                Valor.CYAN;
-            default ->
-                Valor.WHITE;
-        };
+        switch (avCreados.size() + 1) {
+            case 1:
+                this.color = Valor.RED;
+                break;
+            case 2:
+                this.color = Valor.BLUE;
+                break;
+            case 3:
+                this.color = Valor.YELLOW;
+                break;
+            case 4:
+                this.color = Valor.GREEN;
+                break;
+            case 5:
+                this.color = Valor.PURPLE;
+                break;
+            case 6:
+                this.color = Valor.CYAN;
+                break;
+            default:
+                this.color = Valor.WHITE;
+                break;
+        }
 
     }
 
