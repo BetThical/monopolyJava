@@ -65,7 +65,11 @@ public final class Juego {
                 descAvatar(argsArray[1]);
                 break;
             default:
-                descCasilla(args);
+                if (args.equals("describir")) { //si el comando introducido es solo 'describir'
+                    consola.imprimir("Uso: describir [casilla], describir jugador [jugador], describir avatar [avatar]");
+                } else {
+                    descCasilla(args);
+                }
                 break;
         }
     }
@@ -191,15 +195,20 @@ public final class Juego {
         Casilla casillaInicio = tablero.getCasilla(0);
         String nombre = consola.leer("\nIntroduce el nombre del jugador " + (obtenerNumeroDeJugadores() + 1) + ": ");
         String tipoAvatar = consola.leer("Elige el tipo de avatar para " + nombre + " (por ejemplo: coche, pelota):");
-        if (tipoAvatar.equals("a") || tipoAvatar.equals("c")) {
-            consola.imprimir(Valor.YELLOW + "El avatar seleccionado es el coche." + Valor.RESET);
+        /// DEBUG (para ir mas rapido en test) ///
+        if (tipoAvatar.equals("a")) {
+            consola.imprimir(Valor.YELLOW + "DEBUG: Se ha creado un avatar coche." + Valor.RESET);
             tipoAvatar = "coche";
         }
-        if (tipoAvatar.equals("b") || tipoAvatar.equals("p")) {
-            consola.imprimir(Valor.YELLOW + "El avatar seleccionado es la pelota." + Valor.RESET);
+        if (tipoAvatar.equals("b")) {
+            consola.imprimir(Valor.YELLOW + "DEBUG: Se ha creado un avatar pelota." + Valor.RESET);
             tipoAvatar = "pelota";
         }
+        while (!tipoAvatar.equals("coche") && !tipoAvatar.equals("pelota")) {
+            tipoAvatar = consola.leer("Elige un tipo de avatar válido para " + nombre + " (coche o pelota):");
+        }
         Jugador jugador = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
+
         jugador.sumarFortuna((float) Valor.FORTUNA_INICIAL);
         jugadores.add(jugador);
         avatares.add(jugador.getAvatar());
@@ -209,7 +218,7 @@ public final class Juego {
 
     public void funcionesCartas(Avatar avatar, Tablero tablero, int id) {
         Jugador jugador = avatar.getJugador();
-
+        Casilla casillaInicial = avatar.getLugar();
         switch (id) {
             case 1:
 
@@ -312,12 +321,10 @@ public final class Juego {
 
                 break;
         }
-        Casilla casillafinal = avatar.getLugar();
 
-        if (!casillafinal.evaluarCasilla(jugador, banca, 0)) { //tirada non importa porque ningunha carta che manda a servicio
-            consola.imprimir("El jugador " + jugador.getNombre() + " no puede pagar sus deudas!");
+        if (avatar.getLugar()!=casillaInicial) { //si se ha movido
+            avatar.getLugar().evaluarCasilla(jugador, banca, 0);
         }
-
         if (avatar.get4Voltas() == true) {
             boolean condicion = true;
             for (int i = 0; i < jugadores.size(); i++) {
@@ -387,12 +394,15 @@ public final class Juego {
     }
 
     public void avanzar(Jugador jugador) {
-        if (!jugador.getAvatar().getTipo().equals("pelota") || !jugador.getMovEspecial()) {
+        if (!(jugador.getAvatar() instanceof Pelota) || !jugador.getMovEspecial()) {
             consola.imprimir("El comando avanzar solo está disponible para el avatar pelota en modo avanzado.");
-        } else if (puedeAvanzar()) {
-            jugador.getAvatar().avanzar(tablero.getPosiciones(), banca);
         } else {
-            consola.imprimir("No puedes avanzar.");
+            Pelota pelota = (Pelota) jugador.getAvatar();
+            if (puedeAvanzar()) {
+                pelota.avanzar(tablero.getPosiciones(), banca);
+            } else {
+                consola.imprimir("No puedes avanzar.");
+            }
         }
     }
 
@@ -554,7 +564,7 @@ public final class Juego {
                 listar(partesComando[1]);
                 break;
 
-            case "describir ": // incluye describir avatar, jugador o casilla
+            case "describir": // incluye describir avatar, jugador o casilla
                 describir(input.replace("describir ", ""));
                 break;
 
@@ -612,7 +622,9 @@ public final class Juego {
         } else {
             Carta carta = cartas.get(numero);
             consola.imprimir("Has seleccionado: " + carta.getCarta());
+            if (cartaDisponible==1) numero+=6; // eliminar esto cando se separen as cartas
             funcionesCartas(jugador.getAvatar(), tablero, numero);
+            jugador.setCartaDisponible(0);
         }
     }
 
@@ -716,7 +728,7 @@ public final class Juego {
                 return false;
             }
         }
-        if (lanzamientos > 0 && dobles_seguidos == 0 && (!avatar.getTipo().equals("coche") || !jugador.getMovEspecial())) {
+        if (lanzamientos > 0 && dobles_seguidos == 0 && (!(avatar instanceof Coche) || !jugador.getMovEspecial())) {
             consola.imprimir("Ya has lanzado los dados en este turno.");
             return false;
         }
@@ -724,7 +736,7 @@ public final class Juego {
             consola.imprimir("Por una previa tirada con el coche, no puedes tirar durante " + jugador.getCocheCalado() + " turnos.");
             return false;
         }
-        if (avatar.getTipo().equals("coche") && jugador.getMovEspecial() && lanzamientos > 3) {
+        if ((avatar instanceof Coche) && jugador.getMovEspecial() && lanzamientos > 3) {
             if (dobles_seguidos == 0) {
                 consola.imprimir("Ya has lanzado los dados 4 veces en este turno.");
                 return false;
@@ -735,8 +747,8 @@ public final class Juego {
             }
         }
 
-        if (jugador.getMovEspecial() && avatar.getTipo().equals("pelota")) {
-            if (avatar.siguienteMovPelota(false) != 0) {
+        if (jugador.getMovEspecial() && (avatar instanceof Pelota)) {
+            if (((Pelota) avatar).siguienteMovPelota(false) != 0) {
                 consola.imprimir("Utiliza el comando 'avanzar' para moverte.");
                 return false;
             }
@@ -759,7 +771,7 @@ public final class Juego {
             return false;
         }
 
-        if (jugador.getMovEspecial() && avatar.getTipo().equals("pelota") && avatar.siguienteMovPelota(false) == 0) {
+        if (jugador.getMovEspecial() && (avatar instanceof Pelota) && ((Pelota) avatar).siguienteMovPelota(false) == 0) {
             return false; //no puede avanzar más
         }
         return true;
@@ -810,16 +822,15 @@ public final class Juego {
 
         //manejo de movimientos especiales
         if (jugador.getMovEspecial()) {
-            if (avatar.getTipo().equals("pelota")) {
-                avatar.moverPelota(tablero.getPosiciones(), valor_tiradas);
-                consola.imprimir("Utiliza el comando 'avanzar' para moverte.");
+            if ((avatar instanceof Pelota)) {
+                ((Pelota) avatar).moverEnAvanzado(tablero.getPosiciones(), valor_tiradas);
             }
-            if (avatar.getTipo().equals("coche")) {
-                avatar.moverCoche(tablero.getPosiciones(), valor_tiradas);
+            if ((avatar instanceof Coche)) {
+                ((Coche) avatar).moverEnAvanzado(tablero.getPosiciones(), valor_tiradas);
                 if (valor_tiradas > 4 && lanzamientos < 4) {
                     consola.imprimir("Tu tirada continúa! Puedes volver a lanzar los dados.");
                 }
-                if (valor_tiradas == 4 && lanzamientos == 4) {
+                if (dobles_seguidos != 0 && lanzamientos == 4) {
                     consola.imprimir("Has sacado dobles en la última tirada! Puedes volver a lanzar los dados.");
                 }
             }
@@ -829,9 +840,11 @@ public final class Juego {
 
         //llamada a evaluar casilla
         Casilla casillaFinal = avatar.getLugar();
-        if (!(jugador.getMovEspecial() && avatar.getTipo().equals("pelota"))) //porque el (primer) movimiento especial de la pelota no implica moverse, no se evalua la casilla
+        if (!(jugador.getMovEspecial() && (avatar instanceof Pelota))) //porque el (primer) movimiento especial de la pelota no implica moverse, no se evalua la casilla
         {
             casillaFinal.evaluarCasilla(jugador, banca, valor_tiradas);
+        } else {
+            consola.imprimir("Utiliza el comando 'avanzar' para moverte.");
         }
         if (jugador.getEnCarcel()) {
             encarcelar(jugador); //comprobación de si cae en 'ir a cárcel'
@@ -1166,8 +1179,8 @@ public final class Juego {
         jugador.setEnCarcel(true);
         jugador.setTiradasCarcel(0);
         jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
-        if (jugador.getAvatar().siguienteMovPelota(false) != 0) {
-            jugador.getAvatar().resetMovPelota();
+        if ((jugador.getAvatar() instanceof Pelota) && ((Pelota) jugador.getAvatar()).siguienteMovPelota(false) != 0) {
+            ((Pelota) jugador.getAvatar()).resetMovPelota();
             consola.imprimir("Tu tirada de la pelota ha sido interrumpida por haber caído en la cárcel.");
         }
     }

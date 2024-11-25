@@ -111,7 +111,17 @@ public class Jugador {
      */
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
-        this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
+        switch (tipoAvatar) {
+            case "pelota":
+                this.avatar = new Pelota(this, inicio, avCreados);
+                break;
+            case "coche":
+                this.avatar = new Coche(this, inicio, avCreados);
+                break;
+            default:
+                this.avatar = null;
+                break;
+        }
         this.propiedades = new ArrayList<>();
         switch (avCreados.size() + 1) {
             case 1:

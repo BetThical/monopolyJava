@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import monopoly.*;
 
-public class Avatar {
+public abstract class Avatar {
+    // Clase ABSTRACTA que representa a los avatares de los jugadores en el tablero.
+    // Por ser abstracta, debe ser si o si una instancia de pelota o de coche.
 
     // Atributos
     private String id; // Identificador: una letra generada aleatoriamente.
@@ -12,10 +14,7 @@ public class Avatar {
     private Jugador jugador; // Un jugador al que pertenece ese avatar.
     private Casilla lugar; // Los avatares se sitúan en casillas del tablero.
     private boolean ultimoMovementoFuiVoltaMultiploDe4;
-    private int tiradasCoche;
-    private boolean haComprado;
     private int[] vecesCaidasCasilla;
-    private int[] movimientosPelota;
     // Constructor vacío
 
     public Avatar() {
@@ -27,19 +26,29 @@ public class Avatar {
      * un arraylist con los
      * avatares creados (usado para crear un ID distinto del de los demás avatares).
      */
-    public Avatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
+    
+    //sólo coche y pelota pueden acceder a este constructor
+    protected Avatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
         this.tipo = tipo;
         this.jugador = jugador;
         this.lugar = lugar;
         this.generarId(avCreados);
         this.vecesCaidasCasilla = new int[40];
-        this.tiradasCoche = 0;
-        this.movimientosPelota = new int[5]; //el maximo numero de mov pelota en un turno es 5, para 12: 5(5), 2(7), 2(9), 2(11), 1(12)
     }
 
-    public int getTiradasCoche() {
-        return tiradasCoche;
+    // método separado para crear un nuevo avatar,
+    // asegurando que el tipo es correcto.
+    public Avatar crearAvatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados){
+        switch (tipo) {
+            case "pelota":
+                return new Pelota(jugador, lugar, avCreados);
+            case "coche":
+                return new Coche(jugador, lugar, avCreados);
+            default:
+                return null;
+        }
     }
+
 
     // A continuación, tenemos otros métodos útiles para el desarrollo del juego.
     /*
@@ -91,96 +100,17 @@ public class Avatar {
         moverAvatar(casillas, valorTirada, cobrarSalida);
     }
 
-    public void resetMovPelota() {
-        for (int i = 0; i < movimientosPelota.length; i++) {
-            movimientosPelota[i] = 0;
-        }
+    public void moverEnAvanzado(ArrayList<ArrayList<Casilla>> casillas, int valorTirada){ 
+        // cada clase debe reimplementar este método
     }
 
     //devuelve el siguiente movimiento de la pelota, si no hay mas movimientos devuelve 0
     // si gastarMovimiento es true, se elimina el movimiento de la lista
-    public int siguienteMovPelota(boolean gastarMovimiento) {
-        for (int i = 0; i < movimientosPelota.length; i++) {
-            if (movimientosPelota[i] != 0) {
-                int mov = movimientosPelota[i];
-                if (gastarMovimiento) {
-                    movimientosPelota[i] = 0;
-                }
-                return mov;
-            }
-        }
-        return 0;
-    }
 
-    public void avanzar(ArrayList<ArrayList<Casilla>> casillas, Jugador banca) { //movimiento parcial asociado al movimiento de la pelota. banca se necesita para evaluar casilla
-        int mov = siguienteMovPelota(true);
-        moverAvatar(casillas, mov, true);
 
-        int movimientosRestantes = 0;
-        for (int movimiento : movimientosPelota) {
-            movimientosRestantes += movimiento;
-        }
-        lugar.evaluarCasilla(getJugador(), banca, mov);
-        if (movimientosRestantes == 0) {
-            Juego.consola.imprimir("No quedan más movimientos de pelota.");
-        } else {
-            Juego.consola.imprimir("Quedan " + movimientosRestantes + " casillas que moverse con pelota.");
-        }
-    }
 
-    public void moverPelota(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
-        // se genera un array (cola) con la lista de movimientos parciales que debe realizar la pelota
-        // cada vez que el jugador llame a 'avanzar', se avanzará la posición que indique el primero de la cola
-        //el movimiento acaba cuando termine la cola
 
-        resetMovPelota();
-        int i;
-        if (valorTirada > 4) {
-            movimientosPelota[0] = 5;
-            valorTirada -= 5;
-            for (i = 1; valorTirada > 1; ++i) {
-                movimientosPelota[i] = 2;
-                valorTirada -= 2;
-            }
 
-        } else {
-            movimientosPelota[0] = -1;
-            valorTirada *= -1;
-            valorTirada += 1;
-            for (i = 1; valorTirada < -1; i++) {
-                movimientosPelota[i] = -2;
-                valorTirada += 2;
-            }
-        }
-
-        if (valorTirada != 0) {
-            movimientosPelota[i] = valorTirada;
-        }
-
-    }
-
-    public void moverCoche(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
-
-        if (valorTirada <= 4) {
-            Juego.consola.imprimir("No puedes tirar durante dos turnos.");
-            jugador.calarCoche();
-            valorTirada *= -1;
-        }
-        moverAvatar(casillas, valorTirada, true);
-    }
-
-    public void setHaCompradoEnTirada(Boolean t) {
-        haComprado = t;
-    }
-
-    public Boolean haCompradoEnTirada() {
-        return haComprado;
-    }
-
-    // Método para reiniciar tiradas cuando sea necesario
-    public void resetearTiradasCoche() {
-        this.tiradasCoche = 0;
-    }
 
     /*
      * Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase
