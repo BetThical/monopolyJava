@@ -2,7 +2,6 @@ package monopoly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 import partida.*;
 
 public class Casilla {
@@ -124,12 +123,12 @@ public class Casilla {
     @SuppressWarnings("ConvertToStringSwitch")
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         if (esComprable(actual, banca)
-                && !(!actual.getPuedeComprar() && actual.getAvatar().getTipo().equals("coche") && actual.getMovEspecial())) {
-            Juego.consola.imprimir(
-                    "El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor()
-                    + " euros. Comprar? (Y/N)");
-            Scanner scanner = new Scanner(System.in);
-            String respuesta = scanner.nextLine().trim().toUpperCase(); // Captura la respuesta del jugador
+                && !(!actual.getPuedeComprar() && actual.getAvatar().getTipo().equals("coche")
+                        && actual.getMovEspecial())) {
+            String respuesta = Juego.consola
+                    .leer("El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor()
+                            + " euros. Comprar? (Y/N)")
+                    .toUpperCase(); // Captura la respuesta del jugador (en mayúsculas)
 
             if (respuesta.equals("Y")) {
                 comprarCasilla(actual, banca); // Llama al método para realizar la compra
@@ -164,17 +163,20 @@ public class Casilla {
 
         if (getNombre().equals("IrCarcel")) { // Casilla 30 (ir a carcel)
             Juego.consola.imprimir("El jugador " + actual.getNombre() + " va a la cárcel.");
-            actual.setEnCarcel(true);  //esto envía un aviso al menú, que encarcelará al jugador (sólo menú puede encarcelar)
+            actual.setEnCarcel(true); // esto envía un aviso al menú, que encarcelará al jugador (sólo menú puede
+                                      // encarcelar)
         }
         if (getTipo().equals("comunidad") || getTipo().equals("suerte")) {
             if (getTipo().equals("comunidad") && actual.puedeCogerCarta() == 0) {
-                Juego.consola.imprimir("El jugador " + actual.getNombre() + " ha caído en una casilla de comunidad. Puede sacar una carta.");
+                Juego.consola.imprimir("El jugador " + actual.getNombre()
+                        + " ha caído en una casilla de comunidad. Puede sacar una carta.");
                 actual.setCartaDisponible(1);
             }
 
             if (getTipo().equals("suerte") && actual.puedeCogerCarta() == 0) {
                 {
-                    Juego.consola.imprimir("El jugador " + actual.getNombre() + " ha caído en una casilla de suerte. Puede sacar una carta.");
+                    Juego.consola.imprimir("El jugador " + actual.getNombre()
+                            + " ha caído en una casilla de suerte. Puede sacar una carta.");
                     actual.setCartaDisponible(2);
                 }
             }
@@ -283,6 +285,7 @@ public class Casilla {
                 output.append("[Hipotecada]\n");
             }
         } else if (getTipo().equals("transporte")) {
+            output.append("- Dueño: ").append(getduenhoJugador().getNombre()).append("\n");
             output.append("- Valor: ").append(getValor()).append("\n");
             output.append("- Alquiler: ").append(calcular_coste(0)).append("\n");
         } else if (getTipo().equals("imposto")) {
@@ -333,8 +336,8 @@ public class Casilla {
             default:
                 return impuesto * 12.5f;
         }// nota: impuesto = valorinicial * 0.1
-        // pista de deporte
-        // 125% del valor inicial del solar
+         // pista de deporte
+         // 125% del valor inicial del solar
     }
 
     public boolean puedeConstruir(Edificio e, Jugador constructor) {
@@ -394,7 +397,8 @@ public class Casilla {
 
         if (edificiosGrupo.getOrDefault("hotel", 0) == (maxEdificiosPorTipo - 1) && e.getTipo().equals("hotel")
                 && edificiosGrupo.getOrDefault("casa", 0) > maxEdificiosPorTipo) {
-            Juego.consola.imprimir("Construir este hotel haría que se superase el número máximo de casas en esta casilla.");
+            Juego.consola
+                    .imprimir("Construir este hotel haría que se superase el número máximo de casas en esta casilla.");
             return false;
         }
 
@@ -407,7 +411,8 @@ public class Casilla {
 
         if (e.getTipo().equals("hotel") && edificiosGrupo.getOrDefault("casa", 0) - 4 > maxEdificiosPorTipo
                 && edificiosGrupo.getOrDefault("hotel", 0) + 1 >= maxEdificiosPorTipo) {
-            Juego.consola.imprimir("No se puede construir un hotel porque se superaría el número máximo de casas permitido. (se permite superar este límite hasta construir los hoteles)");
+            Juego.consola.imprimir(
+                    "No se puede construir un hotel porque se superaría el número máximo de casas permitido. (se permite superar este límite hasta construir los hoteles)");
             return false;
         }
 
@@ -428,7 +433,7 @@ public class Casilla {
             if (edificiosGrupo.getOrDefault("pista", 0) == grupo.getNumCasillas()) {
                 Juego.consola.imprimir(
                         "Se pueden construir un máximo de " + grupo.getNumCasillas()
-                        + " pistas de deporte en este grupo.");
+                                + " pistas de deporte en este grupo.");
                 return false;
             }
             if (edificiosCasilla.getOrDefault("hotel", 0) < 2) {

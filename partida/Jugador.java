@@ -183,8 +183,9 @@ public class Jugador {
             float diferencia = this.getFortuna() - fortunaInicial;
             String signo = diferencia > 0 ? "+" : "";
             String color = diferencia > 0 ? Valor.GREEN : Valor.RED;
-            Juego.consola.imprimir(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
-                    + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
+            Juego.consola
+                    .imprimir(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
+                            + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
         }
     }
 
@@ -307,13 +308,18 @@ public class Jugador {
     }
 
     public int getNumTrans() { // número de casillas de transporte que posee
-        int j = 0;
-        for (int i = 0; i < propiedades.size(); i++) {
-            if (propiedades.get(i).getTipo().equals("transporte")) {
-                j++;
+        try {
+            int j = 0;
+            for (int i = 0; i < propiedades.size(); i++) {
+                if (propiedades.get(i).getTipo().equals("transporte")) {
+                    j++;
+                }
             }
+            return j;
+        } catch (NullPointerException e) { // si el dueño es la banca (no tiene propiedades, se calculará el precio
+                                           // teniendo 1 sola casilla)
+            return 1;
         }
-        return j;
     }
 
     public int getNumServ() { // número de casillas de servicio que posee

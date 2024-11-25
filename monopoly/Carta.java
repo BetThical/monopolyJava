@@ -1,5 +1,4 @@
 package monopoly;
-import java.util.HashMap;
 
 public class Carta{
 

@@ -192,7 +192,7 @@ public final class Menu{
                 juego.listar(partesComando[1]);
                 break;
 
-            case "describir ": // incluye describir avatar, jugador o casilla
+            case "describir": // incluye describir avatar, jugador o casilla
                 juego.describir(input.replace("describir ", ""));
                 break;
 
