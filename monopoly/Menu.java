@@ -2,13 +2,12 @@ package monopoly;
 
 import partida.*;
 
+public final class Menu {
 
-
-public final class Menu{
-    
     public final Juego juego = new Juego();
-    
+
     public void titulo() {
+        Juego.consola.imprimir(Valor.RED);
 
         Juego.consola.imprimir(
                 "      ___          ___          ___          ___          ___          ___          ___   ___     ");
@@ -32,7 +31,7 @@ public final class Menu{
                 "     /:/  /      \\::/  /       /:/  /      \\::/  /                   \\::/  /      \\:\\__\\          ");
         Juego.consola.imprimir(
                 "     \\/__/        \\/__/        \\/__/        \\/__/                     \\/__/        \\/__/          ");
-        Juego.consola.imprimir(
+        Juego.consola.imprimir(Valor.BLUE +
                 "                                ___       ___          ___          ___                           ");
         Juego.consola.imprimir(
                 "                               /\\  \\     /\\  \\        /\\  \\        /\\  \\                          ");
@@ -53,7 +52,8 @@ public final class Menu{
         Juego.consola.imprimir(
                 "                               \\/__/                  \\/__/        \\/__/                          ");
 
-        Juego.consola.leer("\n\n\n                                Pulse ENTER para iniciar una partida.\n\n");
+        Juego.consola
+                .leer(Valor.RESET + "\n\n\n                                Pulse ENTER para iniciar una partida.\n\n");
 
     }
 
@@ -69,8 +69,8 @@ public final class Menu{
                 }
                 Juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
-                        + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
-                        + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+                                + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
+                                + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             }
             if (jugador.limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
                 // turno
@@ -82,15 +82,14 @@ public final class Menu{
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
             analizarComando(comando);
 
-
         }
         Juego.consola.imprimir("La partida ha terminado! El ganador es " + juego.getJugadorTurno().getNombre() + ".");
     }
 
-/*
-         * Método que interpreta el comando introducido y toma la accion
-         * correspondiente.
-         * Parámetro: cadena de caracteres (el comando).
+    /*
+     * Método que interpreta el comando introducido y toma la accion
+     * correspondiente.
+     * Parámetro: cadena de caracteres (el comando).
      */
     private void analizarComando(String input) {
         Jugador jugador = juego.getJugadorTurno();
