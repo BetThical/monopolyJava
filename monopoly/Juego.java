@@ -1,9 +1,7 @@
 package monopoly;
-
 import java.util.*;
-
-import exception.CartaNoDisponibleException;
 import partida.*;
+import exception.*;
 public final class Juego {
 
     // Atributos
@@ -25,7 +23,7 @@ public final class Juego {
     // objetos
     public final static Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
 
-    public void listar(String args) {
+    public void listar(String args) throws ListarIncorrectoException {
         switch (args) {
             case "jugadores":
                 listarJugadores();
@@ -40,15 +38,14 @@ public final class Juego {
                 listarEdificios();
                 break;
             default:
-                consola.imprimir("Comando inválido.");
-                break;
+                throw new ListarIncorrectoException();
         }
     }
 
     public void listarEdificios() {
         for (int i = 0; i < tablero.getNumCasillas(); i++) {
             Casilla casilla = tablero.getCasilla(i);
-            if (casilla.getEdificios().size() > 0) {
+            if (!casilla.getEdificios().isEmpty()) {
                 for (Edificio edificio : casilla.getEdificios()) {
                     consola.imprimir("\nID:" + edificio.getID());
                     consola.imprimir("Propietario: " + casilla.getduenhoJugador().getNombre());
@@ -101,7 +98,7 @@ public final class Juego {
         while (jugadores < 2 || jugadores > 6) {
             try {
                 jugadores = Integer.parseInt(consola.leer("Introduce el número de jugadores (2-6): "));
-            } catch (Exception ex) {
+            } catch (Exception ex) { //TODO cambiar?
                 jugadores = 0;
 
             }
@@ -273,9 +270,9 @@ public final class Juego {
 
     }
 
-    public void cambiarModo(Jugador jugador) {
+    public void cambiarModo(Jugador jugador) throws CambiarModoException{
         if (lanzamientos > 0) {
-            consola.imprimir("No puedes cambiar de modo después de lanzar los dados.");
+            throw new CambiarModoException();
         } else {
             if (jugador.getMovEspecial()) {
                 consola.imprimir("Cambio a modo estándar.");
@@ -326,9 +323,9 @@ public final class Juego {
                 "Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
     }
 
-    public void avanzar(Jugador jugador) {
+    public void avanzar(Jugador jugador) throws ComandoAvanzarException{
         if (!(jugador.getAvatar() instanceof Pelota) || !jugador.getMovEspecial()) {
-            consola.imprimir("El comando avanzar solo está disponible para el avatar pelota en modo avanzado.");
+            throw new ComandoAvanzarException();
         } else {
             Pelota pelota = (Pelota) jugador.getAvatar();
             if (puedeAvanzar()) {
@@ -339,9 +336,9 @@ public final class Juego {
         }
     }
 
-    public void edificar(String args, Jugador jugador, Casilla casilla) {
+    public void edificar(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException {
         if (!EDIFICIOS_VALIDOS.contains(args)) {
-            consola.imprimir("Edificios válidos: casa, hotel, piscina, pista.");
+            throw new EdificioNoValidoException();
         } else {
             if (args.equals("4casas")) {
                 args = "casa";
@@ -364,10 +361,10 @@ public final class Juego {
         }
     }
 
-    public void destruir(String args, Jugador jugador, Casilla casilla) {
+    public void destruir(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException {
 
         if (!EDIFICIOS_VALIDOS.contains(args)) {
-            consola.imprimir("Edificios válidos: casa, hotel, piscina, pista.");
+            throw new EdificioNoValidoException();
         } else {
             consola.imprimir("Has vendido un(a) " + args + " en " + casilla.getNombre() + ", por "
                     + casilla.valorEdificio(args) / 2f + ".");
@@ -395,7 +392,7 @@ public final class Juego {
     public void cogerCarta(Jugador jugador) throws CartaNoDisponibleException {
 
         if (jugador.puedeCogerCarta() == 0) {
-            throw new CartaNoDisponibleException("El jugador no puede coger una carta porque no hay cartas disponibles.");
+            throw new CartaNoDisponibleException();
         }
         int cartaDisponible = jugador.puedeCogerCarta();
         HashMap<Integer, Carta> cartas; // 1: comunidad, 2: suerte

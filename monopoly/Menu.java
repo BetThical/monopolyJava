@@ -1,7 +1,6 @@
 package monopoly;
 
-import exception.CartaNoDisponibleException;
-import exception.ComandoException;
+import exception.*;
 import partida.*;
 
 public final class Menu {
@@ -33,8 +32,8 @@ public final class Menu {
                 "     /:/  /      \\::/  /       /:/  /      \\::/  /                   \\::/  /      \\:\\__\\          ");
         Juego.consola.imprimir(
                 "     \\/__/        \\/__/        \\/__/        \\/__/                     \\/__/        \\/__/          ");
-        Juego.consola.imprimir(Valor.BLUE +
-                "                                ___       ___          ___          ___                           ");
+        Juego.consola.imprimir(Valor.BLUE
+                + "                                ___       ___          ___          ___                           ");
         Juego.consola.imprimir(
                 "                               /\\  \\     /\\  \\        /\\  \\        /\\  \\                          ");
         Juego.consola.imprimir(
@@ -71,8 +70,8 @@ public final class Menu {
                 }
                 Juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
-                                + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
-                                + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+                        + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
+                        + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             }
             if (jugador.limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
                 // turno
@@ -82,10 +81,11 @@ public final class Menu {
                 }
             }
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
+
             try {
                 analizarComando(comando);
-            } catch (ComandoException e) {
-                Juego.consola.imprimir(e.getMessage());
+            } catch (ComandoException ex) {
+                Juego.consola.imprimir(Valor.RED + "Comando inválido: " + ex.getMessage() + Valor.RESET);
             }
 
         }
@@ -97,7 +97,7 @@ public final class Menu {
      * correspondiente.
      * Parámetro: cadena de caracteres (el comando).
      */
-    private void analizarComando(String input) {
+    private void analizarComando(String input) throws ComandoException {
         Jugador jugador = juego.getJugadorTurno();
         Casilla casilla = juego.getJugadorTurno().getAvatar().getLugar();
         String[] partesComando = input.split(" ");
@@ -174,12 +174,7 @@ public final class Menu {
                 break;
 
             case "carta":
-                try {
-                    cogerCarta(jugador);
-                } catch (CartaNoDisponibleException e) {
-                    // Envolver y lanzar como ComandoException
-                    throw new ComandoException("Error al ejecutar comando 'cogerCarta': " + e.getMessage());
-                }
+                juego.cogerCarta(jugador);
                 break;
             case "salir":
                 if (input.equals("salir carcel")) {
