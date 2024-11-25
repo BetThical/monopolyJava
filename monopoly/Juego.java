@@ -20,9 +20,9 @@ public final class Juego {
     private static final List<String> EDIFICIOS_VALIDOS = Arrays.asList("casa", "hotel", "piscina", "pista", "4casas");
     // Constantes
     private static final int MAX_JUGADORES = 6; // Número máximo de jugadores en una partida.
-                                                
+    private boolean partidaAcabada = false; // Indica si la partida ha terminado.
     //objetos
-    public final Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
+    public final static Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
 
     public void listar(String args) {
         switch (args) {
@@ -80,7 +80,6 @@ public final class Juego {
         avatares = new ArrayList<>();
     }
 
-   
     // Método para inciar una partida: crea los jugadores y avatares.
     public void iniciarPartida(Tablero t) {
 
@@ -103,8 +102,7 @@ public final class Juego {
 
     }
 
-    
-    private void anhadirJugador() {
+    public void anhadirJugador() {
         if (jugadores.size() >= MAX_JUGADORES) {
             return;
         }
@@ -238,7 +236,7 @@ public final class Juego {
                 break;
         }
 
-        if (avatar.getLugar()!=casillaInicial) { //si se ha movido
+        if (avatar.getLugar() != casillaInicial) { //si se ha movido
             avatar.getLugar().evaluarCasilla(jugador, banca, 0);
         }
         if (avatar.get4Voltas() == true) {
@@ -405,7 +403,10 @@ public final class Juego {
         } else {
             Carta carta = cartas.get(numero);
             consola.imprimir("Has seleccionado: " + carta.getCarta());
-            if (cartaDisponible==1) numero+=6; // eliminar esto cando se separen as cartas
+            if (cartaDisponible == 1) {
+                numero += 6; // eliminar esto cando se separen as cartas
+
+            }
             funcionesCartas(jugador.getAvatar(), tablero, numero);
             jugador.setCartaDisponible(0);
         }
@@ -720,8 +721,6 @@ public final class Juego {
         }
     }
 
-    
-
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     public void acabarTurno(Jugador jugador) {
 
@@ -730,22 +729,29 @@ public final class Juego {
                     "Actualmente estás en deuda. Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             return;
         }
-        if (jugador.getCocheCalado() > 0) {
-            jugador.reducirCocheCalado();
-        }
-
         turno = (turno + 1) % getNumeroDeJugadores();
-        getJugadorTurno().setPuedeComprar(true);
-        lanzamientos = 0;
-        dobles_seguidos = 0;
-        consola.imprimir("Turno de " + getJugadorTurno().getNombre() + ".");
+        nuevoTurno();
 
     }
 
-    public void bancarrota(Jugador jugadorBancarrota, Jugador jugadorRecibe) {
+    // esta función se separa del comando 'acabar turno' porque la bancarrota
+    // inicia un nuevo turno sin sumarle 1 a turno, y sin la comprobación de deuda
+    private void nuevoTurno() {
+  
+            getJugadorTurno().setPuedeComprar(true);
+            lanzamientos = 0;
+            dobles_seguidos = 0;
+            consola.imprimir("Turno de " + getJugadorTurno().getNombre() + ".");
 
+        
+    }
+
+    public void bancarrota(Jugador jugadorBancarrota) {
+        Jugador jugadorRecibe;
         if (jugadorBancarrota.getEnDeuda() == null) {
-            jugadorBancarrota.setEnDeuda(banca);
+            jugadorRecibe = banca;
+        } else {
+            jugadorRecibe = jugadorBancarrota.getEnDeuda();
         }
         ArrayList<Casilla> array_propiedades;
         Casilla casilla = getJugadorTurno().getAvatar().getLugar();
@@ -770,12 +776,11 @@ public final class Juego {
         jugadores.remove(jugadorBancarrota);
         avatares.remove(jugadorBancarrota.getAvatar());
         casilla.getAvatares().remove(jugadorBancarrota.getAvatar());
-
-        if (turno > jugadores.size() - 1) {
-            turno = 0;
+        if (jugadores.size() < 2) {
+            Juego.consola.imprimir("El único jugador que queda es " + jugadores.get(0).getNombre()+ "!");
+            setPartidaAcabada(true);
         }
-        consola.imprimir("Turno de " + getJugadorTurno().getNombre() + ".");
-
+        else nuevoTurno();
     }
 
     private String jugadoresMasVueltas() {
@@ -940,14 +945,17 @@ public final class Juego {
         }
     }
     //SETTERS
-    
-    public void setLanzamientos(Integer newLanzamientos){
+
+    public void setLanzamientos(Integer newLanzamientos) {
         lanzamientos = newLanzamientos;
     }
 
-    // GETTERS
+    public void setPartidaAcabada(boolean p) {
+        partidaAcabada = p;
+    }
 
-    public Tablero getTablero(){
+    // GETTERS
+    public Tablero getTablero() {
         return tablero;
     }
 
@@ -955,10 +963,10 @@ public final class Juego {
         return banca;
     }
 
-    public Integer getLanzamientos(){
-        return 
-            lanzamientos;
+    public Integer getLanzamientos() {
+        return lanzamientos;
     }
+
     public Jugador getJugadorTurno() {
         return jugadores.get(turno);
     }
@@ -969,6 +977,10 @@ public final class Juego {
 
     public int getNumeroDeAvatares() {
         return avatares.size();
+    }
+
+    public boolean getPartidaAcabada() {
+        return partidaAcabada;
     }
 
     public Avatar getAvatar(String id) {
@@ -988,6 +1000,5 @@ public final class Juego {
         }
         return null;
     }
-
 
 }

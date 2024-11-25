@@ -1,7 +1,5 @@
 package monopoly;
 
-import java.util.random.RandomGenerator;
-
 import partida.Jugador;
 
 public interface Comando {
@@ -25,7 +23,7 @@ public interface Comando {
 
     // - - - acciones misceláneas --- //
     void cambiarModo(Jugador jugador);
-    void cogerCarta(Jugador jugador)
+    void cogerCarta(Jugador jugador);
     boolean salirCarcel(Jugador jugador);
     void bancarrota(Jugador jugadorBancarrota, Jugador jugadorRecibe);
     void acabarTurno(Jugador jugador); 

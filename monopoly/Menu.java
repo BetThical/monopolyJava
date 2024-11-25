@@ -1,68 +1,65 @@
 package monopoly;
 
-import java.util.*;
 import partida.*;
 
 
 
 public final class Menu{
     
-    private boolean acabarPartida=false; // Booleano para comprobar si hai que acabar la partida.
-
     public final Juego juego = new Juego();
     
     public void titulo() {
 
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "      ___          ___          ___          ___          ___          ___          ___   ___     ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "     /\\__\\        /\\  \\        /\\__\\        /\\  \\        /\\  \\        /\\  \\        /\\__\\ |\\__\\    ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "    /::|  |      /::\\  \\      /::|  |      /::\\  \\      /::\\  \\      /::\\  \\      /:/  / |:|  |   ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "   /:|:|  |     /:/\\:\\  \\    /:|:|  |     /:/\\:\\  \\    /:/\\:\\  \\    /:/\\:\\  \\    /:/  /  |:|  |   ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "  /:/|:|__|__  /:/  \\:\\  \\  /:/|:|  |__  /:/  \\:\\  \\  /::\\~\\:\\  \\  /:/  \\:\\  \\  /:/  /   |:|__|__ ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 " /:/ |::::\\__/\\:/__/ \\:\\__/\\:/ |:| /\\__/\\:/__/ \\:\\__/\\:/\\:\\ \\:\\__/\\:/__/ \\:\\__/\\:/__/    /::::\\__\\");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 " \\/__/~~/:/  /\\:\\  \\ /:/  /\\/__|:|/:/  /\\:\\  \\ /:/  /\\/__\\:\\/:/  /\\:\\  \\ /:/  /\\:\\  \\   /:/~~/~   ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "       /:/  /  \\:\\  /:/  /     |:/:/  /  \\:\\  /:/  /      \\::/  /  \\:\\  /:/  /  \\:\\  \\ /:/  /     ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "      /:/  /    \\:\\/:/  /      |::/  /    \\:\\/:/  /        \\/__/    \\:\\/:/  /    \\:\\  \\/__/      ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "     /:/  /      \\::/  /       /:/  /      \\::/  /                   \\::/  /      \\:\\__\\          ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "     \\/__/        \\/__/        \\/__/        \\/__/                     \\/__/        \\/__/          ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                                ___       ___          ___          ___                           ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                               /\\  \\     /\\  \\        /\\  \\        /\\  \\                          ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                              /::\\  \\    \\:\\  \\      /::\\  \\      /::\\  \\                         ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                            /::\\~\\:\\  \\   /::\\  \\  _\\:\\~\\ \\  \\  /::\\~\\:\\  \\                       ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                           /:/\\:\\ \\:\\__/ /:/\\:\\__/\\/ \\:\\ \\ \\__/\\:/\\:\\ \\:\\__/                      ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                           \\:\\~\\:\\ \\/__//:/  \\/__/\\:\\ \\:\\ \\/__/\\:\\~\\:\\ \\/__/                      ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                            \\:\\ \\:\\__\\ /:/  /      \\:\\ \\:\\__\\   \\:\\ \\:\\__\\                        ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                             \\:\\ \\/__/ \\/__/        \\:\\/:/  /    \\:\\ \\/__/                        ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                              \\:\\__\\                 \\::/  /      \\:\\__\\                          ");
-        consola.imprimir(
+        Juego.consola.imprimir(
                 "                               \\/__/                  \\/__/        \\/__/                          ");
 
-        consola.leer("\n\n\n                                Pulse ENTER para iniciar una partida.\n\n");
+        Juego.consola.leer("\n\n\n                                Pulse ENTER para iniciar una partida.\n\n");
 
     }
 
     public void loopJugable() {
         String comando = "";
-        while (!acabarPartida) {
+        while (!juego.getPartidaAcabada()) {
             Jugador jugador = juego.getJugadorTurno();
             juego.getTablero().imprimirTablero();
 
@@ -70,7 +67,7 @@ public final class Menu{
                 if (jugador.getEnDeuda() == null) {
                     jugador.setEnDeuda(juego.getBanca());
                 }
-                juego.consola.imprimir(
+                Juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
                         + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
                         + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
@@ -82,16 +79,12 @@ public final class Menu{
                     break;
                 }
             }
-            comando = juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
+            comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
             analizarComando(comando);
 
-            if (jugadores.size() < 2) {
-                juego.consola.imprimir("El único jugador que queda es " + juego.getJugadorTurno().getNombre() + "!");
-                acabarPartida = true;
-            }
 
         }
-        juego.consola.imprimir("La partida ha terminado! El ganador es " + juego.getJugadorTurno().getNombre() + ".");
+        Juego.consola.imprimir("La partida ha terminado! El ganador es " + juego.getJugadorTurno().getNombre() + ".");
     }
 
 /*
@@ -128,7 +121,7 @@ public final class Menu{
                             String[] valores = partesComando[2].split("\\+");
                             juego.lanzarDados(Integer.parseInt(valores[0]), Integer.parseInt(valores[1]));
                         } catch (NumberFormatException ex) {
-                            juego.consola.imprimir("Uso del comando: lanzar dados [tirada1]+[tirada2]");
+                            Juego.consola.imprimir("Uso del comando: lanzar dados [tirada1]+[tirada2]");
                         }
                     }
                 }
@@ -143,7 +136,7 @@ public final class Menu{
                     juego.lanzarDados(Integer.parseInt(partesComando[1]), 0);
                     juego.setLanzamientos(juego.getLanzamientos() + 1);
                 } catch (NumberFormatException ex) {
-                    juego.consola.imprimir("Uso del comando: m [cantidad de casillas]");
+                    Juego.consola.imprimir("Uso del comando: m [cantidad de casillas]");
                 }
                 break;
 
@@ -185,7 +178,7 @@ public final class Menu{
                 break;
 
             case "bancarrota":
-                juego.bancarrota(jugador, jugador.getEnDeuda());
+                juego.bancarrota(jugador);
                 break;
 
             case "acabar":
@@ -222,7 +215,7 @@ public final class Menu{
                 break;
 
             default:
-                juego.consola.imprimir("Comando inválido.");
+                Juego.consola.imprimir("Comando inválido.");
                 break;
         }
     }
