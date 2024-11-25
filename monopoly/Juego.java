@@ -22,7 +22,7 @@ public final class Juego {
     private static final int MAX_JUGADORES = 6; // Número máximo de jugadores en una partida.
                                                 
     //objetos
-    public static final Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
+    public final Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
 
     public void listar(String args) {
         switch (args) {
