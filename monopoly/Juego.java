@@ -1,8 +1,9 @@
 package monopoly;
 
 import java.util.*;
-import partida.*;
 
+import exception.CartaNoDisponibleException;
+import partida.*;
 public final class Juego {
 
     // Atributos
@@ -391,11 +392,10 @@ public final class Juego {
         }
     }
 
-    public void cogerCarta(Jugador jugador) {
+    public void cogerCarta(Jugador jugador) throws CartaNoDisponibleException {
 
         if (jugador.puedeCogerCarta() == 0) {
-            consola.imprimir("No puedes coger cartas.");
-            return;
+            throw new CartaNoDisponibleException("El jugador no puede coger una carta porque no hay cartas disponibles.");
         }
         int cartaDisponible = jugador.puedeCogerCarta();
         HashMap<Integer, Carta> cartas; // 1: comunidad, 2: suerte

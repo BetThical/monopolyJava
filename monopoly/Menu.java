@@ -1,5 +1,7 @@
 package monopoly;
 
+import exception.CartaNoDisponibleException;
+import exception.ComandoException;
 import partida.*;
 
 public final class Menu {
@@ -80,7 +82,11 @@ public final class Menu {
                 }
             }
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
-            analizarComando(comando);
+            try {
+                analizarComando(comando);
+            } catch (ComandoException e) {
+                Juego.consola.imprimir(e.getMessage());
+            }
 
         }
         Juego.consola.imprimir("La partida ha terminado! El ganador es " + juego.getJugadorTurno().getNombre() + ".");
@@ -168,7 +174,12 @@ public final class Menu {
                 break;
 
             case "carta":
-                juego.cogerCarta(jugador);
+                try {
+                    cogerCarta(jugador);
+                } catch (CartaNoDisponibleException e) {
+                    // Envolver y lanzar como ComandoException
+                    throw new ComandoException("Error al ejecutar comando 'cogerCarta': " + e.getMessage());
+                }
                 break;
             case "salir":
                 if (input.equals("salir carcel")) {
