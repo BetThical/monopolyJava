@@ -1,8 +1,0 @@
-package exception;
-
-public class ComandoAvanzarException extends ComandoException {
-    public ComandoAvanzarException() {
-        super("El movimiento avanzar sólo es válido para la pelota en modo avanzado.");
-    }
-
-}

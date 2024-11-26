@@ -1,19 +1,37 @@
 package monopoly;
+
+import exception.comandoIncorrectoException.DescribirIncorrectoException;
+import exception.comandoIncorrectoException.EdificioNoValidoException;
+import exception.comandoIncorrectoException.EntradaNoNumericaException;
+import exception.comandoIncorrectoException.FortunaManualException;
+import exception.comandoIncorrectoException.ListarIncorrectoException;
+import exception.comandoInvalidoException.AvanzarException;
+import exception.comandoInvalidoException.CambiarModoException;
+import exception.comandoInvalidoException.CartaNoDisponibleException;
+import exception.comandoInvalidoException.CompraNoDisponibleException;
+import exception.comandoInvalidoException.DadosException;
+import exception.comandoInvalidoException.SalirCarcelException;
+import exception.noEncontradoException.AvatarNoEncontradoException;
+import exception.noEncontradoException.CartaNoEncontradaException;
+import exception.noEncontradoException.CasillaNoEncontradaException;
+import exception.noEncontradoException.GrupoNoEncontradoException;
+import exception.noEncontradoException.JugadorNoEncontradoException;
+import exception.noEncontradoException.NoEncontradoException;
 import java.util.*;
 import partida.*;
-import exception.*;
+
 public final class Juego {
 
     // Atributos
-    private ArrayList<Jugador> jugadores; // Jugadores de la partida.
-    private ArrayList<Avatar> avatares; // Avatares en la partida.
+    private final ArrayList<Jugador> jugadores; // Jugadores de la partida.
+    private final ArrayList<Avatar> avatares; // Avatares en la partida.
     private int turno = 0; // Índice correspondiente a la posición en el arrayList del jugador (y el
     // avatar) que tienen el turno
     private int lanzamientos = 0; // Variable para contar el número de lanzamientos de un jugador en un turno.
     private int dobles_seguidos = 0; // Variable para contar el número de dobles seguidos de un jugador en un turno.
     private final Tablero tablero; // Tablero en el que se juega.
-    private Dado dado1; // Dos dados para lanzar y avanzar casillas.
-    private Dado dado2;
+    private final Dado dado1; // Dos dados para lanzar y avanzar casillas.
+    private final Dado dado2;
     private final Jugador banca; // El jugador banca.
     private Edificio e; // Edificio para construir en una casilla.
     private static final List<String> EDIFICIOS_VALIDOS = Arrays.asList("casa", "hotel", "piscina", "pista", "4casas");
@@ -23,7 +41,7 @@ public final class Juego {
     // objetos
     public final static Consola consola = new ConsolaNormal(); // Consola para imprimir y leer mensajes.
 
-    public void listar(String args) throws ListarIncorrectoException {
+    public void listar(String args) throws ListarIncorrectoException, NoEncontradoException {
         switch (args) {
             case "jugadores":
                 listarJugadores();
@@ -61,7 +79,7 @@ public final class Juego {
         return jugadores.size();
     }
 
-    public void describir(String args) {
+    public void describir(String args) throws DescribirIncorrectoException, NoEncontradoException {
         String[] argsArray = args.split(" ");
         switch (argsArray[0]) {
             case "jugador":
@@ -72,8 +90,7 @@ public final class Juego {
                 break;
             default:
                 if (args.equals("describir")) { // si el comando introducido es solo 'describir'
-                    consola.imprimir(
-                            "Uso: describir [casilla], describir jugador [jugador], describir avatar [avatar]");
+                    throw new DescribirIncorrectoException();
                 } else {
                     descCasilla(args);
                 }
@@ -88,22 +105,21 @@ public final class Juego {
         dado2 = new Dado();
         jugadores = new ArrayList<>();
         avatares = new ArrayList<>();
+        iniciarPartida(tablero);
     }
 
     // Método para inciar una partida: crea los jugadores y avatares.
     public void iniciarPartida(Tablero t) {
 
-        int jugadores = 0;
+        int numJugadores = 0;
 
-        while (jugadores < 2 || jugadores > 6) {
+        while (numJugadores < 2 || numJugadores > 6) {
             try {
-                jugadores = Integer.parseInt(consola.leer("Introduce el número de jugadores (2-6): "));
-            } catch (Exception ex) { //TODO cambiar?
-                jugadores = 0;
-
+                numJugadores = Integer.parseInt(consola.leer("Introduce el número de jugadores (2-6): "));
+            } catch (NumberFormatException ex) {
             }
         }
-        for (int i = 1; (i <= jugadores); i++) {
+        for (int i = 0; i < numJugadores; i++) {
             anhadirJugador();
         }
 
@@ -114,7 +130,6 @@ public final class Juego {
 
     public void anhadirJugador() {
         if (jugadores.size() >= MAX_JUGADORES) {
-            return;
         }
         Casilla casillaInicio = tablero.getCasilla(0);
         String nombre = consola.leer("\nIntroduce el nombre del jugador " + (getNumeroDeJugadores() + 1) + ": ");
@@ -270,7 +285,7 @@ public final class Juego {
 
     }
 
-    public void cambiarModo(Jugador jugador) throws CambiarModoException{
+    public void cambiarModo(Jugador jugador) throws CambiarModoException {
         if (lanzamientos > 0) {
             throw new CambiarModoException();
         } else {
@@ -285,11 +300,11 @@ public final class Juego {
         }
     }
 
-    public void hipotecar(String args, Jugador jugador) {
+    public void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException {
         Casilla aHipotecar;
         aHipotecar = tablero.getCasilla(args);
         if (aHipotecar == null) {
-            consola.imprimir("Casilla inválida.");
+            throw new CasillaNoEncontradaException(args);
         } else {
             if (aHipotecar.puedeHipotecar(jugador)) {
                 aHipotecar.hipotecar();
@@ -297,11 +312,11 @@ public final class Juego {
         }
     }
 
-    public void deshipotecar(String args, Jugador jugador) {
+    public void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException {
         Casilla aDeshipotecar;
         aDeshipotecar = tablero.getCasilla(args);
         if (aDeshipotecar == null) {
-            consola.imprimir("Casilla inválida.");
+            throw new CasillaNoEncontradaException(args);
         } else {
             if (aDeshipotecar.puedeDeshipotecar(jugador)) {
                 aDeshipotecar.deshipotecar();
@@ -309,13 +324,13 @@ public final class Juego {
         }
     }
 
-    public void listarEdificiosGrupo(String nombreGrupo) {
-        try {
+    public void listarEdificiosGrupo(String nombreGrupo) throws GrupoNoEncontradoException{
             Grupo grupo = tablero.getGrupoNombre(nombreGrupo);
+            if (grupo == null){
+                throw new GrupoNoEncontradoException(nombreGrupo);
+            }
             grupo.descEdificios();
-        } catch (Exception ex) {
-            consola.imprimir("grupo invalido (" + nombreGrupo + ")");
-        }
+
     }
 
     public void jugadorActual(Jugador jugador) {
@@ -323,15 +338,15 @@ public final class Juego {
                 "Jugador actual: " + jugador.getNombre() + ", con avatar &" + jugador.getAvatar().getID() + ".");
     }
 
-    public void avanzar(Jugador jugador) throws ComandoAvanzarException{
+    public void avanzar(Jugador jugador) throws AvanzarException {
         if (!(jugador.getAvatar() instanceof Pelota) || !jugador.getMovEspecial()) {
-            throw new ComandoAvanzarException();
+            throw new AvanzarException("Sólo se puede avanzar con el avatar pelota en modo avanzado");
         } else {
             Pelota pelota = (Pelota) jugador.getAvatar();
             if (puedeAvanzar()) {
                 pelota.avanzar(tablero.getPosiciones(), banca);
             } else {
-                consola.imprimir("No puedes avanzar.");
+                throw new AvanzarException("No te quedan movimientos.");
             }
         }
     }
@@ -373,7 +388,7 @@ public final class Juego {
         }
     }
 
-    public void fortunaManual(String args, Jugador jugador) {
+    public void fortunaManual(String args, Jugador jugador) throws FortunaManualException {
         try {
             float amount = Float.parseFloat(args);
             if (args.startsWith("+")) {
@@ -385,12 +400,12 @@ public final class Juego {
             }
             consola.imprimir("Nueva fortuna: " + jugador.getFortuna());
         } catch (NumberFormatException ex) {
-            consola.imprimir("Uso del comando: f [+/-][fortuna]");
+            throw new FortunaManualException();
         }
     }
 
-    public void cogerCarta(Jugador jugador) throws CartaNoDisponibleException {
-
+    public void cogerCarta(Jugador jugador) throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException {
+        int numero;
         if (jugador.puedeCogerCarta() == 0) {
             throw new CartaNoDisponibleException();
         }
@@ -412,9 +427,14 @@ public final class Juego {
                 consola.imprimir(Valor.YELLOW + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getCarta());
             }
         }
-        int numero = Integer.parseInt(consola.leer("Introduce un número entre 1 y 6:"));
+        try {
+            numero = Integer.parseInt(consola.leer("Introduce un número entre 1 y 6:"));
+        } catch (NumberFormatException ex) {
+            throw new EntradaNoNumericaException();
+        }
         if (numero < 1 || numero > 6) {
-            consola.imprimir("Número inválido.");
+            throw new CartaNoEncontradaException(numero);
+
         } else {
             Carta carta = cartas.get(numero);
             consola.imprimir("Has seleccionado: " + carta.getCarta());
@@ -431,62 +451,53 @@ public final class Juego {
      * Método que realiza las acciones asociadas al comando /describir jugador'.
      * Parámetro: nombre del jugador
      */
-    public void descJugador(String nombre) {
+    public void descJugador(String nombre) throws JugadorNoEncontradoException {
         Jugador jugador = getJugador(nombre);
         if (!(jugador == null)) {
             consola.imprimir("Nombre: " + jugador.getNombre());
             consola.imprimir("Avatar: " + jugador.getAvatar().getID());
             consola.imprimir("Fortuna: " + jugador.getFortuna());
             consola.imprimir("Propiedades: ");
+            StringBuilder propiedades = new StringBuilder();
             for (int j = 0; j < jugador.getPropiedades().size(); j++) {
-                System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
+                propiedades.append("  ||").append(jugador.getPropiedades().get(j).getNombre());
                 if (jugador.getPropiedades().get(j).getHipotecada()) {
-                    System.out.print("[H]");
+                    propiedades.append("[H]");
                 }
-                System.out.print("||");
+                propiedades.append("||");
             }
+            consola.imprimir(propiedades.toString());
+            
             consola.imprimir("");
-            /*
-             * ArrayList<Edificio> edificios = jugador.getEdificios();
-             * if (!edificios.isEmpty()) {
-             * consola.imprimir("- Edificios:\n");
-             * for (int i = 0; i < edificios.size(); i++) {
-             * consola.imprimir("   · " + edificios.get(i).getTipo());
-             * }
-             * }
-             */
-        } else {
-            consola.imprimir("No existe un jugador con ese nombre.");
+        }else {
+            throw new JugadorNoEncontradoException(nombre);
         }
     }
 
     public void descJugador(Jugador jugador) {
-        if (!(jugador == null)) {
-            consola.imprimir("Nombre: " + jugador.getNombre());
-            consola.imprimir("Avatar: " + jugador.getAvatar().getID());
-            consola.imprimir("Fortuna: " + jugador.getFortuna());
-            consola.imprimir("Propiedades:");
-            for (int j = 0; j < jugador.getPropiedades().size(); j++) {
-                System.out.print("  ||" + jugador.getPropiedades().get(j).getNombre());
-                if (jugador.getPropiedades().get(j).getHipotecada()) {
-                    System.out.print("[H]");
-                }
-                System.out.print("||");
+        consola.imprimir("Nombre: " + jugador.getNombre());
+        consola.imprimir("Avatar: " + jugador.getAvatar().getID());
+        consola.imprimir("Fortuna: " + jugador.getFortuna());
+        consola.imprimir("Propiedades:");
+        for (int j = 0; j < jugador.getPropiedades().size(); j++) {
+            consola.imprimir("  ||" + jugador.getPropiedades().get(j).getNombre());
+            if (jugador.getPropiedades().get(j).getHipotecada()) {
+                consola.imprimir("[H]");
             }
-            consola.imprimir("");
-            consola.imprimir("Hipotecas: ");
-            consola.imprimir("Edificios: ");
-            consola.imprimir("");
-        } else {
-            consola.imprimir("No existe el jugador.");
+            consola.imprimir("||");
         }
+        consola.imprimir("");
+        consola.imprimir("Hipotecas: ");
+        consola.imprimir("Edificios: ");
+        consola.imprimir("");
+
     }
 
     /*
      * Método que realiza las acciones asociadas al comando 'describir avatar'.
      * Parámetro: id del avatar a describir.
      */
-    public void descAvatar(String ID) {
+    public void descAvatar(String ID) throws AvatarNoEncontradoException {
         Avatar avatar = getAvatar(ID);
         if (!(avatar == null)) {
             consola.imprimir("- ID: " + avatar.getID());
@@ -496,7 +507,7 @@ public final class Juego {
             consola.imprimir("");
 
         } else {
-            consola.imprimir("No existe un avatar con ese ID.");
+            throw new AvatarNoEncontradoException(ID);
         }
     }
 
@@ -505,45 +516,41 @@ public final class Juego {
      * nombre_casilla'.
      * Parámetros: nombre de la casilla a describir.
      */
-    public void descCasilla(String nombre) {
+    public void descCasilla(String nombre) throws CasillaNoEncontradaException {
         Casilla casilla = tablero.getCasilla(nombre);
         if (!(casilla == (null))) {
             consola.imprimir(casilla.infoCasilla(banca));
         } else {
-            consola.imprimir("No existe la casilla \'" + nombre + "\'.");
+            throw new CasillaNoEncontradaException(nombre);
         }
     }
 
-    public boolean puedeLanzarDados() {
+    public boolean puedeLanzarDados() throws DadosException, AvanzarException {
         Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
         if (jugador.getEnCarcel()) {
             if (jugador.getTiradasCarcel() > 2) {
-                consola.imprimir("Has pasado 3 turnos en la cárcel. Debes pagar la multa.");
-                return false;
+                throw new DadosException("has pasado 3 turnos en la cárcel, debes pagar la multa.");
             } else if (lanzamientos > 0) {
-                consola.imprimir("Sólo puedes intentar salir de la cárcel al inicio de tu turno, una vez por turno");
-                return false;
+                throw new DadosException("sólo puedes intentar sacar dobles para liberarte al inicio del turno.");
             }
         }
         if (lanzamientos > 0 && dobles_seguidos == 0 && (!(avatar instanceof Coche) || !jugador.getMovEspecial())) {
-            consola.imprimir("Ya has lanzado los dados en este turno.");
-            return false;
+            throw new DadosException("ya has lanzado los dados en este turno.");
+
         }
         if (jugador.getCocheCalado() > 0) {
-            consola.imprimir("Por una previa tirada con el coche, no puedes tirar durante " + jugador.getCocheCalado()
-                    + " turnos.");
-            return false;
+            throw new DadosException("por una previa tirada con el coche. Debes esperar " + (jugador.getCocheCalado()-1)
+                    + " turnos para volver a lanzar los dados.");
+
         }
         if ((avatar instanceof Coche) && jugador.getMovEspecial() && lanzamientos > 3) {
             if (dobles_seguidos == 0) {
-                consola.imprimir("Ya has lanzado los dados 4 veces en este turno.");
-                return false;
+                throw new DadosException("ya has lanzado los dados 4 veces en este turno.");
             }
             if (lanzamientos > 4) {
-                consola.imprimir("Sacar dobles en la última tirada del coche te permite sólo una tirada adicional.");
-                return false;
+                throw new DadosException("sacar dobles te permite sólo una quinta tirada con el coche.");
             }
         }
 
@@ -553,30 +560,29 @@ public final class Juego {
                 return false;
             }
             return true; // la primera tirada de la pelota no implica moverse, no es necesario comprobar
-                         // si se puede avanzar
+            // si se puede avanzar
         }
         return puedeAvanzar();
     }
 
     // similar a puedeLanzarDados pero comprueba si el avatar puede moverse
     // actualmente, sea con una tirada normal de dados o con avanzar
-    private boolean puedeAvanzar() {
+    private boolean puedeAvanzar() throws AvanzarException {
         Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
         if (jugador.getFortuna() < 0) {
-            consola.imprimir(
-                    "Actualmente estás en deuda. Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
-            return false;
+            throw new AvanzarException("Estás en deuda. Vende edificios, hipoteca propiedades o declara la bancarrota.");
         }
         if (jugador.puedeCogerCarta() != 0) {
-            consola.imprimir("Debes coger la carta primero.");
-            return false;
+            throw new AvanzarException("Debes coger una carta antes de avanzar.");
+
         }
 
         if (jugador.getMovEspecial() && (avatar instanceof Pelota)
                 && ((Pelota) avatar).siguienteMovPelota(false) == 0) {
-            return false; // no puede avanzar más
+            throw new AvanzarException("No te quedan movimientos.");
+
         }
         return true;
     }
@@ -645,8 +651,8 @@ public final class Juego {
         // llamada a evaluar casilla
         Casilla casillaFinal = avatar.getLugar();
         if (!(jugador.getMovEspecial() && (avatar instanceof Pelota))) // porque el (primer) movimiento especial de la
-                                                                       // pelota no implica moverse, no se evalua la
-                                                                       // casilla
+        // pelota no implica moverse, no se evalua la
+        // casilla
         {
             casillaFinal.evaluarCasilla(jugador, banca, valor_tiradas);
         } else {
@@ -683,33 +689,30 @@ public final class Juego {
      * nombre_casilla'.
      * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
-    public void comprar(Casilla casilla) {
+    public void comprar(Casilla casilla) throws CompraNoDisponibleException {
         Jugador jugador = getJugadorTurno();
         if (!jugador.getPuedeComprar() && jugador.getAvatar().getTipo().equals("coche") && jugador.getMovEspecial()) {
-            consola.imprimir(
-                    "Al realizar el movimiento especial del coche, sólo puedes comprar una vez por turno.");
-            return;
+            throw new CompraNoDisponibleException("Al avanzar con el coche en modo avanzado, sólo puedes comprar una vez por turno.");
         }
         if (casilla.esComprable(jugador, banca)) {
             consola.imprimir(
                     jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor()
-                            + ".");
+                    + ".");
             casilla.comprarCasilla(jugador, banca);
         } else {
-            consola.imprimir("No puedes comprar esta casilla.");
+            throw new CompraNoDisponibleException("Esta casilla no es comprable");
         }
     }
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'salir
     // carcel'.
-    public boolean salirCarcel(Jugador jugador) {
+    public boolean salirCarcel(Jugador jugador) throws SalirCarcelException {
         if (!jugador.getEnCarcel()) {
-            consola.imprimir("No estás en la cárcel.");
-            return false;
+            throw new SalirCarcelException("No estás en la cárcel");
         }
         if (lanzamientos != 0) {
-            consola.imprimir("Sólo puedes pagar la multa al inicio del turno.");
-            return false;
+            throw new SalirCarcelException("Sólo puedes pagar la multa al inicio del turno");
+
         }
 
         return getJugadorTurno().pagarMulta();
@@ -737,10 +740,9 @@ public final class Juego {
     }
 
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
-    public void listarAvatares() {
+    public void listarAvatares() throws AvatarNoEncontradoException {
         for (int i = 0; i < getNumeroDeAvatares(); i++) {
             descAvatar(avatares.get(i).getID());
-
         }
     }
 
@@ -793,7 +795,7 @@ public final class Juego {
             jugadorRecibe.sumarFortuna(jugadorRecibe.getFortunaPrevia());
             consola.imprimir(
                     "El jugador " + jugadorRecibe.getNombre() + " recibe los " + jugadorBancarrota.getFortunaPrevia()
-                            + " que tenía " + jugadorBancarrota.getNombre() + ".");
+                    + " que tenía " + jugadorBancarrota.getNombre() + ".");
         }
 
         jugadores.remove(jugadorBancarrota);
@@ -802,8 +804,9 @@ public final class Juego {
         if (jugadores.size() < 2) {
             Juego.consola.imprimir("El único jugador que queda es " + jugadores.get(0).getNombre() + "!");
             setPartidaAcabada(true);
-        } else
+        } else {
             nuevoTurno();
+        }
     }
 
     private String jugadoresMasVueltas() {
@@ -948,11 +951,10 @@ public final class Juego {
         consola.imprimir("jugadorEnCabeza: " + jugadoresEnCabeza());
     }
 
-    public void estadisticasJugador(String args) {
+    public void estadisticasJugador(String args) throws JugadorNoEncontradoException {
         Jugador jugador = getJugador(args);
         if (jugador == null) {
-            consola.imprimir("Jugador no encontrado.");
-            return;
+            throw new JugadorNoEncontradoException(args);
         }
         jugador.estadisticas();
 

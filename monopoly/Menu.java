@@ -1,11 +1,12 @@
 package monopoly;
 
-import exception.*;
+import exception.MonopolyException;
+import exception.comandoIncorrectoException.DadosManualesException;
 import partida.*;
 
 public final class Menu {
 
-    public final Juego juego = new Juego();
+    private Juego juego;
 
     public void titulo() {
         Juego.consola.imprimir(Valor.RED);
@@ -59,33 +60,26 @@ public final class Menu {
     }
 
     public void loopJugable() {
-        String comando = "";
+        titulo();
+        juego = new Juego();
+        String comando;
+        
         while (!juego.getPartidaAcabada()) {
             Jugador jugador = juego.getJugadorTurno();
             juego.getTablero().imprimirTablero();
 
             if (jugador.getFortuna() < 0) {
-                if (jugador.getEnDeuda() == null) {
-                    jugador.setEnDeuda(juego.getBanca());
-                }
                 Juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
                         + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
                         + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             }
-            if (jugador.limiteCarcel() && comando.equals("a")) { // a comprobación é solo ao inicio do
-                // turno
-                if (!jugador.pagarMulta()) {
-                    jugador.setEnDeuda(juego.getBanca());
-                    break;
-                }
-            }
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
 
             try {
                 analizarComando(comando);
-            } catch (ComandoException ex) {
-                Juego.consola.imprimir(Valor.RED + "Comando inválido: " + ex.getMessage() + Valor.RESET);
+            } catch (MonopolyException ex) {
+                Juego.consola.imprimir(ex.getMessage());
             }
 
         }
@@ -97,7 +91,7 @@ public final class Menu {
      * correspondiente.
      * Parámetro: cadena de caracteres (el comando).
      */
-    private void analizarComando(String input) throws ComandoException {
+    private void analizarComando(String input) throws MonopolyException {
         Jugador jugador = juego.getJugadorTurno();
         Casilla casilla = juego.getJugadorTurno().getAvatar().getLugar();
         String[] partesComando = input.split(" ");
@@ -125,8 +119,8 @@ public final class Menu {
                         try {
                             String[] valores = partesComando[2].split("\\+");
                             juego.lanzarDados(Integer.parseInt(valores[0]), Integer.parseInt(valores[1]));
-                        } catch (NumberFormatException ex) {
-                            Juego.consola.imprimir("Uso del comando: lanzar dados [tirada1]+[tirada2]");
+                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
+                            throw new DadosManualesException();
                         }
                     }
                 }
@@ -140,8 +134,8 @@ public final class Menu {
                 try {
                     juego.lanzarDados(Integer.parseInt(partesComando[1]), 0);
                     juego.setLanzamientos(juego.getLanzamientos() + 1);
-                } catch (NumberFormatException ex) {
-                    Juego.consola.imprimir("Uso del comando: m [cantidad de casillas]");
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
+                    throw new DadosManualesException();
                 }
                 break;
 
@@ -194,6 +188,9 @@ public final class Menu {
 
             // - - - info partida --- //
             case "listar":
+                if (input.equals("listar")) { // si solo se escribe 'listar'. 'listar' con un arg invalido se capta en juego.java
+                    throw new exception.comandoIncorrectoException.ListarIncorrectoException();
+                }
                 juego.listar(partesComando[1]);
                 break;
 
@@ -220,8 +217,7 @@ public final class Menu {
                 break;
 
             default:
-                Juego.consola.imprimir("Comando inválido.");
-                break;
+                throw new exception.comandoInvalidoException.ComandoInvalidoException("El comando introducido no es válido.");
         }
     }
 }

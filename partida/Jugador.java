@@ -384,14 +384,15 @@ public class Jugador {
     // puede pagarla, y libera al jugador.
     public boolean pagarMulta() {
         float multa = 0.25f * Valor.SUMA_VUELTA;
-        sumarGastos(multa);
-        if (fortuna > 0) {
+        if (fortuna > multa) {
+            sumarGastos(multa);
             sumarGastosImp(multa);
             Juego.consola.imprimir("Pagas la multa y sales de la cárcel.");
             salirCarcel();
             return true;
         }
-        Juego.consola.imprimir("No tienes los fondos necesarios para pagar la multa. Quedas en deuda con la banca");
+                
+        
         return false;
 
     }

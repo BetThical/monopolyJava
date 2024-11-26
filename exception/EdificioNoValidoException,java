@@ -1,8 +1,0 @@
-package exception;
-
-public class EdificioNoValidoException extends ComandoException {
-    public EdificioNoValidoException() {
-        super("Edificios válidos: casa, hotel, piscina, pista.");
-    }
-
-}
