@@ -94,8 +94,6 @@ public class Casilla {
     public void anhadirAvatar(Avatar av) {
         if (!avatares.contains(av)) {
             avatares.add(av);
-        } else {
-            Juego.consola.imprimir("error: añadido avatar que ya estaba en casilla");
         }
     }
 
@@ -103,9 +101,7 @@ public class Casilla {
     public void eliminarAvatar(Avatar av) {
         if (avatares.contains(av)) {
             avatares.remove(av);
-        } else {
-            Juego.consola.imprimir("error: eliminado avatar que no estaba en casilla");
-        }
+        } 
     }
 
     // Pepito
@@ -137,7 +133,7 @@ public class Casilla {
             } else if (respuesta.equals("N")) {
                 Juego.consola.imprimir("El jugador " + actual.getNombre() + " ha decidido no comprar la casilla.");
             } else {
-                Juego.consola.imprimir("Respuesta inválida. Por favor, introduce 'Y' o 'N'.");
+                Juego.consola.imprimir("Respuesta inválida. Por favor, introduce 'Y' o 'N'."); //todo
             }
         }
 
@@ -340,7 +336,7 @@ public class Casilla {
          // 125% del valor inicial del solar
     }
 
-    public boolean puedeConstruir(Edificio e, Jugador constructor) {
+    public boolean puedeConstruir(Edificio e, Jugador constructor) { //todo: cambiar a excepciones??
         // condiciones:
         // el jugador es dueño de la casilla
         // el jugador es dueño de todo el grupo O ha caído más de dos veces en la
@@ -497,7 +493,7 @@ public class Casilla {
         }
     }
 
-    public boolean destruirEdificio(String tipo) {
+    public boolean destruirEdificio(String tipo) { //todo: mover a juego
         for (int i = edificios.size() - 1; i >= 0; i--) {
             if (edificios.get(i).getTipo().equalsIgnoreCase(tipo)) {
                 edificios.remove(i);
@@ -559,6 +555,7 @@ public class Casilla {
         return tipo;
     }
 
+    //todo mover a juego?
     public boolean puedeHipotecar(Jugador j) {
         if (!j.equals(duenho)) {
             Juego.consola.imprimir("No eres dueño de " + nombre + ".");

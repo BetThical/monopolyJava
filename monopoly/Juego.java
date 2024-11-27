@@ -5,6 +5,7 @@ import exception.comandoIncorrectoException.EdificioNoValidoException;
 import exception.comandoIncorrectoException.EntradaNoNumericaException;
 import exception.comandoIncorrectoException.FortunaManualException;
 import exception.comandoIncorrectoException.ListarIncorrectoException;
+import exception.comandoInvalidoException.AcabarTurnoException;
 import exception.comandoInvalidoException.AvanzarException;
 import exception.comandoInvalidoException.CambiarModoException;
 import exception.comandoInvalidoException.CartaNoDisponibleException;
@@ -324,12 +325,12 @@ public final class Juego {
         }
     }
 
-    public void listarEdificiosGrupo(String nombreGrupo) throws GrupoNoEncontradoException{
-            Grupo grupo = tablero.getGrupoNombre(nombreGrupo);
-            if (grupo == null){
-                throw new GrupoNoEncontradoException(nombreGrupo);
-            }
-            grupo.descEdificios();
+    public void listarEdificiosGrupo(String nombreGrupo) throws GrupoNoEncontradoException {
+        Grupo grupo = tablero.getGrupoNombre(nombreGrupo);
+        if (grupo == null) {
+            throw new GrupoNoEncontradoException(nombreGrupo);
+        }
+        grupo.descEdificios();
 
     }
 
@@ -467,9 +468,9 @@ public final class Juego {
                 propiedades.append("||");
             }
             consola.imprimir(propiedades.toString());
-            
+
             consola.imprimir("");
-        }else {
+        } else {
             throw new JugadorNoEncontradoException(nombre);
         }
     }
@@ -541,7 +542,7 @@ public final class Juego {
 
         }
         if (jugador.getCocheCalado() > 0) {
-            throw new DadosException("por una previa tirada con el coche. Debes esperar " + (jugador.getCocheCalado()-1)
+            throw new DadosException("por una previa tirada con el coche. Debes esperar " + (jugador.getCocheCalado() - 1)
                     + " turnos para volver a lanzar los dados.");
 
         }
@@ -747,12 +748,16 @@ public final class Juego {
     }
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
-    public void acabarTurno(Jugador jugador) {
+    public void acabarTurno(Jugador jugador) throws AcabarTurnoException {
 
         if (jugador.getFortuna() < 0) {
-            consola.imprimir(
-                    "Actualmente estás en deuda. Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
-            return;
+            throw new AcabarTurnoException("Estás en deuda. Debes hipotecar propiedades, vender edificios o declarar la bancarrota");
+        }
+        if (jugador.limiteCarcel()) {
+            throw new AcabarTurnoException("Debes pagar la multa para salir de la cárcel");
+        }
+        if (jugador.puedeCogerCarta() != 0) {
+            throw new AcabarTurnoException("Debes coger una carta antes de acabar el turno");
         }
         turno = (turno + 1) % getNumeroDeJugadores();
         nuevoTurno();

@@ -1,7 +1,7 @@
 package exception.comandoInvalidoException;
 
 public class AcabarTurnoException extends ComandoInvalidoException {
-    public AcabarTurnoException() {
-        super("No puedes acabar turno por estar en deuda");
+    public AcabarTurnoException(String motivo) {
+        super("No puedes acabar el turno en este momento. (" + motivo + ").");
     }
 }
