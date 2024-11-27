@@ -63,7 +63,7 @@ public final class Menu {
         titulo();
         juego = new Juego();
         String comando;
-        
+
         while (!juego.getPartidaAcabada()) {
             Jugador jugador = juego.getJugadorTurno();
             juego.getTablero().imprimirTablero();
@@ -71,8 +71,8 @@ public final class Menu {
             if (jugador.getFortuna() < 0) {
                 Juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
-                        + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
-                        + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+                                + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
+                                + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             }
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
 
@@ -111,18 +111,15 @@ public final class Menu {
             // - - - movimientos --- //
             case "lanzar":
                 if (input.equals("lanzar dados")) { // lanzar dados aleatorio
-                    if (juego.puedeLanzarDados()) {
-                        juego.lanzarDados();
-                    }
+                    juego.lanzarDados();
                 } else if (input.contains("lanzar dados ")) { // DEBUG: lanzar dados manual (lanzar dados [x]+[y])
-                    if (juego.puedeLanzarDados()) {
-                        try {
-                            String[] valores = partesComando[2].split("\\+");
-                            juego.lanzarDados(Integer.parseInt(valores[0]), Integer.parseInt(valores[1]));
-                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
-                            throw new DadosManualesException();
-                        }
+                    try {
+                        String[] valores = partesComando[2].split("\\+");
+                        juego.lanzarDados(Integer.parseInt(valores[0]), Integer.parseInt(valores[1]));
+                    } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
+                        throw new DadosManualesException();
                     }
+
                 }
                 break;
 
@@ -145,22 +142,38 @@ public final class Menu {
                 break;
 
             case "edificar":
-                juego.edificar(partesComando[1], jugador, casilla);
-                break;
+                try {
+                    juego.edificar(partesComando[1], jugador, casilla);
+                    break;
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new exception.comandoIncorrectoException.EdificioNoValidoException();
+                }
 
             case "destruir":
-                juego.destruir(partesComando[1], jugador, casilla);
-                break;
+                try {
+                    juego.destruir(partesComando[1], jugador, casilla);
+                    break;
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new exception.comandoIncorrectoException.EdificioNoValidoException();
+                }
 
             case "hipotecar":
-                juego.hipotecar(partesComando[1], jugador);
-                break;
+                try {
+                    juego.hipotecar(partesComando[1], jugador);
+                    break;
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new exception.comandoIncorrectoException.PropiedadNoIndicadaException("hipotecar");
+                }
 
             case "deshipotecar":
-                juego.deshipotecar(partesComando[1], jugador);
-                break;
+                try {
+                    juego.deshipotecar(partesComando[1], jugador);
+                    break;
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new exception.comandoIncorrectoException.PropiedadNoIndicadaException("deshipotecar");
+                }
 
-            // - - - acciones misceláneas --- //
+                // - - - acciones misceláneas --- //
             case "cambiar":
                 if (input.equals("cambiar modo")) {
                     juego.cambiarModo(jugador);
@@ -171,9 +184,7 @@ public final class Menu {
                 juego.cogerCarta(jugador);
                 break;
             case "salir":
-                if (input.equals("salir carcel")) {
-                    juego.salirCarcel(jugador);
-                }
+                juego.salirCarcel(jugador);
                 break;
 
             case "bancarrota":
@@ -188,7 +199,8 @@ public final class Menu {
 
             // - - - info partida --- //
             case "listar":
-                if (input.equals("listar")) { // si solo se escribe 'listar'. 'listar' con un arg invalido se capta en juego.java
+                if (input.equals("listar")) { // si solo se escribe 'listar'. 'listar' con un arg invalido se capta en
+                                              // juego.java
                     throw new exception.comandoIncorrectoException.ListarIncorrectoException();
                 }
                 juego.listar(partesComando[1]);
@@ -213,11 +225,16 @@ public final class Menu {
                 break;
 
             case "f": // fortuna manual (debug)
-                juego.fortunaManual(partesComando[1], jugador);
+                try {
+                    juego.fortunaManual(partesComando[1], jugador);
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new exception.comandoIncorrectoException.FortunaManualException();
+                }
                 break;
 
             default:
-                throw new exception.comandoInvalidoException.ComandoInvalidoException("El comando introducido no es válido.");
+                throw new exception.comandoInvalidoException.ComandoInvalidoException(
+                        "El comando introducido no es válido.");
         }
     }
 }

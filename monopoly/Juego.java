@@ -10,6 +10,8 @@ import exception.comandoInvalidoException.CambiarModoException;
 import exception.comandoInvalidoException.CartaNoDisponibleException;
 import exception.comandoInvalidoException.CompraNoDisponibleException;
 import exception.comandoInvalidoException.DadosException;
+import exception.comandoInvalidoException.EdificioNoPermitidoException;
+import exception.comandoInvalidoException.FondosInsuficientesException;
 import exception.comandoInvalidoException.SalirCarcelException;
 import exception.noEncontradoException.AvatarNoEncontradoException;
 import exception.noEncontradoException.CartaNoEncontradaException;
@@ -308,6 +310,9 @@ public final class Juego {
         } else {
             if (aHipotecar.puedeHipotecar(jugador)) {
                 aHipotecar.hipotecar();
+                consola.imprimir("Se ha hipotecado " + aHipotecar.getNombre() + ". " + jugador.getNombre()
+                        + " ha recibido " + aHipotecar.getHipoteca()
+                        + "€ de la hipoteca.");
             }
         }
     }
@@ -324,12 +329,12 @@ public final class Juego {
         }
     }
 
-    public void listarEdificiosGrupo(String nombreGrupo) throws GrupoNoEncontradoException{
-            Grupo grupo = tablero.getGrupoNombre(nombreGrupo);
-            if (grupo == null){
-                throw new GrupoNoEncontradoException(nombreGrupo);
-            }
-            grupo.descEdificios();
+    public void listarEdificiosGrupo(String nombreGrupo) throws GrupoNoEncontradoException {
+        Grupo grupo = tablero.getGrupoNombre(nombreGrupo);
+        if (grupo == null) {
+            throw new GrupoNoEncontradoException(nombreGrupo);
+        }
+        grupo.descEdificios();
 
     }
 
@@ -343,36 +348,25 @@ public final class Juego {
             throw new AvanzarException("Sólo se puede avanzar con el avatar pelota en modo avanzado");
         } else {
             Pelota pelota = (Pelota) jugador.getAvatar();
-            if (puedeAvanzar()) {
-                pelota.avanzar(tablero.getPosiciones(), banca);
-            } else {
-                throw new AvanzarException("No te quedan movimientos.");
-            }
+            puedeAvanzar();
+            pelota.avanzar(tablero.getPosiciones(), banca);
+
         }
     }
 
-    public void edificar(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException {
+    public void edificar(String args, Jugador jugador, Casilla casilla)
+            throws EdificioNoValidoException, EdificioNoPermitidoException, FondosInsuficientesException {
         if (!EDIFICIOS_VALIDOS.contains(args)) {
             throw new EdificioNoValidoException();
         } else {
-            if (args.equals("4casas")) {
-                args = "casa";
-                for (int i = 0; i < 4; i++) {
-                    e = new Edificio(args, casilla);
-                    if (casilla.puedeConstruir(e, jugador)) {
-                        consola.imprimir("Has comprado un(a) " + args + " en " + casilla.getNombre() + ", por "
-                                + casilla.valorEdificio(e.getTipo()) + ".");
-                        casilla.anhadirEdificio(e);
-                    }
-                }
-            } else {
-                e = new Edificio(args, casilla);
-                if (casilla.puedeConstruir(e, jugador)) {
-                    consola.imprimir("Has comprado un(a) " + args + " en " + casilla.getNombre() + ", por "
-                            + casilla.valorEdificio(e.getTipo()) + ".");
-                    casilla.anhadirEdificio(e);
-                }
-            }
+            e = new Edificio(args, casilla);
+            casilla.puedeConstruir(e, jugador)
+            consola.imprimir("Has comprado un(a) " + args + " en " + casilla.getNombre() + ", por "
+                        + casilla.valorEdificio(e.getTipo()) + ".");
+            casilla.anhadirEdificio(e);
+
+            
+
         }
     }
 
@@ -404,7 +398,8 @@ public final class Juego {
         }
     }
 
-    public void cogerCarta(Jugador jugador) throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException {
+    public void cogerCarta(Jugador jugador)
+            throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException {
         int numero;
         if (jugador.puedeCogerCarta() == 0) {
             throw new CartaNoDisponibleException();
@@ -467,9 +462,9 @@ public final class Juego {
                 propiedades.append("||");
             }
             consola.imprimir(propiedades.toString());
-            
+
             consola.imprimir("");
-        }else {
+        } else {
             throw new JugadorNoEncontradoException(nombre);
         }
     }
@@ -499,15 +494,14 @@ public final class Juego {
      */
     public void descAvatar(String ID) throws AvatarNoEncontradoException {
         Avatar avatar = getAvatar(ID);
-        if (!(avatar == null)) {
+        if (avatar == null) {
+            throw new AvatarNoEncontradoException(ID);
+        } else {
             consola.imprimir("- ID: " + avatar.getID());
             consola.imprimir("- Tipo: " + avatar.getTipo());
             consola.imprimir("- Casilla: " + avatar.getLugar().getNombre());
             consola.imprimir("- Jugador: " + avatar.getJugador().getNombre());
             consola.imprimir("");
-
-        } else {
-            throw new AvatarNoEncontradoException(ID);
         }
     }
 
@@ -525,7 +519,9 @@ public final class Juego {
         }
     }
 
-    public boolean puedeLanzarDados() throws DadosException, AvanzarException {
+    // realiza las comprobaciones previas a poder lanzar los dados
+    // lanza excepciones si no se cumplen las condiciones
+    public void puedeLanzarDados() throws DadosException, AvanzarException {
         Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
@@ -541,8 +537,9 @@ public final class Juego {
 
         }
         if (jugador.getCocheCalado() > 0) {
-            throw new DadosException("por una previa tirada con el coche. Debes esperar " + (jugador.getCocheCalado()-1)
-                    + " turnos para volver a lanzar los dados.");
+            throw new DadosException(
+                    "por una previa tirada con el coche. Debes esperar " + (jugador.getCocheCalado() - 1)
+                            + " turnos para volver a lanzar los dados.");
 
         }
         if ((avatar instanceof Coche) && jugador.getMovEspecial() && lanzamientos > 3) {
@@ -555,24 +552,23 @@ public final class Juego {
         }
 
         if (jugador.getMovEspecial() && (avatar instanceof Pelota)) {
-            if (((Pelota) avatar).siguienteMovPelota(false) != 0) {
-                consola.imprimir("Utiliza el comando 'avanzar' para moverte.");
-                return false;
-            }
-            return true; // la primera tirada de la pelota no implica moverse, no es necesario comprobar
+            if (((Pelota) avatar).siguienteMovPelota(false) == 0)
+                return;
+            // la primera tirada de la pelota no implica moverse, no es necesario comprobar
             // si se puede avanzar
         }
-        return puedeAvanzar();
+        puedeAvanzar();
     }
 
     // similar a puedeLanzarDados pero comprueba si el avatar puede moverse
     // actualmente, sea con una tirada normal de dados o con avanzar
-    private boolean puedeAvanzar() throws AvanzarException {
+    private void puedeAvanzar() throws AvanzarException {
         Jugador jugador = getJugadorTurno();
         Avatar avatar = jugador.getAvatar();
 
         if (jugador.getFortuna() < 0) {
-            throw new AvanzarException("Estás en deuda. Vende edificios, hipoteca propiedades o declara la bancarrota.");
+            throw new AvanzarException(
+                    "Estás en deuda. Vende edificios, hipoteca propiedades o declara la bancarrota.");
         }
         if (jugador.puedeCogerCarta() != 0) {
             throw new AvanzarException("Debes coger una carta antes de avanzar.");
@@ -584,12 +580,13 @@ public final class Juego {
             throw new AvanzarException("No te quedan movimientos.");
 
         }
-        return true;
+        return;
     }
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar'
     // elejiendo los valores de los dados
-    public void lanzarDados() {
+    public void lanzarDados() throws DadosException, AvanzarException {
+        puedeLanzarDados();
         int tirada1 = dado1.hacerTirada();
         int tirada2 = dado2.hacerTirada();
         lanzarDados(tirada1, tirada2);
@@ -692,12 +689,13 @@ public final class Juego {
     public void comprar(Casilla casilla) throws CompraNoDisponibleException {
         Jugador jugador = getJugadorTurno();
         if (!jugador.getPuedeComprar() && jugador.getAvatar().getTipo().equals("coche") && jugador.getMovEspecial()) {
-            throw new CompraNoDisponibleException("Al avanzar con el coche en modo avanzado, sólo puedes comprar una vez por turno.");
+            throw new CompraNoDisponibleException(
+                    "Al avanzar con el coche en modo avanzado, sólo puedes comprar una vez por turno.");
         }
         if (casilla.esComprable(jugador, banca)) {
             consola.imprimir(
                     jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor()
-                    + ".");
+                            + ".");
             casilla.comprarCasilla(jugador, banca);
         } else {
             throw new CompraNoDisponibleException("Esta casilla no es comprable");
@@ -795,7 +793,7 @@ public final class Juego {
             jugadorRecibe.sumarFortuna(jugadorRecibe.getFortunaPrevia());
             consola.imprimir(
                     "El jugador " + jugadorRecibe.getNombre() + " recibe los " + jugadorBancarrota.getFortunaPrevia()
-                    + " que tenía " + jugadorBancarrota.getNombre() + ".");
+                            + " que tenía " + jugadorBancarrota.getNombre() + ".");
         }
 
         jugadores.remove(jugadorBancarrota);
