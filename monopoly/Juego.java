@@ -360,7 +360,7 @@ public final class Juego {
             throw new EdificioNoValidoException();
         } else {
             e = new Edificio(args, casilla);
-            casilla.puedeConstruir(e, jugador)
+            casilla.puedeConstruir(e, jugador);
             consola.imprimir("Has comprado un(a) " + args + " en " + casilla.getNombre() + ", por "
                         + casilla.valorEdificio(e.getTipo()) + ".");
             casilla.anhadirEdificio(e);
