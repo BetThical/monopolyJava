@@ -581,7 +581,6 @@ public final class Juego {
             throw new AvanzarException("No te quedan movimientos.");
 
         }
-        return;
     }
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar'

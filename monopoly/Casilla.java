@@ -1,10 +1,9 @@
 package monopoly;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import exception.comandoInvalidoException.EdificioNoPermitidoException;
 import exception.comandoInvalidoException.FondosInsuficientesException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import partida.*;
 
 public class Casilla {
@@ -104,7 +103,7 @@ public class Casilla {
     public void eliminarAvatar(Avatar av) {
         if (avatares.contains(av)) {
             avatares.remove(av);
-        } 
+        }
     }
 
     // Pepito
@@ -136,7 +135,7 @@ public class Casilla {
             } else if (respuesta.equals("N")) {
                 Juego.consola.imprimir("El jugador " + actual.getNombre() + " ha decidido no comprar la casilla.");
             } else {
-                Juego.consola.imprimir("Respuesta inválida. Por favor, introduce 'Y' o 'N'."); //todo
+                Juego.consola.imprimir("Respuesta inválida. Por favor, introduce 'Y' o 'N'.");
             }
         }
 
@@ -339,7 +338,9 @@ public class Casilla {
          // 125% del valor inicial del solar
     }
 
-    public boolean puedeConstruir(Edificio e, Jugador constructor) { //todo: cambiar a excepciones??
+    // lanza excepciones si no se puede construir el edificio dado en la casilla
+    public void puedeConstruir(Edificio e, Jugador constructor)
+            throws EdificioNoPermitidoException, FondosInsuficientesException { // TODO cambiar a excepciones
         // condiciones:
         // el jugador es dueño de la casilla
         // el jugador es dueño de todo el grupo O ha caído más de dos veces en la
@@ -477,7 +478,7 @@ public class Casilla {
         }
     }
 
-    public boolean destruirEdificio(String tipo) { //todo: mover a juego
+    public boolean destruirEdificio(String tipo) {
         for (int i = edificios.size() - 1; i >= 0; i--) {
             if (edificios.get(i).getTipo().equalsIgnoreCase(tipo)) {
                 edificios.remove(i);
@@ -539,8 +540,7 @@ public class Casilla {
         return tipo;
     }
 
-    //todo mover a juego?
-    public boolean puedeHipotecar(Jugador j) {
+    public boolean puedeHipotecar(Jugador j) { // todo cambiar a excepcion
         if (!j.equals(duenho)) {
             Juego.consola.imprimir("No eres dueño de " + nombre + ".");
             return false;
