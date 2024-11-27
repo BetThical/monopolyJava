@@ -2,6 +2,9 @@ package monopoly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import exception.comandoInvalidoException.EdificioNoPermitidoException;
+import exception.comandoInvalidoException.FondosInsuficientesException;
 import partida.*;
 
 public class Casilla {
@@ -350,97 +353,80 @@ public class Casilla {
         // 3 hoteles, 3 casas, 3 piscinas y 3 pistas, o 2 de cada si el grupo es de 2
         // casillas.
         if (!tipo.equals("solar")) {
-            Juego.consola.imprimir("No se puede construir en esta casilla.");
-            return false;
+            throw new EdificioNoPermitidoException("Esta casilla no es un solar");
         }
 
         if (!constructor.equals(duenho)) {
-            Juego.consola.imprimir("No eres dueño de esta casilla.");
-            return false;
+            throw new EdificioNoPermitidoException("No eres dueño de esta casilla");
         }
 
         if (valorEdificio(e.getTipo()) > constructor.getFortuna()) {
-            Juego.consola.imprimir("Careces de los fondos necesarios.");
-            return false;
+            throw new FondosInsuficientesException();
         }
 
         if (!grupo.esDuenhoGrupo(constructor) && constructor.getAvatar().getVecesCaidasEnCasilla(posicion - 1) <= 2) {
-            System.out
-                    .println("Debes ser dueño de todo el grupo o haber caído en esta casilla más de dos veces. Actual: "
+            throw new EdificioNoPermitidoException(
+                    "Debes ser dueño de todo el grupo o haber caído en esta casilla más de dos veces. Actual: "
                             + constructor.getAvatar().getVecesCaidasEnCasilla(posicion - 1));
-            return false;
         }
         HashMap<String, Integer> edificiosGrupo = grupo.contarEdificiosPorTipo();
         HashMap<String, Integer> edificiosCasilla = contarEdificiosPorTipo();
         int maxEdificiosPorTipo = grupo.getNumCasillas();
         if (edificiosCasilla.getOrDefault("casa", 0) >= 4 && e.getTipo().equals("casa")) {
-            Juego.consola.imprimir("Se pueden construir un máximo de 4 casas en un solar.");
-            return false;
+            throw new EdificioNoPermitidoException("Se pueden construir un máximo de 4 casas en un solar");
         }
 
         if (edificiosCasilla.getOrDefault("casa", 0) < 4 && e.getTipo().equals("hotel")) {
-            Juego.consola.imprimir("Para construir un hotel se deben construir antes 4 casas.");
-            return false;
+            throw new EdificioNoPermitidoException("Para construir un hotel se deben construir antes 4 casas");
         }
 
         if (edificiosGrupo.getOrDefault("hotel", 0) >= maxEdificiosPorTipo) {
             if (e.getTipo().equals("hotel")) {
-                Juego.consola.imprimir(
-                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " hoteles en este grupo.");
-                return false;
+                throw new EdificioNoPermitidoException(
+                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " hoteles en este grupo");
             }
         }
 
         if (edificiosGrupo.getOrDefault("hotel", 0) == (maxEdificiosPorTipo - 1) && e.getTipo().equals("hotel")
                 && edificiosGrupo.getOrDefault("casa", 0) > maxEdificiosPorTipo) {
-            Juego.consola
-                    .imprimir("Construir este hotel haría que se superase el número máximo de casas en esta casilla.");
-            return false;
+            throw new EdificioNoPermitidoException(
+                    "Construir este hotel haría que se superase el número máximo de casas en esta casilla");
         }
 
         if (e.getTipo().equals("casa") && edificiosGrupo.getOrDefault("casa", 0) >= maxEdificiosPorTipo
                 && edificiosGrupo.getOrDefault("hotel", 0) >= maxEdificiosPorTipo) {
-            Juego.consola.imprimir("Se pueden construir un máximo de " + grupo.getNumCasillas()
+            throw new EdificioNoPermitidoException("Se pueden construir un máximo de " + grupo.getNumCasillas()
                     + " casas en este grupo.");
-            return false;
         }
 
         if (e.getTipo().equals("hotel") && edificiosGrupo.getOrDefault("casa", 0) - 4 > maxEdificiosPorTipo
                 && edificiosGrupo.getOrDefault("hotel", 0) + 1 >= maxEdificiosPorTipo) {
-            Juego.consola.imprimir(
+            throw new EdificioNoPermitidoException(
                     "No se puede construir un hotel porque se superaría el número máximo de casas permitido. (se permite superar este límite hasta construir los hoteles)");
-            return false;
         }
 
         if (e.getTipo().equals("piscina")) {
             if (edificiosGrupo.getOrDefault("piscina", 0) >= maxEdificiosPorTipo) {
-                Juego.consola.imprimir(
-                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " piscinas en este grupo.");
-                return false;
+                throw new EdificioNoPermitidoException(
+                        "Se pueden construir un máximo de " + maxEdificiosPorTipo + " piscinas en este grupo");
             }
             if (edificiosCasilla.getOrDefault("casa", 0) < 2 || edificiosCasilla.getOrDefault("hotel", 0) < 1) {
-                Juego.consola.imprimir(
-                        "Para construir una piscina, se deben construir antes al menos 2 casas y 1 hotel.");
-                return false;
+                throw new EdificioNoPermitidoException(
+                        "Para construir una piscina, se deben construir antes al menos 2 casas y 1 hotel");
             }
         }
 
         if (e.getTipo().equals("pista")) {
             if (edificiosGrupo.getOrDefault("pista", 0) == grupo.getNumCasillas()) {
-                Juego.consola.imprimir(
+                throw new EdificioNoPermitidoException(
                         "Se pueden construir un máximo de " + grupo.getNumCasillas()
                                 + " pistas de deporte en este grupo.");
-                return false;
             }
             if (edificiosCasilla.getOrDefault("hotel", 0) < 2) {
-                Juego.consola.imprimir(
-                        "Para construir una pista de deporte, se deben construir antes al menos 2 hoteles.");
-                return false;
+                throw new EdificioNoPermitidoException(
+                        "Para construir una pista de deporte, se deben construir antes al menos 2 hoteles");
             }
         }
-        // Juego.consola.imprimir("Se puede construir el edificio " + e.getTipo() + " en
-        // esta casilla.");
-        return true;
     }
 
     public void anhadirEdificio(Edificio e) {
@@ -488,8 +474,6 @@ public class Casilla {
             destruirEdificio("casa");
             destruirEdificio("casa");
             destruirEdificio("casa");
-            Juego.consola.imprimir("Las 4 casas han sido eliminadas.");
-
         }
     }
 
@@ -500,7 +484,8 @@ public class Casilla {
                 return true;
             }
         }
-        Juego.consola.imprimir("No se encontró un edificio de tipo " + tipo + " en la casilla.");
+        Juego.consola.imprimir("No se encontró un edificio de tipo " + tipo + " en la casilla."); // todo cambiar a
+                                                                                                  // excepcion
         return false;
     }
 
@@ -537,7 +522,6 @@ public class Casilla {
     public float alquilerEdificios() {
         float alquilerTotal = 0;
         for (Edificio e : edificios) {
-            // Juego.consola.imprimir("Edificio: "+e.getTipo()+" Valor: "+e.getAlquiler());
             alquilerTotal += e.getAlquiler(); // Sumar el alquiler de cada edificio
         }
         return alquilerTotal;
@@ -569,7 +553,7 @@ public class Casilla {
 
     }
 
-    public boolean puedeDeshipotecar(Jugador j) {
+    public boolean puedeDeshipotecar(Jugador j) { // todo
         if (!j.equals(duenho)) {
             Juego.consola.imprimir("No eres dueño de " + nombre + ".");
             return false;
@@ -588,8 +572,6 @@ public class Casilla {
     }
 
     public void hipotecar() {
-        Juego.consola.imprimir("Se ha hipotecado " + nombre + ". " + duenho.getNombre() + " ha recibido " + hipoteca
-                + "€ de la hipoteca.");
         setHipotecada(true);
         duenho.sumarFortuna(hipoteca);
     }

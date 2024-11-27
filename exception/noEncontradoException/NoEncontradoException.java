@@ -1,4 +1,5 @@
 package exception.noEncontradoException;
+
 import exception.MonopolyException;
 import monopoly.Valor;
 
@@ -6,9 +7,10 @@ import monopoly.Valor;
 
 public class NoEncontradoException extends MonopolyException {
     public NoEncontradoException(String tipo, String input) {
-        super(Valor.LIGHT_RED + "No se ha encontrado " + tipo + " \'" + input+ "\'." + Valor.RESET);
-        //ejemplo: No se ha encontrado el jugador 'pepe'.
-        // el artículo lo proporciona el tipo para incluir el género correctamente (el jugador, la casilla, el avatar...)
+        super(Valor.LIGHT_RED + "No se ha encontrado " + tipo + " \'" + input + "\'." + Valor.RESET);
+        // ejemplo: No se ha encontrado el jugador 'pepe'.
+        // el artículo lo proporciona el tipo para incluir el género correctamente (el
+        // jugador, la casilla, el avatar...)
     }
-    
+
 }
