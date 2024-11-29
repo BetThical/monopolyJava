@@ -6,7 +6,7 @@ import monopoly.*;
 
 public abstract class Avatar {
     // Clase ABSTRACTA que representa a los avatares de los jugadores en el tablero.
-    // Por ser abstracta, debe ser si o si una instancia de pelota o de coche.
+    // Por ser abstracta, debe ser si o si una instancia de pelota o de coche. No se puede declarar un avatar de otro tipo
 
     // Atributos
     private String id; // Identificador: una letra generada aleatoriamente.

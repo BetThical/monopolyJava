@@ -230,7 +230,6 @@ public class Jugador {
     }
 
     public void setEnCarcel(boolean enCarcel) {
-        vecesEnLaCarcel += 1;
         this.enCarcel = enCarcel;
     }
 
@@ -317,7 +316,7 @@ public class Jugador {
             }
             return j;
         } catch (NullPointerException e) { // si el dueño es la banca (no tiene propiedades, se calculará el precio
-                                           // teniendo 1 sola casilla)
+            // teniendo 1 sola casilla)
             return 1;
         }
     }
@@ -391,14 +390,23 @@ public class Jugador {
             salirCarcel();
             return true;
         }
-                
-        
+
         return false;
 
     }
 
     public int getVueltas() {
         return vueltas;
+    }
+
+    public void encarcelar(ArrayList<ArrayList<Casilla>> casillas) {
+        setEnCarcel(true);
+        setTiradasCarcel(0);
+        avatar.setLugar(casillas, 10);
+        vecesEnLaCarcel += 1;
+        if ((avatar instanceof Pelota) && ((Pelota) avatar).siguienteMovPelota(false) != 0) {
+            ((Pelota) avatar).resetMovPelota();
+        }
     }
 
     public void estadisticas() {

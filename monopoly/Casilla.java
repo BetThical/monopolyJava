@@ -181,6 +181,9 @@ public class Casilla {
 
             return true;
         }
+        if (getNombre().equals("IrCarcel")) {
+            
+        }
         return true;
 
     }
@@ -340,7 +343,7 @@ public class Casilla {
 
     // lanza excepciones si no se puede construir el edificio dado en la casilla
     public void puedeConstruir(Edificio e, Jugador constructor)
-            throws EdificioNoPermitidoException, FondosInsuficientesException { // TODO cambiar a excepciones
+            throws EdificioNoPermitidoException, FondosInsuficientesException { 
         // condiciones:
         // el jugador es dueño de la casilla
         // el jugador es dueño de todo el grupo O ha caído más de dos veces en la

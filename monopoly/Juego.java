@@ -158,135 +158,7 @@ public final class Juego {
         consola.imprimir("Jugador " + nombre + " con avatar " + tipoAvatar + " creado.");
     }
 
-    public void funcionesCartas(Avatar avatar, Tablero tablero, int id) {
-        Jugador jugador = avatar.getJugador();
-        Casilla casillaInicial = avatar.getLugar();
-        switch (id) {
-            case 1:
 
-                if (avatar.getLugar().getPosicion() <= 6) // trans1 es la casilla 6
-                {
-                    avatar.moverAvatar(tablero.getPosiciones(), 6 - avatar.getLugar().getPosicion(), true);
-                } else {
-                    avatar.moverAvatar(tablero.getPosiciones(),
-                            tablero.getNumCasillas() - avatar.getLugar().getPosicion() + 6, true);
-                }
-                break;
-
-            case 2:
-
-                if (avatar.getLugar().getPosicion() <= 27) // Solar15 es la casilla 27
-                {
-                    avatar.moverAvatar(tablero.getPosiciones(), 27 - avatar.getLugar().getPosicion(), false);
-                } else {
-                    avatar.moverAvatar(tablero.getPosiciones(),
-                            tablero.getNumCasillas() - avatar.getLugar().getPosicion() + 27, false);
-                }
-                break;
-
-            case 3:
-
-                jugador.sumarFortuna(500000);
-                break;
-
-            case 4:
-
-                if (avatar.getLugar().getPosicion() <= 7) // solar3 es la casilla 7
-                {
-                    avatar.moverAvatar(tablero.getPosiciones(), 7 - avatar.getLugar().getPosicion(), true);
-                } else {
-                    avatar.moverAvatar(tablero.getPosiciones(),
-                            tablero.getNumCasillas() - avatar.getLugar().getPosicion() + 7, true);
-                }
-                break;
-
-            case 5:
-
-                encarcelar(jugador);
-                break;
-
-            case 6:
-
-                jugador.sumarFortuna(1000000);
-                break;
-
-            case 7:
-
-                jugador.sumarGastos(500000);
-                if (jugador.getFortuna() < 0) {
-                    jugador.setFortunaPrevia((500000 + jugador.getFortuna()));
-                    consola.imprimir("No tienes suficiente dinero. Quedas en deuda con el banco.");
-                    jugador.setEnDeuda(banca);
-                }
-                break;
-
-            case 8:
-                consola.imprimir("Vas a la cárcel.");
-                encarcelar(jugador);
-
-                break;
-
-            case 9:
-
-                avatar.moverAvatar(tablero.getPosiciones(),
-                        tablero.getNumCasillas() - avatar.getLugar().getPosicion() + 1, true);
-                break;
-
-            case 10:
-
-                jugador.sumarFortuna(2000000);
-                break;
-
-            case 11:
-
-                jugador.sumarGastos(1000000);
-                if (jugador.getFortuna() < 0) {
-                    jugador.setFortunaPrevia((1000000 + jugador.getFortuna()));
-                    consola.imprimir("No tienes suficiente dinero. Quedas en deuda con el banco.");
-                    jugador.setEnDeuda(banca);
-                }
-                break;
-
-            case 12:
-
-                for (int i = 0; i < jugadores.size(); i++) {
-                    if (jugadores.get(i) != jugador) {
-                        jugador.sumarGastos(200000);
-                        jugadores.get(i).sumarFortuna(200000);
-
-                        if (jugador.getFortuna() < 0) {
-                            jugador.setFortunaPrevia((200000 + jugador.getFortuna()));
-                            consola.imprimir("No tienes suficiente dinero. Quedas en deuda con el banco.");
-                            // do glosario de dubidas: Na carta de comunidade 6 (Alquilas a tus compañeros
-                            // una villa en Solar7 durante una semana. Paga 200000€ a cada jugador),
-                            // se o xogador non tén diñeiro para afrontar este pago e decide declararse en
-                            // bancarrota, toda a súa fortuna e propiedades pasan á banca.
-                            jugador.setEnDeuda(banca);
-                            break;
-                        }
-                    }
-                }
-
-                break;
-        }
-
-        if (avatar.getLugar() != casillaInicial) { // si se ha movido
-            avatar.getLugar().evaluarCasilla(jugador, banca, 0);
-        }
-        if (avatar.get4Voltas() == true) {
-            boolean condicion = true;
-            for (int i = 0; i < jugadores.size(); i++) {
-                if (jugadores.get(i).getVueltas() < jugador.getVueltas()) {
-                    condicion = false;
-                }
-            }
-            if (condicion == true) {
-                consola.imprimir(("Todos los jugadores han dado 4 vueltas! El precio de las propiedades aumenta."));
-                tablero.aumentarCoste(banca);
-            }
-        }
-
-    }
 
     public void cambiarModo(Jugador jugador) throws CambiarModoException {
         if (lanzamientos > 0) {
@@ -434,11 +306,7 @@ public final class Juego {
         } else {
             Carta carta = cartas.get(numero);
             consola.imprimir("Has seleccionado: " + carta.getCarta());
-            if (cartaDisponible == 1) {
-                numero += 6; // eliminar esto cando se separen as cartas
-
-            }
-            funcionesCartas(jugador.getAvatar(), tablero, numero);
+            carta.accionCarta(jugadores, jugador, tablero);
             jugador.setCartaDisponible(0);
         }
     }
@@ -615,7 +483,7 @@ public final class Juego {
             }
             if (dobles_seguidos == 3) {
                 consola.imprimir("Has sacado dobles 3 veces seguidas! Vas a la carcel.");
-                encarcelar(jugador);
+                jugador.encarcelar(tablero.getPosiciones());
                 return;
             }
         } else {
@@ -655,10 +523,11 @@ public final class Juego {
         } else {
             consola.imprimir("Utiliza el comando 'avanzar' para moverte.");
         }
+        /* 
         if (jugador.getEnCarcel()) {
-            encarcelar(jugador); // comprobación de si cae en 'ir a cárcel'
+            jugador.encarcelar(tablero.getPosiciones()); // comprobación de si cae en 'ir a cárcel'
 
-        }
+        }*/
         comprobacion4Vueltas();
 
     }
@@ -962,15 +831,7 @@ public final class Juego {
 
     }
 
-    private void encarcelar(Jugador jugador) {
-        jugador.setEnCarcel(true);
-        jugador.setTiradasCarcel(0);
-        jugador.getAvatar().setLugar(tablero.getPosiciones(), 10);
-        if ((jugador.getAvatar() instanceof Pelota) && ((Pelota) jugador.getAvatar()).siguienteMovPelota(false) != 0) {
-            ((Pelota) jugador.getAvatar()).resetMovPelota();
-            consola.imprimir("Tu tirada de la pelota ha sido interrumpida por haber caído en la cárcel.");
-        }
-    }
+
     // SETTERS
 
     public void setLanzamientos(Integer newLanzamientos) {

@@ -6,7 +6,7 @@ import monopoly.Juego;
 
 
 public class Pelota extends Avatar {
-    private int[] movimientosPelota;
+    private final int[] movimientosPelota;
 
     public Pelota(Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
         super("pelota", jugador, lugar, avCreados);

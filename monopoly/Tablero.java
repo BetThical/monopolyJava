@@ -10,7 +10,7 @@ public class Tablero {
     private final ArrayList<ArrayList<Casilla>> posiciones; // Posiciones del tablero: se define como un arraylist de
     // arraylists de casillas (uno por cada lado del tablero).
     private final HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String
-                                                 // (será el color del grupo).
+    // (será el color del grupo).
 
     private final HashMap<Integer, Carta> barajaSuerte;
     private final HashMap<Integer, Carta> barajaComunidad;
@@ -32,7 +32,7 @@ public class Tablero {
 
     public int getNumCasillas() {
         //la cantidad de casillas es igual a la cantidad de filas por la cantidad de columnas
-        return posiciones.size() * posiciones.get(0).size(); 
+        return posiciones.size() * posiciones.get(0).size();
     }
 
     // Método para crear todas las casillas del tablero. Formado a su vez por cuatro
@@ -45,25 +45,25 @@ public class Tablero {
     }
 
     private void generarBarajas() {
-        barajaSuerte.put(1, new Carta(1,
+        barajaSuerte.put(1, new CartaSuerte(1, 
                 "Ve al Transportes1 y coge un avión. Si pasas por la casilla de Salida, cobra la cantidad habitual."));
-        barajaSuerte.put(2, new Carta(2,
+        barajaSuerte.put(2, new CartaSuerte(2, 
                 "Decides hacer un viaje de placer. Avanza hasta Solar15 directamente, sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
         barajaSuerte.put(3,
-                new Carta(3, "Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€."));
+                new CartaSuerte(3, "Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€."));
         barajaSuerte.put(4,
-                new Carta(4, "Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual."));
-        barajaSuerte.put(5, new Carta(5,
+                new CartaSuerte(4, "Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual."));
+        barajaSuerte.put(5, new CartaSuerte(5, 
                 "Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
-        barajaSuerte.put(6, new Carta(6, "¡Has ganado el bote de la lotería! Recibe 1000000€."));
+        barajaSuerte.put(6, new CartaSuerte(6, "¡Has ganado el bote de la lotería! Recibe 1000000€."));
 
-        barajaComunidad.put(1, new Carta(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
-        barajaComunidad.put(2, new Carta(2,
+        barajaComunidad.put(1, new CartaComunidad(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
+        barajaComunidad.put(2, new CartaComunidad(2, 
                 "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
-        barajaComunidad.put(3, new Carta(3, "Colócate en la casilla de Salida. Cobra la cantidad habitual."));
-        barajaComunidad.put(4, new Carta(4, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€."));
-        barajaComunidad.put(5, new Carta(5, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14."));
-        barajaComunidad.put(6, new Carta(6,
+        barajaComunidad.put(3, new CartaComunidad(3, "Colócate en la casilla de Salida. Cobra la cantidad habitual."));
+        barajaComunidad.put(4, new CartaComunidad(4, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€."));
+        barajaComunidad.put(5, new CartaComunidad(5, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14."));
+        barajaComunidad.put(6, new CartaComunidad(6, 
                 "Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador."));
     }
 
