@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import partida.*;
 
-class Grupo {
+public class Grupo {
 
     // Atributos
     private ArrayList<Casilla> miembros; // Casillas miembros del grupo.
@@ -66,8 +66,9 @@ class Grupo {
     public boolean esDuenhoGrupo(Jugador jugador) {
         boolean esDuenho = true;
         for (int i = 0; i < this.miembros.size(); i++) {
-            if (miembros.get(i).getduenhoJugador() != jugador)
+            if (miembros.get(i).getduenhoJugador() != jugador) {
                 esDuenho = false;
+            }
         }
         return esDuenho;
     }
@@ -107,17 +108,16 @@ class Grupo {
         return contador;
     }
 
-    public double getRentabilidadGrupo(){
+    public double getRentabilidadGrupo() {
 
         double rentabilidad = 0;
 
-        for (Casilla casilla : miembros){
+        for (Casilla casilla : miembros) {
             rentabilidad += casilla.GetRentabilidad();
         }
 
         return rentabilidad;
     }
-
 
     public void descEdificios() {
         for (Casilla casilla : miembros) {

@@ -182,9 +182,9 @@ public class Jugador {
         if (fortunaInicial != this.getFortuna() && !"la banca".equals(this.nombre)) {
             float diferencia = this.getFortuna() - fortunaInicial;
             String signo = diferencia > 0 ? "+" : "";
-            String color = diferencia > 0 ? Valor.GREEN : Valor.RED;
+            String colorFortuna = diferencia > 0 ? Valor.GREEN : Valor.RED;
             Juego.consola
-                    .imprimir(color + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
+                    .imprimir(colorFortuna + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
                             + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
         }
     }
@@ -333,11 +333,11 @@ public class Jugador {
 
     // Se cobra el bote, el cual se vacía. La banca gestiona el bote.
     public void cobrarBote(Jugador banca) {
-        float bote = banca.getBote();
-        sumarFortuna(bote);
-        sumarGastosBote(bote);
-        banca.restarDelBote(bote);
-        Juego.consola.imprimir("El jugador " + getNombre() + " recibe " + bote + "€ del bote.");
+        float valorBote = banca.getBote();
+        sumarFortuna(valorBote);
+        sumarGastosBote(valorBote);
+        banca.restarDelBote(valorBote);
+        Juego.consola.imprimir("El jugador " + getNombre() + " recibe " + valorBote + "€ del bote.");
     }
 
     // Pagar un alquiler a otro jugador (dueño). Devuelve True si se puede pagar la
@@ -379,15 +379,12 @@ public class Jugador {
         return (enCarcel && (tiradasCarcel > 2));
     }
 
-    // Método para salir manualmente de la cárcel pagando la multa. Devuelve True si
-    // puede pagarla, y libera al jugador.
+    // Devuelve true si el jugador tiene los fondos necesarios para pagar la multa, y si los tiene, la paga.
     public boolean pagarMulta() {
         float multa = 0.25f * Valor.SUMA_VUELTA;
         if (fortuna > multa) {
             sumarGastos(multa);
             sumarGastosImp(multa);
-            Juego.consola.imprimir("Pagas la multa y sales de la cárcel.");
-            salirCarcel();
             return true;
         }
 
@@ -399,6 +396,14 @@ public class Jugador {
         return vueltas;
     }
 
+    /* 
+    Método que realiza el proceso completo de encarcelar a un jugador:
+    - Lo fija como encarcelado.
+    - Aumenta el contador de veces en la cárcel, y resetea su numero de tiradas en la carcel.
+    - Lo mueve a la casilla de la cárcel.
+    - Si el avatar es una pelota, se finaliza prematuramente su movimiento.
+    Requiere el ArrayList de casillas para mover al jugador a la cárcel.
+     */
     public void encarcelar(ArrayList<ArrayList<Casilla>> casillas) {
         setEnCarcel(true);
         setTiradasCarcel(0);

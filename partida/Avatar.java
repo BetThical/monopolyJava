@@ -26,7 +26,6 @@ public abstract class Avatar {
      * un arraylist con los
      * avatares creados (usado para crear un ID distinto del de los demás avatares).
      */
-    
     //sólo coche y pelota pueden acceder a este constructor
     protected Avatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
         this.tipo = tipo;
@@ -38,7 +37,7 @@ public abstract class Avatar {
 
     // método separado para crear un nuevo avatar,
     // asegurando que el tipo es correcto.
-    public Avatar crearAvatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados){
+    public Avatar crearAvatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
         switch (tipo) {
             case "pelota":
                 return new Pelota(jugador, lugar, avCreados);
@@ -48,7 +47,6 @@ public abstract class Avatar {
                 return null;
         }
     }
-
 
     // A continuación, tenemos otros métodos útiles para el desarrollo del juego.
     /*
@@ -86,7 +84,7 @@ public abstract class Avatar {
         }
 
         int lado = (nuevaposicion / 10);
-        int casilla = (nuevaposicion % 10); 
+        int casilla = (nuevaposicion % 10);
         Casilla nuevaCasilla = casillas.get(lado).get(casilla);
         Juego.consola.imprimir("El jugador " + getJugador().getNombre() + " avanza de " + lugar.getNombre() + " a " + nuevaCasilla.getNombre() + ". (Posiciones desplazadas: " + valorTirada + ")");
         nuevaCasilla.anhadirAvatar(this);
@@ -100,18 +98,12 @@ public abstract class Avatar {
         moverAvatar(casillas, valorTirada, cobrarSalida);
     }
 
-    public void moverEnAvanzado(ArrayList<ArrayList<Casilla>> casillas, int valorTirada){ 
+    public void moverEnAvanzado(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
         // cada clase debe reimplementar este método
     }
 
     //devuelve el siguiente movimiento de la pelota, si no hay mas movimientos devuelve 0
     // si gastarMovimiento es true, se elimina el movimiento de la lista
-
-
-
-
-
-
     /*
      * Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase
      * (por ello es privado).

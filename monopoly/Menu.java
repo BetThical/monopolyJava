@@ -71,8 +71,8 @@ public final class Menu {
             if (jugador.getFortuna() < 0) {
                 Juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
-                                + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
-                                + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+                        + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
+                        + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             }
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
 
@@ -138,7 +138,7 @@ public final class Menu {
 
             // - - - manejo propiedades --- //
             case "comprar":
-                juego.comprar(casilla);
+                juego.comprar(casilla, jugador);
                 break;
 
             case "edificar":
@@ -173,7 +173,34 @@ public final class Menu {
                     throw new exception.comandoIncorrectoException.PropiedadNoIndicadaException("deshipotecar");
                 }
 
-                // - - - acciones misceláneas --- //
+            // - - - info partida --- //
+            case "listar":
+                if (input.equals("listar")) { // si solo se escribe 'listar'. 'listar' con un arg invalido se capta en
+                    // juego.java
+                    throw new exception.comandoIncorrectoException.ListarIncorrectoException();
+                }
+                juego.listar(partesComando[1]);
+                break;
+
+            case "describir": // incluye describir avatar, jugador o casilla
+                juego.describir(input.replace("describir ", ""));
+                break;
+
+            case "estadisticas":
+                if (input.equals("estadisticas")) {
+                    juego.estadisticas(); // estadisticas partida
+                } else if (input.contains("estadisticas ")) {
+                    juego.estadisticasJugador(partesComando[1]); // estadisticas jugador
+                }
+                break;
+
+            case "ver":
+                if (input.equals("ver tablero")) {
+                    // no hace nada. el tablero se imprime en todas las iteraciones.
+                }
+                break;
+
+            // - - - acciones misceláneas --- //
             case "cambiar":
                 if (input.equals("cambiar modo")) {
                     juego.cambiarModo(jugador);
@@ -194,33 +221,6 @@ public final class Menu {
             case "acabar":
                 if (input.equals("acabar turno")) {
                     juego.acabarTurno(jugador);
-                }
-                break;
-
-            // - - - info partida --- //
-            case "listar":
-                if (input.equals("listar")) { // si solo se escribe 'listar'. 'listar' con un arg invalido se capta en
-                                              // juego.java
-                    throw new exception.comandoIncorrectoException.ListarIncorrectoException();
-                }
-                juego.listar(partesComando[1]);
-                break;
-
-            case "describir": // incluye describir avatar, jugador o casilla
-                juego.describir(input.replace("describir ", ""));
-                break;
-
-            case "estadisticas":
-                if (input.equals("estadisticas")) {
-                    juego.estadisticas(); // estadisticas partida
-                } else if (input.contains("estadisticas ")) {
-                    juego.estadisticasJugador(partesComando[1]); // estadisticas jugador
-                }
-                break;
-
-            case "ver":
-                if (input.equals("ver tablero")) {
-                    // no hace nada
                 }
                 break;
 

@@ -1,44 +1,65 @@
 package monopoly;
-
+import exception.comandoIncorrectoException.*;
+import exception.comandoInvalidoException.*;
+import exception.noEncontradoException.*;
 import partida.Jugador;
 
 public interface Comando {
 
-    // --- jugadores --- //
+    // * - - - Jugadores - - - * //
     void anhadirJugador();
 
     void jugadorActual(Jugador jugador);
 
-    // - - - movimientos --- //
-    void lanzarDados();
-    void lanzarDados(int tirada1, int tirada2);
-    void avanzar(Jugador jugador);
+    // * - - - Movimientos - - - * //
+    void lanzarDados() throws DadosException, AvanzarException;
 
-    // - - - manejo propiedades --- //
-    void comprar(Casilla casilla);
-    void edificar(String args, Jugador jugador, Casilla casilla);
-    void destruir(String args, Jugador jugador, Casilla casilla);
-    void hipotecar(String args, Jugador jugador);
-    void deshipotecar(String args, Jugador jugador);
+    void lanzarDados(int tirada1, int tirada2) throws DadosException, AvanzarException;
 
-    // - - - acciones misceláneas --- //
-    void cambiarModo(Jugador jugador);
-    void cogerCarta(Jugador jugador);
-    boolean salirCarcel(Jugador jugador);
-    void bancarrota(Jugador jugadorBancarrota, Jugador jugadorRecibe);
-    void acabarTurno(Jugador jugador); 
+    void avanzar(Jugador jugador) throws AvanzarException;
 
-    // - - - info partida --- //
-    void listar(String args);
+    // * - - - Manejo propiedades - - - * //
+    void comprar(Casilla casilla, Jugador jugador) throws CompraNoDisponibleException;
+
+    void edificar(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException, EdificioNoPermitidoException, FondosInsuficientesException;
+
+    void destruir(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException;
+
+    void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException;
+
+    void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException;
+
+    // * - - - Información partida - - - * //
+    void listar(String args) throws ListarIncorrectoException, NoEncontradoException;
+
     void listarJugadores();
-    void listarAvatares();
+
+    void listarVenta();
+
     void listarEdificios();
-    void listarEdificiosGrupo(String nombreGrupo);
-    void describir(String args);
+
+    void listarEdificiosGrupo(String nombreGrupo) throws GrupoNoEncontradoException;
+
+    void describir(String args) throws DescribirIncorrectoException, NoEncontradoException;
+
+    void descJugador(String nombre) throws JugadorNoEncontradoException;
+
+    void descAvatar(String ID) throws AvatarNoEncontradoException;
+
+    void descCasilla(String nombre) throws CasillaNoEncontradaException;
+
     void estadisticas();
-    void estadisticasJugador(String nombreJugador);
-    
 
+    void estadisticasJugador(String args) throws JugadorNoEncontradoException;
 
+    // * - - - Comandos misceláneos - - - * //
+    void cogerCarta(Jugador jugador) throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException;
 
+    void salirCarcel(Jugador jugador) throws SalirCarcelException;
+
+    void acabarTurno(Jugador jugador) throws AcabarTurnoException;
+
+    void bancarrota(Jugador jugadorBancarrota);
+
+    void fortunaManual(String args, Jugador jugador) throws FortunaManualException;
 }
