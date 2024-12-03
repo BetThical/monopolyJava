@@ -1,6 +1,7 @@
 package monopoly;
 
 import exception.MonopolyException;
+import exception.comandoIncorrectoException.AceptarRechazarException;
 import exception.comandoIncorrectoException.DadosManualesException;
 import exception.comandoIncorrectoException.PropiedadNoIndicadaException;
 import partida.*;
@@ -72,8 +73,13 @@ public final class Menu {
             if (jugador.getFortuna() < 0) {
                 Juego.consola.imprimir(
                         Valor.RED + "[AVISO]:" + Valor.RESET
-                        + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
-                        + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+                                + " actualmente estás en deuda (" + juego.getJugadorTurno().getFortuna()
+                                + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
+            }
+
+            if (jugador.getTratos().size() > 0) {
+                Juego.consola.imprimir(Valor.GREEN + "[INFO]:" + Valor.RESET
+                        + " Tienes tratos pendientes. Usa 'listar tratos' para verlos.");
             }
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
 
@@ -174,7 +180,7 @@ public final class Menu {
                     throw new PropiedadNoIndicadaException("deshipotecar");
                 }
 
-            // - - - info partida --- //
+                // - - - info partida --- //
             case "listar":
                 if (input.equals("listar")) { // si solo se escribe 'listar'. 'listar' con un arg invalido se capta en
                     // juego.java
@@ -201,11 +207,26 @@ public final class Menu {
                 }
                 break;
 
-            // - - - acciones misceláneas --- //
+            // * - - - acciones misceláneas --- //
+
+            case "aceptar":
+                try {
+                    juego.aceptarTrato(jugador, partesComando[2]);
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new AceptarRechazarException();
+                }
+                break;
 
             case "trato":
                 juego.nuevoTrato(jugador, partesComando);
                 break;
+
+            case "rechazar":
+                try {
+                    juego.rechazarTrato(jugador, partesComando[2]);
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new AceptarRechazarException();
+                }
 
             case "cambiar":
                 if (input.equals("cambiar modo")) {

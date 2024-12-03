@@ -147,7 +147,7 @@ public class Casilla {
                 return true;
             }
             sumarRentable(calcular_coste(tirada));
-            return actual.pagar(calcular_coste(tirada), duenho);
+            return actual.pagar(calcular_coste(tirada), duenho, true);
         }
 
         if (getNombre().equals("Parking")) { // Parking

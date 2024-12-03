@@ -17,6 +17,7 @@ public class Jugador {
     private ArrayList<Casilla> propiedades; // Propiedades que posee el jugador.
     private float bote; // Usado por la banca para almacenar el bote
     private String color;
+    private ArrayList<Trato> tratos; // Lista de tratos propuestos al jugador.
     private float dineroInvertido = 0;
     private float pagoTasasEImpuestos = 0;
     private float pagoDeAlquileres = 0;
@@ -32,6 +33,27 @@ public class Jugador {
     // declara
     private int cocheCalado;
     private int cartaDisponible = 0;
+
+    public void anhadirTrato(Trato t) {
+        tratos.add(t);
+    }
+
+    public void eliminarTrato(Trato t) {
+        tratos.remove(t);
+    }
+
+    public Trato getTrato(int id) {
+        for (Trato t : tratos) {
+            if (t.getIdTrato() == id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Trato> getTratos() {
+        return tratos;
+    }
 
     public float getPremiosInversionesOBote() {
         return premiosInversionesOBote;
@@ -123,6 +145,7 @@ public class Jugador {
                 break;
         }
         this.propiedades = new ArrayList<>();
+        this.tratos = new ArrayList<>();
         switch (avCreados.size() + 1) {
             case 1:
                 this.color = Valor.RED;
@@ -184,7 +207,8 @@ public class Jugador {
             String signo = diferencia > 0 ? "+" : "";
             String colorFortuna = diferencia > 0 ? Valor.GREEN : Valor.RED;
             Juego.consola
-                    .imprimir(colorFortuna + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial + " a "
+                    .imprimir(colorFortuna + "[variación de fortuna de " + this.getNombre() + ": " + fortunaInicial
+                            + " a "
                             + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
         }
     }
@@ -342,7 +366,7 @@ public class Jugador {
 
     // Pagar un alquiler a otro jugador (dueño). Devuelve True si se puede pagar la
     // deuda.
-    public boolean pagar(float coste, Jugador duenho) {
+    public boolean pagar(float coste, Jugador duenho, boolean alquiler) {
 
         sumarGastos(coste);
         if (getFortuna() < 0) {
@@ -352,10 +376,21 @@ public class Jugador {
             return false;
         }
         duenho.sumarFortuna(coste);
-        sumarGastosAlq(coste);
-        duenho.sumarCobreAlq(coste);
-        Juego.consola.imprimir(getNombre() + " ha pagado " + coste + "€ de alquiler a " + duenho.getNombre() + ".");
+        if (alquiler) {
+            sumarGastosAlq(coste);
+            duenho.sumarCobreAlq(coste);
+            Juego.consola.imprimir(getNombre() + " ha pagado " + coste + "€ de alquiler a " + duenho.getNombre() + ".");
+        } else {
+            Juego.consola.imprimir(getNombre() + " ha pagado " + coste + "€ a " + duenho.getNombre() + ".");
+
+        }
         return true;
+    }
+
+    public void darCasilla(Casilla casilla, Jugador recibidor) {
+        recibidor.anhadirPropiedad(casilla);
+        casilla.setDuenho(recibidor);
+        eliminarPropiedad(casilla);
     }
 
     // Pagar un gasto como un impuesto sin que lo reciba otro jugador.
@@ -379,7 +414,8 @@ public class Jugador {
         return (enCarcel && (tiradasCarcel > 2));
     }
 
-    // Devuelve true si el jugador tiene los fondos necesarios para pagar la multa, y si los tiene, la paga.
+    // Devuelve true si el jugador tiene los fondos necesarios para pagar la multa,
+    // y si los tiene, la paga.
     public boolean pagarMulta() {
         float multa = 0.25f * Valor.SUMA_VUELTA;
         if (fortuna > multa) {
@@ -396,13 +432,14 @@ public class Jugador {
         return vueltas;
     }
 
-    /* 
-    Método que realiza el proceso completo de encarcelar a un jugador:
-    - Lo fija como encarcelado.
-    - Aumenta el contador de veces en la cárcel, y resetea su numero de tiradas en la carcel.
-    - Lo mueve a la casilla de la cárcel.
-    - Si el avatar es una pelota, se finaliza prematuramente su movimiento.
-    Requiere el ArrayList de casillas para mover al jugador a la cárcel.
+    /*
+     * Método que realiza el proceso completo de encarcelar a un jugador:
+     * - Lo fija como encarcelado.
+     * - Aumenta el contador de veces en la cárcel, y resetea su numero de tiradas
+     * en la carcel.
+     * - Lo mueve a la casilla de la cárcel.
+     * - Si el avatar es una pelota, se finaliza prematuramente su movimiento.
+     * Requiere el ArrayList de casillas para mover al jugador a la cárcel.
      */
     public void encarcelar(ArrayList<ArrayList<Casilla>> casillas) {
         setEnCarcel(true);

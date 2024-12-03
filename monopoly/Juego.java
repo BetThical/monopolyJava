@@ -21,7 +21,6 @@ public final class Juego implements Comando {
     private final Jugador banca; // El jugador banca.
     private Edificio e; // Edificio para construir en una casilla.
     private boolean partidaAcabada = false; // Indica si la partida ha terminado.
-
     // Constantes
     private static final List<String> EDIFICIOS_VALIDOS = Arrays.asList("casa", "hotel", "piscina", "pista", "4casas");
     private static final int MAX_JUGADORES = 6; // Número máximo de jugadores en una partida.
@@ -43,7 +42,8 @@ public final class Juego implements Comando {
     // Comandos (en el orden que aparecen en menú)
     // * - - - Jugadores - - - * //
     // Método que añade un jugador a la partida.
-    // Se invoca al inicializar la partida, y cada vez que se usa el comando 'añadir jugador'.
+    // Se invoca al inicializar la partida, y cada vez que se usa el comando 'añadir
+    // jugador'.
     // Permite hasta MAX_JUGADORES (6) jugadores.
     @Override
     public void anhadirJugador() {
@@ -82,13 +82,15 @@ public final class Juego implements Comando {
     }
 
     // * - - - Movimientos - - - * //
-    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados',
+    // Método que ejecuta todas las acciones relacionadas con el comando 'lanzar
+    // dados',
     // con valores de tirada aleatorios.
     @Override
     public void lanzarDados() throws DadosException, AvanzarException {
         int tirada1 = dado1.hacerTirada();
         int tirada2 = dado2.hacerTirada();
-        // Genera dos valores de tiradas aleatorios y luego se los pasa al método lanzarDados con tirada manual.
+        // Genera dos valores de tiradas aleatorios y luego se los pasa al método
+        // lanzarDados con tirada manual.
         lanzarDados(tirada1, tirada2);
     }
 
@@ -150,7 +152,7 @@ public final class Juego implements Comando {
 
         Casilla casillaFinal = jugador.getAvatar().getLugar();
         if (!(jugador.getMovEspecial() && (avatar instanceof Pelota))) // porque el (primer) movimiento especial de la
-        {                                                              // pelota no implica moverse, no se evalua la casilla
+        { // pelota no implica moverse, no se evalua la casilla
             casillaFinal.evaluarCasilla(jugador, banca, valor_tiradas);
         } else {
             consola.imprimir("Utiliza el comando 'avanzar' para moverte.");
@@ -175,8 +177,10 @@ public final class Juego implements Comando {
 
     // * - - - Manejo propiedades - - - * //
     // Método que ejecuta todas las acciones relacionadas con el comando 'comprar'.
-    // Desde menú recibe la casilla en la que se sitúa el jugador (sólo puedes comprar
-    // la casilla donde estás, excepto mediante un trato, que se maneja de otra forma).
+    // Desde menú recibe la casilla en la que se sitúa el jugador (sólo puedes
+    // comprar
+    // la casilla donde estás, excepto mediante un trato, que se maneja de otra
+    // forma).
     @Override
     public void comprar(Casilla casilla, Jugador jugador) throws CompraNoDisponibleException {
         if (!jugador.getPuedeComprar() && jugador.getAvatar().getTipo().equals("coche") && jugador.getMovEspecial()) {
@@ -186,7 +190,7 @@ public final class Juego implements Comando {
         if (casilla.esComprable(jugador, banca)) {
             consola.imprimir(
                     jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor()
-                    + ".");
+                            + ".");
             casilla.comprarCasilla(jugador, banca);
         } else {
             throw new CompraNoDisponibleException("Esta casilla no es comprable");
@@ -210,10 +214,12 @@ public final class Juego implements Comando {
         }
     }
 
-    // Método que ejecuta todas las acciones relacionadas con el comando 'destruir', que
+    // Método que ejecuta todas las acciones relacionadas con el comando 'destruir',
+    // que
     // vende un edificio. Recibe el tipo de edificio a destruir como un string.
     @Override
-    public void destruir(String args, Jugador jugador, Casilla casilla) throws EdificarIncorrectoException, EdificioNoEncontradoException {
+    public void destruir(String args, Jugador jugador, Casilla casilla)
+            throws EdificarIncorrectoException, EdificioNoEncontradoException {
 
         if (!EDIFICIOS_VALIDOS.contains(args)) {
             throw new EdificarIncorrectoException();
@@ -225,7 +231,8 @@ public final class Juego implements Comando {
         }
     }
 
-    // Método que realiza las acciones asociadas al comando 'hipotecar', que permite a un
+    // Método que realiza las acciones asociadas al comando 'hipotecar', que permite
+    // a un
     // jugador hipotecar una propiedad. Recibe el nombre de la casilla a hipotecar.
     @Override
     public void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException {
@@ -242,8 +249,10 @@ public final class Juego implements Comando {
         }
     }
 
-    // Método que realiza las acciones asociadas al comando 'deshipotecar', que permite a un
-    // jugador deshipotecar una propiedad. Recibe el nombre de la casilla a deshipotecar.
+    // Método que realiza las acciones asociadas al comando 'deshipotecar', que
+    // permite a un
+    // jugador deshipotecar una propiedad. Recibe el nombre de la casilla a
+    // deshipotecar.
     @Override
     public void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException {
         Casilla aDeshipotecar;
@@ -266,15 +275,22 @@ public final class Juego implements Comando {
     @Override
     public void listar(String args) throws ListarIncorrectoException, NoEncontradoException {
         switch (args) {
-            case "jugadores" ->
+            case "jugadores":
                 listarJugadores();
-            case "avatares" ->
+                break;
+            case "avatares":
                 listarAvatares();
-            case "venta" ->
+                break;
+            case "venta":
                 listarVenta();
-            case "edificios" ->
+                break;
+            case "edificios":
                 listarEdificios();
-            default ->
+                break;
+            case "tratos":
+                listarTratos();
+                break;
+            default:
                 throw new ListarIncorrectoException();
         }
     }
@@ -308,7 +324,18 @@ public final class Juego implements Comando {
         }
     }
 
-    // Método que imprime los edificios existentes en la partida, casilla por casilla.
+    // Método que realiza las acciones asociadas al comando 'listar tratos'.
+    @Override
+    public void listarTratos() {
+        Jugador jugador = getJugadorTurno();
+        for (Trato trato : jugador.getTratos()) {
+            consola.imprimir(trato.toString());
+        }
+
+    }
+
+    // Método que imprime los edificios existentes en la partida, casilla por
+    // casilla.
     // Corresponde al comando 'listar edificios'.
     @Override
     public void listarEdificios() {
@@ -326,7 +353,8 @@ public final class Juego implements Comando {
 
     }
 
-    // Realiza las acciones asociadas al comando 'listar edificios [grupo]'. Esta información
+    // Realiza las acciones asociadas al comando 'listar edificios [grupo]'. Esta
+    // información
     // está en el objeto del grupo. Si el grupo no existe, lanza una excepción.
     @Override
     public void listarEdificiosGrupo(String nombreGrupo) throws GrupoNoEncontradoException {
@@ -339,7 +367,8 @@ public final class Juego implements Comando {
     }
 
     // Método que realiza las acciones asociadas al comando 'describir', que permite
-    // describir jugadores, avatares y casillas. Dependiendo del argumento, se invocan
+    // describir jugadores, avatares y casillas. Dependiendo del argumento, se
+    // invocan
     // otros métodos.
     @Override
     public void describir(String args) throws DescribirIncorrectoException, NoEncontradoException {
@@ -355,7 +384,8 @@ public final class Juego implements Comando {
                 if (args.equals("describir")) { // si el comando introducido es solo 'describir'
                     throw new DescribirIncorrectoException();
                 } else {
-                    descCasilla(args); // El uso de describir casilla es distinto (segun el enunciado: sólo 'describir Solar2' y no 'describir Casilla Solar2')
+                    descCasilla(args); // El uso de describir casilla es distinto (segun el enunciado: sólo 'describir
+                                       // Solar2' y no 'describir Casilla Solar2')
                 }
                 break;
         }
@@ -381,11 +411,10 @@ public final class Juego implements Comando {
         consola.imprimir("Fortuna: " + jugador.getFortuna());
         consola.imprimir("Propiedades:");
         for (int j = 0; j < jugador.getPropiedades().size(); j++) {
-            consola.imprimir("  ||" + jugador.getPropiedades().get(j).getNombre());
+            consola.imprimir("  ||" + jugador.getPropiedades().get(j).getNombre() + "||");
             if (jugador.getPropiedades().get(j).getHipotecada()) {
                 consola.imprimir("[H]");
             }
-            consola.imprimir("||");
         }
         consola.imprimir("");
         consola.imprimir("Hipotecas: ");
@@ -416,7 +445,8 @@ public final class Juego implements Comando {
         consola.imprimir("");
     }
 
-    // Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
+    // Método que realiza las acciones asociadas al comando 'describir
+    // nombre_casilla'.
     // Parámetros: nombre de la casilla a describir.
     @Override
     public void descCasilla(String nombre) throws CasillaNoEncontradaException {
@@ -441,7 +471,8 @@ public final class Juego implements Comando {
     }
 
     // Método que realiza las acciones asociadas al comando 'estadisticas jugador'.
-    // Parámetro: nombre del jugador cuyas estadísticas imprimir. Lanza una excepción
+    // Parámetro: nombre del jugador cuyas estadísticas imprimir. Lanza una
+    // excepción
     // si el jugador no se encuentra en la partida.
     @Override
     public void estadisticasJugador(String args) throws JugadorNoEncontradoException {
@@ -453,10 +484,45 @@ public final class Juego implements Comando {
     }
 
     // * - - - Comandos misceláneos - - - * //
+
+    public void aceptarTrato(Jugador jugador, String idTrato)
+            throws TratoNoEncontradoException, EntradaNoNumericaException, TratoInvalidoException {
+        Trato trato;
+        try {
+            trato = jugador.getTrato(Integer.parseInt(idTrato));
+            if (trato == null) {
+                throw new TratoNoEncontradoException(idTrato);
+            }
+            trato.aceptarTrato();
+            consola.imprimir("Trato aceptado. (" + trato.toString() + ")");
+            jugador.eliminarTrato(trato);
+        } catch (NumberFormatException e) {
+            throw new EntradaNoNumericaException();
+        }
+    }
+
+    public void rechazarTrato(Jugador jugador, String idTrato)
+            throws TratoNoEncontradoException, EntradaNoNumericaException {
+        Trato trato;
+        try {
+            trato = jugador.getTrato(Integer.parseInt(idTrato));
+            if (trato == null) {
+                throw new TratoNoEncontradoException(idTrato);
+            }
+            consola.imprimir("Trato rechazado. (" + trato.toString() + ")");
+            jugador.eliminarTrato(trato);
+        } catch (NumberFormatException e) {
+            throw new EntradaNoNumericaException();
+        }
+
+    }
+
     // Método que realiza las acciones asociadas al comando 'trato'.
-    public void nuevoTrato(Jugador jugador, String[] partesComando) throws TratoIncorrectoException, JugadorNoEncontradoException {
+    public void nuevoTrato(Jugador jugador, String[] partesComando)
+            throws TratoIncorrectoException, JugadorNoEncontradoException, TratoInvalidoException {
         // Uso correcto: trato [jugador]: cambiar (casilla y dinero, casilla y dinero)
-        // Puede tener 5 (casilla por casilla o casilla por dinero) o 7 (casilla y dinero por casilla, o viceversa) partes.
+        // Puede tener 5 (casilla por casilla o casilla por dinero) o 7 (casilla y
+        // dinero por casilla, o viceversa) partes.
         Trato trato = null;
         Integer numElementos = partesComando.length;
         if (numElementos != 5 && numElementos != 7) {
@@ -498,9 +564,10 @@ public final class Juego implements Comando {
             try {
                 dinero = Float.parseFloat(elemento2);
                 if (casilla1 != null) {
-                    trato = new Trato(jugador, jugador2, casilla1, dinero);  // TIPO TRATO 1: casilla por dinero
+                    trato = new Trato(jugador, jugador2, casilla1, dinero); // TIPO TRATO 1: casilla por dinero
                 } else {
-                    throw new TratoIncorrectoException(); // si se llega a este punto, se ha intentado cambiar dinero por dinero}
+                    throw new TratoIncorrectoException(); // si se llega a este punto, se ha intentado cambiar dinero
+                                                          // por dinero}
                 }
             } catch (NumberFormatException e) {
                 // El elemento 2 no es un número --> debe ser una casilla
@@ -527,14 +594,16 @@ public final class Juego implements Comando {
                     throw new TratoIncorrectoException();
                 }
                 try {
-                    dinero = Float.parseFloat(elemento2); //dinero que ofrece J1
+                    dinero = Float.parseFloat(elemento2); // dinero que ofrece J1
                     casilla2 = tablero.getCasilla(elemento3);
                     if (casilla2 != null) {
-                        trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y dinero por casilla
+                        trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y
+                                                                                          // dinero por casilla
                     } else {
                         throw new TratoIncorrectoException();
                     }
-                } catch (NumberFormatException e) { // El elemento 2 ofrecido por J1 no es dinero --> debe ser una casilla, elemento1 debe ser un número.
+                } catch (NumberFormatException e) { // El elemento 2 ofrecido por J1 no es dinero --> debe ser una
+                                                    // casilla, elemento1 debe ser un número.
                     casilla1 = tablero.getCasilla(elemento2);
                     try {
                         dinero = Float.parseFloat(elemento1);
@@ -545,7 +614,8 @@ public final class Juego implements Comando {
                         // No es número ni casilla --> trato incorrecto
                         throw new TratoIncorrectoException();
                     }
-                    trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y dinero por casilla
+                    trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y dinero
+                                                                                      // por casilla
                 }
             } else { // Jugador2 ofrece dos cosas.
                 if (casilla1 == null) { // si J2 ofrece dos cosas, lo que ofrece J1 debe ser una casilla.
@@ -554,14 +624,16 @@ public final class Juego implements Comando {
                 elemento2 = partesComando[4];
                 elemento3 = partesComando[6];
                 try {
-                    dinero = Float.parseFloat(elemento3); //dinero que ofrece J2
+                    dinero = Float.parseFloat(elemento3); // dinero que ofrece J2
                     casilla2 = tablero.getCasilla(elemento2);
                     if (casilla2 != null) {
-                        trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por casilla y dinero
+                        trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por
+                                                                                          // casilla y dinero
                     } else {
                         throw new TratoIncorrectoException();
                     }
-                } catch (NumberFormatException e) { // El elemento 3 ofrecido por J2 no es dinero --> debe ser una casilla, elemento2 debe ser un número.
+                } catch (NumberFormatException e) { // El elemento 3 ofrecido por J2 no es dinero --> debe ser una
+                                                    // casilla, elemento2 debe ser un número.
                     casilla2 = tablero.getCasilla(elemento3);
                     try {
                         dinero = Float.parseFloat(elemento2);
@@ -572,15 +644,17 @@ public final class Juego implements Comando {
                         // No es número ni casilla --> trato incorrecto
                         throw new TratoIncorrectoException();
                     }
-                    trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por casilla y dinero
+                    trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por
+                                                                                      // casilla y dinero
                 }
             }
         }
         if (trato == null) {
-
             throw new TratoIncorrectoException();
         }
+        trato.comprobarTratoValido(); // lanzará excepcion si el trato no es valido
         consola.imprimir(trato.toString());
+        jugador2.anhadirTrato(trato);
 
     }
     // Método que realiza las acciones asociadas al comando 'cambiar modo'.
@@ -602,8 +676,10 @@ public final class Juego implements Comando {
     }
 
     // Método que realiza las acciones asociadas al comando 'carta'.
-    // Dependiendo de la carta que pueda coger el jugador (comunidad o suerte), coge una baraja
-    // y muestra las cartas disponibles. Luego, el jugador elige una carta y se ejecuta su acción.
+    // Dependiendo de la carta que pueda coger el jugador (comunidad o suerte), coge
+    // una baraja
+    // y muestra las cartas disponibles. Luego, el jugador elige una carta y se
+    // ejecuta su acción.
     @Override
     public void cogerCarta(Jugador jugador)
             throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException {
@@ -624,9 +700,11 @@ public final class Juego implements Comando {
         consola.imprimir("Cartas disponibles:");
         for (Map.Entry<Integer, Carta> entry : cartas.entrySet()) {
             if (cartaDisponible == 1) { // suerte en amarillo, comunidad en azul
-                consola.imprimir(Valor.BLUE + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getTextoCarta());
+                consola.imprimir(
+                        Valor.BLUE + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getTextoCarta());
             } else {
-                consola.imprimir(Valor.YELLOW + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getTextoCarta());
+                consola.imprimir(
+                        Valor.YELLOW + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getTextoCarta());
             }
         }
         try {
@@ -646,7 +724,8 @@ public final class Juego implements Comando {
     }
 
     // Método que ejecuta todas las acciones relacionadas con el comando 'salir
-    // carcel', que implica pagar la multa. Lanza una excepción si el jugador no puede
+    // carcel', que implica pagar la multa. Lanza una excepción si el jugador no
+    // puede
     // salir de la cárcel o pagar la multa.
     @Override
     public void salirCarcel(Jugador jugador) throws SalirCarcelException {
@@ -673,7 +752,8 @@ public final class Juego implements Comando {
     public void acabarTurno(Jugador jugador) throws AcabarTurnoException {
 
         if (jugador.getFortuna() < 0) {
-            throw new AcabarTurnoException("Estás en deuda. Debes hipotecar propiedades, vender edificios o declarar la bancarrota");
+            throw new AcabarTurnoException(
+                    "Estás en deuda. Debes hipotecar propiedades, vender edificios o declarar la bancarrota");
         }
         if (jugador.limiteCarcel()) {
             throw new AcabarTurnoException("Debes pagar la multa para salir de la cárcel");
@@ -712,11 +792,12 @@ public final class Juego implements Comando {
                 jugadorRecibe.anhadirPropiedad(array_propiedades.get(i));
             }
         }
-        if (!jugadorRecibe.equals(banca)) { // Si el jugador con quien es la deuda no es la banca, este jugador recibe la fortuna que le quedase al jugador.
+        if (!jugadorRecibe.equals(banca)) { // Si el jugador con quien es la deuda no es la banca, este jugador recibe
+                                            // la fortuna que le quedase al jugador.
             jugadorRecibe.sumarFortuna(jugadorRecibe.getFortunaPrevia());
             consola.imprimir(
                     "El jugador " + jugadorRecibe.getNombre() + " recibe los " + jugadorBancarrota.getFortunaPrevia()
-                    + " que tenía " + jugadorBancarrota.getNombre() + ".");
+                            + " que tenía " + jugadorBancarrota.getNombre() + ".");
         }
 
         jugadores.remove(jugadorBancarrota);
@@ -750,7 +831,8 @@ public final class Juego implements Comando {
 
     // * - - - Métodos auxiliares - - - * //
     // Método para inciar una partida: crea los jugadores y avatares.
-    // Este método se incluye en Juego porque es esta clase la que contiene las listas
+    // Este método se incluye en Juego porque es esta clase la que contiene las
+    // listas
     // de jugadores y avatares.
     public void iniciarPartida(Tablero t) {
 
@@ -798,10 +880,11 @@ public final class Juego implements Comando {
             throw new DadosException("ya has lanzado los dados en este turno.");
 
         }
+
         if (jugador.getCocheCalado() > 0) {
             throw new DadosException(
                     "por una previa tirada con el coche. Debes esperar " + (jugador.getCocheCalado() - 1)
-                    + " turnos para volver a lanzar los dados.");
+                            + " turnos para volver a lanzar los dados.");
 
         }
         if ((avatar instanceof Coche) && jugador.getMovEspecial() && lanzamientos > 3) {
@@ -845,7 +928,7 @@ public final class Juego implements Comando {
         }
     }
 
-    // Devuelve una string con una lista de todos los nombres de jugadores 
+    // Devuelve una string con una lista de todos los nombres de jugadores
     // que han dado el máximo de vueltas.
     private String jugadoresMasVueltas() {
         int max = 0;
@@ -869,7 +952,7 @@ public final class Juego implements Comando {
         }
     }
 
-    // Devuelve una string con una lista de todos los nombres de casillas 
+    // Devuelve una string con una lista de todos los nombres de casillas
     // que han dado el máximo beneficio.
     private String casillasMasRentables() {
         float max = 0;
@@ -893,7 +976,7 @@ public final class Juego implements Comando {
 
     }
 
-    // Devuelve una string con una lista de todos los nombres de grupos 
+    // Devuelve una string con una lista de todos los nombres de grupos
     // que han dado el máximo beneficio.
     public String gruposMasRentables() {
         double max = 0;
@@ -917,7 +1000,7 @@ public final class Juego implements Comando {
         }
     }
 
-    // Devuelve una string con una lista de todos los nombres de casillas 
+    // Devuelve una string con una lista de todos los nombres de casillas
     // en las que se ha caído más veces.
     public String casillasMasFrecuentadas() {
         int max = 0;
@@ -942,7 +1025,7 @@ public final class Juego implements Comando {
         }
     }
 
-    // Devuelve una string con una lista de todos los nombres de jugadores 
+    // Devuelve una string con una lista de todos los nombres de jugadores
     // que han tirado más veces los dados.
     public String jugadoresMasVecesDados() {
         int max = 0;
@@ -966,7 +1049,7 @@ public final class Juego implements Comando {
         }
     }
 
-    // Devuelve una string con una lista de todos los nombres de jugadores 
+    // Devuelve una string con una lista de todos los nombres de jugadores
     // que poseen más fortuna, contando con sus propiedades.
     public String jugadoresEnCabeza() {
         double max = 0;
@@ -990,8 +1073,10 @@ public final class Juego implements Comando {
         }
     }
 
-    // Comprueba si todos los jugadores han dado 4 vueltas al tablero, y si el último avatar en moverse
-    // ha dado, en su último movimiento, una vuelta que ha completado esta condición. Si es el caso, 
+    // Comprueba si todos los jugadores han dado 4 vueltas al tablero, y si el
+    // último avatar en moverse
+    // ha dado, en su último movimiento, una vuelta que ha completado esta
+    // condición. Si es el caso,
     // aumenta el coste de las propiedades.
     private void comprobacion4Vueltas() {
         Jugador jugador = getJugadorTurno();

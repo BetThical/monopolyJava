@@ -25,7 +25,8 @@ public interface Comando {
     void edificar(String args, Jugador jugador, Casilla casilla)
             throws EdificarIncorrectoException, EdificioNoPermitidoException, EdificioNoEncontradoException;
 
-    void destruir(String args, Jugador jugador, Casilla casilla) throws EdificarIncorrectoException, EdificioNoEncontradoException;
+    void destruir(String args, Jugador jugador, Casilla casilla)
+            throws EdificarIncorrectoException, EdificioNoEncontradoException;
 
     void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException;
 
@@ -55,7 +56,11 @@ public interface Comando {
     void estadisticasJugador(String args) throws JugadorNoEncontradoException;
 
     // * - - - Comandos misceláneos - - - * //
-    void cogerCarta(Jugador jugador) throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException;
+
+    void listarTratos();
+
+    void cogerCarta(Jugador jugador)
+            throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException;
 
     void salirCarcel(Jugador jugador) throws SalirCarcelException;
 
