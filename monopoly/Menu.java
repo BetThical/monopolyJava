@@ -2,6 +2,7 @@ package monopoly;
 
 import exception.MonopolyException;
 import exception.comandoIncorrectoException.DadosManualesException;
+import exception.comandoIncorrectoException.PropiedadNoIndicadaException;
 import partida.*;
 
 public final class Menu {
@@ -146,7 +147,7 @@ public final class Menu {
                     juego.edificar(partesComando[1], jugador, casilla);
                     break;
                 } catch (ArrayIndexOutOfBoundsException ex) {
-                    throw new exception.comandoIncorrectoException.EdificioNoValidoException();
+                    throw new exception.comandoIncorrectoException.EdificarIncorrectoException();
                 }
 
             case "destruir":
@@ -154,7 +155,7 @@ public final class Menu {
                     juego.destruir(partesComando[1], jugador, casilla);
                     break;
                 } catch (ArrayIndexOutOfBoundsException ex) {
-                    throw new exception.comandoIncorrectoException.EdificioNoValidoException();
+                    throw new exception.comandoIncorrectoException.EdificarIncorrectoException();
                 }
 
             case "hipotecar":
@@ -162,7 +163,7 @@ public final class Menu {
                     juego.hipotecar(partesComando[1], jugador);
                     break;
                 } catch (ArrayIndexOutOfBoundsException ex) {
-                    throw new exception.comandoIncorrectoException.PropiedadNoIndicadaException("hipotecar");
+                    throw new PropiedadNoIndicadaException("hipotecar");
                 }
 
             case "deshipotecar":
@@ -170,7 +171,7 @@ public final class Menu {
                     juego.deshipotecar(partesComando[1], jugador);
                     break;
                 } catch (ArrayIndexOutOfBoundsException ex) {
-                    throw new exception.comandoIncorrectoException.PropiedadNoIndicadaException("deshipotecar");
+                    throw new PropiedadNoIndicadaException("deshipotecar");
                 }
 
             // - - - info partida --- //
@@ -201,6 +202,11 @@ public final class Menu {
                 break;
 
             // - - - acciones misceláneas --- //
+
+            case "trato":
+                juego.nuevoTrato(jugador, partesComando);
+                break;
+
             case "cambiar":
                 if (input.equals("cambiar modo")) {
                     juego.cambiarModo(jugador);

@@ -1,4 +1,5 @@
 package monopoly;
+
 import exception.comandoIncorrectoException.*;
 import exception.comandoInvalidoException.*;
 import exception.noEncontradoException.*;
@@ -21,13 +22,14 @@ public interface Comando {
     // * - - - Manejo propiedades - - - * //
     void comprar(Casilla casilla, Jugador jugador) throws CompraNoDisponibleException;
 
-    void edificar(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException, EdificioNoPermitidoException, FondosInsuficientesException;
+    void edificar(String args, Jugador jugador, Casilla casilla)
+            throws EdificarIncorrectoException, EdificioNoPermitidoException, EdificioNoEncontradoException;
 
-    void destruir(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException;
+    void destruir(String args, Jugador jugador, Casilla casilla) throws EdificarIncorrectoException, EdificioNoEncontradoException;
 
-    void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException;
+    void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException;
 
-    void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException;
+    void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException;
 
     // * - - - Información partida - - - * //
     void listar(String args) throws ListarIncorrectoException, NoEncontradoException;

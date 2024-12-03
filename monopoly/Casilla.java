@@ -1,7 +1,8 @@
 package monopoly;
 
 import exception.comandoInvalidoException.EdificioNoPermitidoException;
-import exception.comandoInvalidoException.FondosInsuficientesException;
+import exception.comandoInvalidoException.HipotecaException;
+import exception.noEncontradoException.EdificioNoEncontradoException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import partida.*;
@@ -122,7 +123,7 @@ public class Casilla {
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
         if (esComprable(actual, banca)
                 && !(!actual.getPuedeComprar() && actual.getAvatar().getTipo().equals("coche")
-                        && actual.getMovEspecial())) {
+                && actual.getMovEspecial())) {
             String respuesta = Juego.consola
                     .leer("El jugador " + actual.getNombre() + " puede comprar esta casilla, por " + getValor()
                             + " euros. Comprar? (Y/N)")
@@ -162,7 +163,7 @@ public class Casilla {
         if (getNombre().equals("IrCarcel")) { // Casilla 30 (ir a carcel)
             Juego.consola.imprimir("El jugador " + actual.getNombre() + " va a la cárcel.");
             actual.setEnCarcel(true); // esto envía un aviso al menú, que encarcelará al jugador (sólo menú puede
-                                      // encarcelar)
+            // encarcelar)
         }
         if (getTipo().equals("comunidad") || getTipo().equals("suerte")) {
             if (getTipo().equals("comunidad") && actual.puedeCogerCarta() == 0) {
@@ -182,7 +183,7 @@ public class Casilla {
             return true;
         }
         if (getNombre().equals("IrCarcel")) {
-            
+
         }
         return true;
 
@@ -337,13 +338,13 @@ public class Casilla {
             default:
                 return impuesto * 12.5f;
         }// nota: impuesto = valorinicial * 0.1
-         // pista de deporte
-         // 125% del valor inicial del solar
+        // pista de deporte
+        // 125% del valor inicial del solar
     }
 
     // lanza excepciones si no se puede construir el edificio dado en la casilla
     public void puedeConstruir(Edificio e, Jugador constructor)
-            throws EdificioNoPermitidoException, FondosInsuficientesException { 
+            throws EdificioNoPermitidoException {
         // condiciones:
         // el jugador es dueño de la casilla
         // el jugador es dueño de todo el grupo O ha caído más de dos veces en la
@@ -365,13 +366,13 @@ public class Casilla {
         }
 
         if (valorEdificio(e.getTipo()) > constructor.getFortuna()) {
-            throw new FondosInsuficientesException();
+            throw new EdificioNoPermitidoException("No tienes fondos suficientes para construir este edificio");
         }
 
         if (!grupo.esDuenhoGrupo(constructor) && constructor.getAvatar().getVecesCaidasEnCasilla(posicion - 1) <= 2) {
             throw new EdificioNoPermitidoException(
                     "Debes ser dueño de todo el grupo o haber caído en esta casilla más de dos veces. Actual: "
-                            + constructor.getAvatar().getVecesCaidasEnCasilla(posicion - 1));
+                    + constructor.getAvatar().getVecesCaidasEnCasilla(posicion - 1));
         }
         HashMap<String, Integer> edificiosGrupo = grupo.contarEdificiosPorTipo();
         HashMap<String, Integer> edificiosCasilla = contarEdificiosPorTipo();
@@ -424,7 +425,7 @@ public class Casilla {
             if (edificiosGrupo.getOrDefault("pista", 0) == grupo.getNumCasillas()) {
                 throw new EdificioNoPermitidoException(
                         "Se pueden construir un máximo de " + grupo.getNumCasillas()
-                                + " pistas de deporte en este grupo.");
+                        + " pistas de deporte en este grupo.");
             }
             if (edificiosCasilla.getOrDefault("hotel", 0) < 2) {
                 throw new EdificioNoPermitidoException(
@@ -433,9 +434,14 @@ public class Casilla {
         }
     }
 
-    public void anhadirEdificio(Edificio e) {
+    public void anhadirEdificio(Edificio e, Jugador jugador) throws EdificioNoEncontradoException {
         int numCasas = contarEdificiosPorTipo().getOrDefault("casa", 0);
         float alquilerEdificio = 0;
+        if (e.getTipo().equals("hotel")) {
+            for (int i = 0; i < 4; i++) {
+                destruirEdificio("casa", jugador);
+            }
+        }
         switch (e.getTipo().toLowerCase()) {
             case "casa": {
                 switch (numCasas) {
@@ -473,24 +479,20 @@ public class Casilla {
         // duenho.anhadirEdificio(e);
         duenho.sumarGastos(valorEdificio(e.getTipo()));
         duenho.sumarGastosProp(valorEdificio(e.getTipo()));
-        if (e.getTipo().equals("hotel")) {
-            destruirEdificio("casa");
-            destruirEdificio("casa");
-            destruirEdificio("casa");
-            destruirEdificio("casa");
-        }
+
     }
 
-    public boolean destruirEdificio(String tipo) {
+    public void destruirEdificio(String tipo, Jugador jugador) throws EdificioNoEncontradoException {
         for (int i = edificios.size() - 1; i >= 0; i--) {
             if (edificios.get(i).getTipo().equalsIgnoreCase(tipo)) {
                 edificios.remove(i);
-                return true;
+                jugador.sumarFortuna(valorEdificio(tipo) / 2f);
+
+                return;
             }
         }
-        Juego.consola.imprimir("No se encontró un edificio de tipo " + tipo + " en la casilla."); // todo cambiar a
-                                                                                                  // excepcion
-        return false;
+        throw new EdificioNoEncontradoException(tipo);
+
     }
 
     public HashMap<String, Integer> contarEdificiosPorTipo() {
@@ -543,48 +545,37 @@ public class Casilla {
         return tipo;
     }
 
-    public boolean puedeHipotecar(Jugador j) { // todo cambiar a excepcion
-        if (!j.equals(duenho)) {
-            Juego.consola.imprimir("No eres dueño de " + nombre + ".");
-            return false;
+    public boolean puedeDeshipotecar(Jugador j) {
+        return true;
+    }
+
+    public void hipotecar(Jugador jugador) throws HipotecaException {
+        if (!jugador.equals(duenho)) {
+            throw new HipotecaException("hipotecar", "no eres dueño de " + nombre + ".");
         }
         if (hipotecada) {
-            Juego.consola.imprimir("Ya está hipotecada.");
-            return false;
+            throw new HipotecaException("hipotecar", "ya está hipotecada.");
         }
-        return true;
-
-    }
-
-    public boolean puedeDeshipotecar(Jugador j) { // todo
-        if (!j.equals(duenho)) {
-            Juego.consola.imprimir("No eres dueño de " + nombre + ".");
-            return false;
-        }
-        if (!hipotecada) {
-            Juego.consola.imprimir("No está hipotecada.");
-            return false;
-        }
-
-        if (hipoteca * 1.1f > j.getFortuna()) {
-            Juego.consola.imprimir("No tienes fondos para deshipotecarla.");
-            return false;
-        }
-        return true;
-
-    }
-
-    public void hipotecar() {
         setHipotecada(true);
         duenho.sumarFortuna(hipoteca);
     }
 
-    public void deshipotecar() {
-        System.out
-                .println("Se ha deshipotecado " + nombre + ". " + duenho.getNombre() + " ha pagado " + (hipoteca * 1.1f)
-                        + "€ de la hipoteca.");
+    public void deshipotecar(Jugador jugador) throws HipotecaException {
+        if (!jugador.equals(duenho)) {
+            throw new HipotecaException("deshipotecar", "no eres dueño de " + nombre + ".");
+
+        }
+        if (!hipotecada) {
+            throw new HipotecaException("deshipotecar", nombre + " no está hipotecada.");
+
+        }
+
+        if (hipoteca * 1.1f > jugador.getFortuna()) {
+            throw new HipotecaException("deshipotecar", "no tienes los fondos necesarios (" + hipoteca * 1.1f + "€).");
+
+        }
         setHipotecada(false);
-        duenho.sumarGastos(hipoteca);
+        duenho.sumarGastos(hipoteca * 1.1f);
     }
 
     public float getHipoteca() {

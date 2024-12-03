@@ -197,15 +197,15 @@ public final class Juego implements Comando {
     // Desde menú recibe el tipo de edificio a construir como un string.
     @Override
     public void edificar(String args, Jugador jugador, Casilla casilla)
-            throws EdificioNoValidoException, EdificioNoPermitidoException, FondosInsuficientesException {
+            throws EdificarIncorrectoException, EdificioNoPermitidoException, EdificioNoEncontradoException {
         if (!EDIFICIOS_VALIDOS.contains(args)) {
-            throw new EdificioNoValidoException();
+            throw new EdificarIncorrectoException();
         } else {
             e = new Edificio(args, casilla);
             casilla.puedeConstruir(e, jugador); // Si no puede construir, lanzará una excepción
             consola.imprimir("Has comprado un(a) " + args + " en " + casilla.getNombre() + ", por "
                     + casilla.valorEdificio(e.getTipo()) + ".");
-            casilla.anhadirEdificio(e);
+            casilla.anhadirEdificio(e, jugador);
 
         }
     }
@@ -213,48 +213,49 @@ public final class Juego implements Comando {
     // Método que ejecuta todas las acciones relacionadas con el comando 'destruir', que
     // vende un edificio. Recibe el tipo de edificio a destruir como un string.
     @Override
-    public void destruir(String args, Jugador jugador, Casilla casilla) throws EdificioNoValidoException {
+    public void destruir(String args, Jugador jugador, Casilla casilla) throws EdificarIncorrectoException, EdificioNoEncontradoException {
 
         if (!EDIFICIOS_VALIDOS.contains(args)) {
-            throw new EdificioNoValidoException();
+            throw new EdificarIncorrectoException();
         } else {
+            casilla.destruirEdificio(args, jugador);
             consola.imprimir("Has vendido un(a) " + args + " en " + casilla.getNombre() + ", por "
                     + casilla.valorEdificio(args) / 2f + ".");
-            casilla.destruirEdificio(args);
-            jugador.sumarFortuna(casilla.valorEdificio(args) / 2f);
+
         }
     }
 
     // Método que realiza las acciones asociadas al comando 'hipotecar', que permite a un
     // jugador hipotecar una propiedad. Recibe el nombre de la casilla a hipotecar.
     @Override
-    public void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException {
+    public void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException {
         Casilla aHipotecar;
         aHipotecar = tablero.getCasilla(args);
         if (aHipotecar == null) {
             throw new CasillaNoEncontradaException(args);
         } else {
-            if (aHipotecar.puedeHipotecar(jugador)) { // todo cambiar a excepcion
-                aHipotecar.hipotecar();
-                consola.imprimir("Se ha hipotecado " + aHipotecar.getNombre() + ". " + jugador.getNombre()
-                        + " ha recibido " + aHipotecar.getHipoteca()
-                        + "€ de la hipoteca.");
-            }
+            aHipotecar.hipotecar(jugador);
+            consola.imprimir("Se ha hipotecado " + aHipotecar.getNombre() + ". " + jugador.getNombre()
+                    + " ha recibido " + aHipotecar.getHipoteca() * 1.1f
+                    + "€ de la hipoteca.");
+
         }
     }
 
     // Método que realiza las acciones asociadas al comando 'deshipotecar', que permite a un
     // jugador deshipotecar una propiedad. Recibe el nombre de la casilla a deshipotecar.
     @Override
-    public void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException {
+    public void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException {
         Casilla aDeshipotecar;
         aDeshipotecar = tablero.getCasilla(args);
         if (aDeshipotecar == null) {
             throw new CasillaNoEncontradaException(args);
         } else {
-            if (aDeshipotecar.puedeDeshipotecar(jugador)) {
-                aDeshipotecar.deshipotecar();
-            }
+            aDeshipotecar.deshipotecar(jugador);
+            consola.imprimir("Se ha deshipotecado " + aDeshipotecar.getNombre() + ". " + jugador.getNombre()
+                    + " ha pagado " + aDeshipotecar.getHipoteca()
+                    + "€ de la hipoteca.");
+
         }
     }
 
@@ -452,8 +453,139 @@ public final class Juego implements Comando {
     }
 
     // * - - - Comandos misceláneos - - - * //
+    // Método que realiza las acciones asociadas al comando 'trato'.
+    public void nuevoTrato(Jugador jugador, String[] partesComando) throws TratoIncorrectoException, JugadorNoEncontradoException {
+        // Uso correcto: trato [jugador]: cambiar (casilla y dinero, casilla y dinero)
+        // Puede tener 5 (casilla por casilla o casilla por dinero) o 7 (casilla y dinero por casilla, o viceversa) partes.
+        Trato trato = null;
+        Integer numElementos = partesComando.length;
+        if (numElementos != 5 && numElementos != 7) {
+            consola.imprimir("Número de elementos en el trato: " + numElementos);
+            throw new TratoIncorrectoException();
+        }
+
+        for (int i = 0; i < partesComando.length; i++) {
+            partesComando[i] = partesComando[i].replaceAll("[(),:]", "");
+        }
+
+        Jugador jugador2 = getJugador(partesComando[1]);
+        if (jugador2 == null) {
+            throw new JugadorNoEncontradoException(partesComando[1]);
+        }
+
+        // POSIBLES TRATOS
+        String elemento1 = partesComando[3];
+        String elemento2;
+        float dinero = 0;
+        Casilla casilla1 = tablero.getCasilla(elemento1);
+        Casilla casilla2 = null;
+
+        try {
+            dinero = Float.parseFloat(elemento1);
+        } catch (NumberFormatException e) {
+            // El elemento 1 no es un número --> debe ser una casilla
+            casilla1 = tablero.getCasilla(elemento1);
+            if (casilla1 == null) {
+                // No es número ni casilla --> trato incorrecto
+                consola.imprimir("No se ha encontrado la casilla " + elemento1);
+                throw new TratoIncorrectoException();
+            }
+        }
+
+        if (numElementos == 5) // trato 'simple', casilla por dinero, casilla por casilla o dinero por casilla
+        {
+            elemento2 = partesComando[4];
+            try {
+                dinero = Float.parseFloat(elemento2);
+                if (casilla1 != null) {
+                    trato = new Trato(jugador, jugador2, casilla1, dinero);  // TIPO TRATO 1: casilla por dinero
+                } else {
+                    throw new TratoIncorrectoException(); // si se llega a este punto, se ha intentado cambiar dinero por dinero}
+                }
+            } catch (NumberFormatException e) {
+                // El elemento 2 no es un número --> debe ser una casilla
+                casilla2 = tablero.getCasilla(elemento2);
+                if (casilla2 == null) {
+                    // No es número ni casilla --> trato incorrecto
+                    throw new TratoIncorrectoException();
+                }
+                if (dinero != 0) {
+                    trato = new Trato(jugador, jugador2, dinero, casilla2); // TIPO TRATO 2: dinero por casilla
+
+                }
+                if (casilla1 != null) {
+                    trato = new Trato(jugador, jugador2, casilla1, casilla2); // TIPO TRATO 3: casilla por casilla
+                }
+            }
+        } else { // trato 'complejo', casilla y dinero por casilla o casilla por casilla y dinero
+            String elemento3;
+            if (partesComando[4].equals("y")) { // Jugador1 ofrece dos cosas.
+                elemento2 = partesComando[5];
+                elemento3 = partesComando[6];
+                casilla2 = tablero.getCasilla(elemento3);
+                if (casilla2 == null) { // Si J2 ofrece sólo una cosa, debe ser una casilla.
+                    throw new TratoIncorrectoException();
+                }
+                try {
+                    dinero = Float.parseFloat(elemento2); //dinero que ofrece J1
+                    casilla2 = tablero.getCasilla(elemento3);
+                    if (casilla2 != null) {
+                        trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y dinero por casilla
+                    } else {
+                        throw new TratoIncorrectoException();
+                    }
+                } catch (NumberFormatException e) { // El elemento 2 ofrecido por J1 no es dinero --> debe ser una casilla, elemento1 debe ser un número.
+                    casilla1 = tablero.getCasilla(elemento2);
+                    try {
+                        dinero = Float.parseFloat(elemento1);
+                    } catch (NumberFormatException ex) {
+                        throw new TratoIncorrectoException();
+                    }
+                    if (casilla1 == null) {
+                        // No es número ni casilla --> trato incorrecto
+                        throw new TratoIncorrectoException();
+                    }
+                    trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y dinero por casilla
+                }
+            } else { // Jugador2 ofrece dos cosas.
+                if (casilla1 == null) { // si J2 ofrece dos cosas, lo que ofrece J1 debe ser una casilla.
+                    throw new TratoIncorrectoException();
+                }
+                elemento2 = partesComando[4];
+                elemento3 = partesComando[6];
+                try {
+                    dinero = Float.parseFloat(elemento3); //dinero que ofrece J2
+                    casilla2 = tablero.getCasilla(elemento2);
+                    if (casilla2 != null) {
+                        trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por casilla y dinero
+                    } else {
+                        throw new TratoIncorrectoException();
+                    }
+                } catch (NumberFormatException e) { // El elemento 3 ofrecido por J2 no es dinero --> debe ser una casilla, elemento2 debe ser un número.
+                    casilla2 = tablero.getCasilla(elemento3);
+                    try {
+                        dinero = Float.parseFloat(elemento2);
+                    } catch (NumberFormatException ex) {
+                        throw new TratoIncorrectoException();
+                    }
+                    if (casilla2 == null) {
+                        // No es número ni casilla --> trato incorrecto
+                        throw new TratoIncorrectoException();
+                    }
+                    trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por casilla y dinero
+                }
+            }
+        }
+        if (trato == null) {
+
+            throw new TratoIncorrectoException();
+        }
+        consola.imprimir(trato.toString());
+
+    }
     // Método que realiza las acciones asociadas al comando 'cambiar modo'.
     // Cambia el modo de movimiento de un jugador entre estándar y avanzado.
+
     public void cambiarModo(Jugador jugador) throws CambiarModoException {
         if (lanzamientos > 0) {
             throw new CambiarModoException();
