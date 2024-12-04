@@ -8,6 +8,7 @@ public class Coche extends Avatar {
 
     private int tiradasCoche;
     private boolean haComprado;
+    private int cocheCalado; // número de turnos que el coche no puede tirar
 
     public Coche(Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
         super("coche", jugador, lugar, avCreados);
@@ -19,7 +20,7 @@ public class Coche extends Avatar {
 
         if (valorTirada <= 4) {
             Juego.consola.imprimir("No puedes tirar durante dos turnos.");
-            getJugador().calarCoche();
+            calarCoche();
             valorTirada *= -1;
         }
         moverAvatar(casillas, valorTirada, true);
@@ -37,6 +38,17 @@ public class Coche extends Avatar {
         return tiradasCoche;
     }
 
+    public void calarCoche() {
+        cocheCalado = 3;
+    }
+
+    public void reducirCocheCalado() {
+        cocheCalado--;
+    }
+
+    public int getCocheCalado() {
+        return cocheCalado;
+    }
     // Método para reiniciar tiradas cuando sea necesario
     public void resetearTiradasCoche() {
         this.tiradasCoche = 0;

@@ -77,7 +77,7 @@ public final class Menu {
                                 + "). Debes destruir edificios, hipotecar propiedades o declarar la bancarrota.");
             }
 
-            if (jugador.getTratos().size() > 0) {
+            if (!jugador.getTratos().isEmpty()) {
                 Juego.consola.imprimir(Valor.GREEN + "[INFO]:" + Valor.RESET
                         + " Tienes tratos pendientes. Usa 'listar tratos' para verlos.");
             }

@@ -16,8 +16,14 @@ public class Jugador {
     private int vueltas; // Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades; // Propiedades que posee el jugador.
     private float bote; // Usado por la banca para almacenar el bote
-    private String color;
+    private String color; // Usado para imprimir el color del jugador en la consola.
     private ArrayList<Trato> tratos; // Lista de tratos propuestos al jugador.
+    private boolean movEspecial; // True si el jugador está en un movimiento especial.
+    private Jugador enDeuda = null; // Jugador al que se le debe dinero.
+    private int cartaDisponible = 0; // 1 - carta de suerte, 2 - carta de caja de comunidad, 0 - ninguna
+    private float fortunaPrevia = 0; // Guarda la fortuna previa a una deuda para poder dársela al jugador cuando declare la bancarrota
+
+    //Atributos de estadísticas:
     private float dineroInvertido = 0;
     private float pagoTasasEImpuestos = 0;
     private float pagoDeAlquileres = 0;
@@ -25,14 +31,7 @@ public class Jugador {
     private float pasarPorCasillaDeSalida = 0;
     private float premiosInversionesOBote = 0;
     private int vecesEnLaCarcel = 0;
-    private boolean movEspecial;
     private int tiradas = 0;
-    private Jugador enDeuda = null;
-    private float fortunaPrevia; // fortuna que ten o xogador cando antes de ter unha deuda que non pode pagar,
-    // é o que recibirá o xogador ao que lle debe cando declare a bancarrota se a
-    // declara
-    private int cocheCalado;
-    private int cartaDisponible = 0;
 
     public void anhadirTrato(Trato t) {
         tratos.add(t);
@@ -40,6 +39,14 @@ public class Jugador {
 
     public void eliminarTrato(Trato t) {
         tratos.remove(t);
+    }
+
+    public void setFortunaPrevia(float fortunaPrevia) {
+        this.fortunaPrevia = fortunaPrevia;
+    }
+
+    public float getFortunaPrevia() {
+        return fortunaPrevia;
     }
 
     public Trato getTrato(int id) {
@@ -101,18 +108,6 @@ public class Jugador {
 
     public void setEnDeuda(Jugador enDeuda) {
         this.enDeuda = enDeuda;
-    }
-
-    public float getFortunaPrevia() {
-        return fortunaPrevia;
-    }
-
-    public void setFortunaPrevia(float fortunaPrevia) {
-        this.fortunaPrevia = fortunaPrevia;
-    }
-
-    public void setCocheCalado(int cocheCalado) {
-        this.cocheCalado = cocheCalado;
     }
 
     private boolean puedeComprar = true;
@@ -211,18 +206,6 @@ public class Jugador {
                             + " a "
                             + this.getFortuna() + ". (diferencia: " + signo + diferencia + ")]" + Valor.RESET);
         }
-    }
-
-    public void calarCoche() {
-        cocheCalado = 3;
-    }
-
-    public void reducirCocheCalado() {
-        cocheCalado--;
-    }
-
-    public int getCocheCalado() {
-        return cocheCalado;
     }
 
     public float getFortuna() {
@@ -370,7 +353,7 @@ public class Jugador {
 
         sumarGastos(coste);
         if (getFortuna() < 0) {
-            fortunaPrevia = (coste + getFortuna());
+            setFortunaPrevia(coste + getFortuna());
             Juego.consola.imprimir("No tienes suficiente dinero. Quedas en deuda con " + duenho.getNombre() + ".");
             enDeuda = duenho;
             return false;

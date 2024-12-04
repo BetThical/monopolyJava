@@ -190,7 +190,7 @@ public final class Juego implements Comando {
         if (casilla.esComprable(jugador, banca)) {
             consola.imprimir(
                     jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor()
-                            + ".");
+                    + ".");
             casilla.comprarCasilla(jugador, banca);
         } else {
             throw new CompraNoDisponibleException("Esta casilla no es comprable");
@@ -325,6 +325,7 @@ public final class Juego implements Comando {
     }
 
     // Método que realiza las acciones asociadas al comando 'listar tratos'.
+    // Lista los tratos que han sido propuestos a un jugador.
     @Override
     public void listarTratos() {
         Jugador jugador = getJugadorTurno();
@@ -385,7 +386,7 @@ public final class Juego implements Comando {
                     throw new DescribirIncorrectoException();
                 } else {
                     descCasilla(args); // El uso de describir casilla es distinto (segun el enunciado: sólo 'describir
-                                       // Solar2' y no 'describir Casilla Solar2')
+                    // Solar2' y no 'describir Casilla Solar2')
                 }
                 break;
         }
@@ -483,8 +484,8 @@ public final class Juego implements Comando {
         jugador.estadisticas();
     }
 
-    // * - - - Comandos misceláneos - - - * //
-
+    // * - - - Tratos - - - * //
+    @Override
     public void aceptarTrato(Jugador jugador, String idTrato)
             throws TratoNoEncontradoException, EntradaNoNumericaException, TratoInvalidoException {
         Trato trato;
@@ -501,6 +502,7 @@ public final class Juego implements Comando {
         }
     }
 
+    @Override
     public void rechazarTrato(Jugador jugador, String idTrato)
             throws TratoNoEncontradoException, EntradaNoNumericaException {
         Trato trato;
@@ -518,6 +520,9 @@ public final class Juego implements Comando {
     }
 
     // Método que realiza las acciones asociadas al comando 'trato'.
+    // Lee las distintas partes del comando para crear el objeto trato, y si es válido, lo añade a la lista de tratos del jugador que lo recibe.
+    // Lanza excepciones si el trato es incorrecto o si no se encuentra el jugador con el que se quiere hacer el trato.
+    @Override
     public void nuevoTrato(Jugador jugador, String[] partesComando)
             throws TratoIncorrectoException, JugadorNoEncontradoException, TratoInvalidoException {
         // Uso correcto: trato [jugador]: cambiar (casilla y dinero, casilla y dinero)
@@ -544,7 +549,7 @@ public final class Juego implements Comando {
         String elemento2;
         float dinero = 0;
         Casilla casilla1 = tablero.getCasilla(elemento1);
-        Casilla casilla2 = null;
+        Casilla casilla2;
 
         try {
             dinero = Float.parseFloat(elemento1);
@@ -567,7 +572,7 @@ public final class Juego implements Comando {
                     trato = new Trato(jugador, jugador2, casilla1, dinero); // TIPO TRATO 1: casilla por dinero
                 } else {
                     throw new TratoIncorrectoException(); // si se llega a este punto, se ha intentado cambiar dinero
-                                                          // por dinero}
+                    // por dinero}
                 }
             } catch (NumberFormatException e) {
                 // El elemento 2 no es un número --> debe ser una casilla
@@ -598,12 +603,12 @@ public final class Juego implements Comando {
                     casilla2 = tablero.getCasilla(elemento3);
                     if (casilla2 != null) {
                         trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y
-                                                                                          // dinero por casilla
+                        // dinero por casilla
                     } else {
                         throw new TratoIncorrectoException();
                     }
                 } catch (NumberFormatException e) { // El elemento 2 ofrecido por J1 no es dinero --> debe ser una
-                                                    // casilla, elemento1 debe ser un número.
+                    // casilla, elemento1 debe ser un número.
                     casilla1 = tablero.getCasilla(elemento2);
                     try {
                         dinero = Float.parseFloat(elemento1);
@@ -615,7 +620,7 @@ public final class Juego implements Comando {
                         throw new TratoIncorrectoException();
                     }
                     trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y dinero
-                                                                                      // por casilla
+                    // por casilla
                 }
             } else { // Jugador2 ofrece dos cosas.
                 if (casilla1 == null) { // si J2 ofrece dos cosas, lo que ofrece J1 debe ser una casilla.
@@ -628,12 +633,12 @@ public final class Juego implements Comando {
                     casilla2 = tablero.getCasilla(elemento2);
                     if (casilla2 != null) {
                         trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por
-                                                                                          // casilla y dinero
+                        // casilla y dinero
                     } else {
                         throw new TratoIncorrectoException();
                     }
                 } catch (NumberFormatException e) { // El elemento 3 ofrecido por J2 no es dinero --> debe ser una
-                                                    // casilla, elemento2 debe ser un número.
+                    // casilla, elemento2 debe ser un número.
                     casilla2 = tablero.getCasilla(elemento3);
                     try {
                         dinero = Float.parseFloat(elemento2);
@@ -645,7 +650,7 @@ public final class Juego implements Comando {
                         throw new TratoIncorrectoException();
                     }
                     trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por
-                                                                                      // casilla y dinero
+                    // casilla y dinero
                 }
             }
         }
@@ -657,9 +662,10 @@ public final class Juego implements Comando {
         jugador2.anhadirTrato(trato);
 
     }
+
+    // * - - - Comandos especiales - - - * //
     // Método que realiza las acciones asociadas al comando 'cambiar modo'.
     // Cambia el modo de movimiento de un jugador entre estándar y avanzado.
-
     public void cambiarModo(Jugador jugador) throws CambiarModoException {
         if (lanzamientos > 0) {
             throw new CambiarModoException();
@@ -793,11 +799,11 @@ public final class Juego implements Comando {
             }
         }
         if (!jugadorRecibe.equals(banca)) { // Si el jugador con quien es la deuda no es la banca, este jugador recibe
-                                            // la fortuna que le quedase al jugador.
+            // la fortuna que le quedase al jugador.
             jugadorRecibe.sumarFortuna(jugadorRecibe.getFortunaPrevia());
             consola.imprimir(
                     "El jugador " + jugadorRecibe.getNombre() + " recibe los " + jugadorBancarrota.getFortunaPrevia()
-                            + " que tenía " + jugadorBancarrota.getNombre() + ".");
+                    + " que tenía " + jugadorBancarrota.getNombre() + ".");
         }
 
         jugadores.remove(jugadorBancarrota);
@@ -880,12 +886,13 @@ public final class Juego implements Comando {
             throw new DadosException("ya has lanzado los dados en este turno.");
 
         }
+        if (avatar instanceof Coche coche) {
+            if (coche.getCocheCalado() > 0){
+                throw new DadosException(
+                        "por una previa tirada con el coche. Debes esperar " + (coche.getCocheCalado() - 1)
+                        + " turnos para volver a lanzar los dados.");
 
-        if (jugador.getCocheCalado() > 0) {
-            throw new DadosException(
-                    "por una previa tirada con el coche. Debes esperar " + (jugador.getCocheCalado() - 1)
-                            + " turnos para volver a lanzar los dados.");
-
+            }
         }
         if ((avatar instanceof Coche) && jugador.getMovEspecial() && lanzamientos > 3) {
             if (dobles_seguidos == 0) {

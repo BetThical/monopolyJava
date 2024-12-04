@@ -55,9 +55,18 @@ public interface Comando {
 
     void estadisticasJugador(String args) throws JugadorNoEncontradoException;
 
-    // * - - - Comandos misceláneos - - - * //
+    // * - - - Tratos - - - * //
+    void aceptarTrato(Jugador jugador, String idTrato)
+            throws TratoNoEncontradoException, EntradaNoNumericaException, TratoInvalidoException;
+
+    void rechazarTrato(Jugador jugador, String idTrato)
+            throws TratoNoEncontradoException, EntradaNoNumericaException;
+
+    void nuevoTrato(Jugador jugador, String[] partesComando)
+            throws TratoIncorrectoException, JugadorNoEncontradoException, TratoInvalidoException;
 
     void listarTratos();
+    // * - - - Comandos misceláneos - - - * //
 
     void cogerCarta(Jugador jugador)
             throws CartaNoDisponibleException, CartaNoEncontradaException, EntradaNoNumericaException;
