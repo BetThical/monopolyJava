@@ -2,12 +2,12 @@ package monopoly;
 
 public class Piscina extends Edificio {
 
-    public Piscina(Casilla casilla) {
-        super(casilla, casilla.getValor()*0.4f);
+    public Piscina(Solar solar) {
+        super(solar, solar.getValor()*0.4f);
     }
 
     @Override
-    public void generateID(Casilla casilla) {
-        setID("Piscina-" + casilla.numPiscinas());
+    public void generateID(Solar solar) {
+        setID("Piscina-" + solar.numPiscinas());
     }
 }

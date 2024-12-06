@@ -12,8 +12,8 @@ public class Tablero {
     private final HashMap<String, Grupo> grupos; // Grupos del tablero, almacenados como un HashMap con clave String
     // (será el color del grupo).
 
-    private final HashMap<Integer, Carta> barajaSuerte;
-    private final HashMap<Integer, Carta> barajaComunidad;
+    private final ArrayList<Carta> barajaSuerte;
+    private final ArrayList<Carta> barajaComunidad;
     private final Jugador banca; // Un jugador que será la banca.
 
     // Constructor: únicamente le pasamos el jugador banca (que se creará desde el
@@ -22,8 +22,8 @@ public class Tablero {
         banca = b;
         posiciones = new ArrayList<>();
         grupos = new HashMap<>();
-        barajaSuerte = new HashMap<>();
-        barajaComunidad = new HashMap<>();
+        barajaSuerte = new ArrayList<>();
+        barajaComunidad = new ArrayList<>();
 
         generarCasillas();
         generarBarajas();
@@ -31,7 +31,8 @@ public class Tablero {
     }
 
     public int getNumCasillas() {
-        //la cantidad de casillas es igual a la cantidad de filas por la cantidad de columnas
+        // la cantidad de casillas es igual a la cantidad de filas por la cantidad de
+        // columnas
         return posiciones.size() * posiciones.get(0).size();
     }
 
@@ -45,25 +46,28 @@ public class Tablero {
     }
 
     private void generarBarajas() {
-        barajaSuerte.put(1, new CartaSuerte(1,
+        barajaSuerte.add(new CartaSuerte(1,
                 "Ve al Transportes1 y coge un avión. Si pasas por la casilla de Salida, cobra la cantidad habitual."));
-        barajaSuerte.put(2, new CartaSuerte(2,
+        barajaSuerte.add(new CartaSuerte(2,
                 "Decides hacer un viaje de placer. Avanza hasta Solar15 directamente, sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
-        barajaSuerte.put(3,
-                new CartaSuerte(3, "Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€."));
-        barajaSuerte.put(4,
+        barajaSuerte.add(
+                new CartaSuerte(3,
+                        "Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€."));
+        barajaSuerte.add(
                 new CartaSuerte(4, "Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual."));
-        barajaSuerte.put(5, new CartaSuerte(5,
+        barajaSuerte.add(new CartaSuerte(5,
                 "Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
-        barajaSuerte.put(6, new CartaSuerte(6, "¡Has ganado el bote de la lotería! Recibe 1000000€."));
+        barajaSuerte.add(new CartaSuerte(6, "¡Has ganado el bote de la lotería! Recibe 1000000€."));
 
-        barajaComunidad.put(1, new CartaComunidad(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
-        barajaComunidad.put(2, new CartaComunidad(2,
+        barajaComunidad.add(
+                new CartaComunidad(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas."));
+        barajaComunidad.add(new CartaComunidad(2,
                 "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y sin cobrar la cantidad habitual."));
-        barajaComunidad.put(3, new CartaComunidad(3, "Colócate en la casilla de Salida. Cobra la cantidad habitual."));
-        barajaComunidad.put(4, new CartaComunidad(4, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€."));
-        barajaComunidad.put(5, new CartaComunidad(5, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14."));
-        barajaComunidad.put(6, new CartaComunidad(6,
+        barajaComunidad.add(new CartaComunidad(3, "Colócate en la casilla de Salida. Cobra la cantidad habitual."));
+        barajaComunidad.add(new CartaComunidad(4, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€."));
+        barajaComunidad.add(
+                new CartaComunidad(5, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14."));
+        barajaComunidad.add(new CartaComunidad(6,
                 "Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador."));
     }
 
@@ -192,23 +196,25 @@ public class Tablero {
                 col = 10;
             }
 
-            Casilla c = getCasilla(j);
+            Casilla casilla = getCasilla(j);
 
-            if (c.getTipo().equals("solar")) { // Si es un solar, se imprime con el color correspondiente.
-                tableroArr[fila][col] = String.format(getCodigoColor(c.getGrupo()) + c.getNombre() + Valor.RESET);
+            if (casilla instanceof Solar) { // Si es un solar, se imprime con el color correspondiente.
+
+                tableroArr[fila][col] = String
+                        .format(getCodigoColor(((Solar) casilla).getGrupo()) + casilla.getNombre() + Valor.RESET);
             } else {
-                tableroArr[fila][col] = String.format(Valor.WHITE + c.getNombre() + Valor.RESET);
+                tableroArr[fila][col] = String.format(Valor.WHITE + casilla.getNombre() + Valor.RESET);
             }
 
-            if (!c.getAvatares().isEmpty()) { // Si hay avatares en la casilla, se añaden al nombre
+            if (!casilla.getAvatares().isEmpty()) { // Si hay avatares en la casilla, se añaden al nombre
                 // if (c.getAvatares().size() > 3)
                 // tableroArr[fila][col] += String.format("[...]"); // Si hay más de 3, se
                 // imprime un [...] por falta de espacio.
                 {
                     tableroArr[fila][col] += "&";
 
-                    for (int i = 0; i < c.getAvatares().size(); i++) {
-                        Avatar avatar = c.getAvatares().get(i);
+                    for (int i = 0; i < casilla.getAvatares().size(); i++) {
+                        Avatar avatar = casilla.getAvatares().get(i);
                         tableroArr[fila][col] += String.format(avatar.getID());
                     }
                 }
@@ -281,11 +287,11 @@ public class Tablero {
         return null;
     }
 
-    public HashMap<Integer, Carta> getSuerte() {
+    public ArrayList<Carta> getSuerte() {
         return barajaSuerte;
     }
 
-    public HashMap<Integer, Carta> getComunidad() {
+    public ArrayList<Carta> getComunidad() {
         return barajaComunidad;
     }
 
@@ -302,10 +308,12 @@ public class Tablero {
     public void aumentarCoste(Jugador banca) { // Aumenta el coste de todas las casillas sin dueño en un 5%. Se usa
         // cuando los jugadores dan 4 vueltas.
         for (int i = 0; i < 40; i++) {
-            if (getCasilla(i).getduenhoJugador() == banca && (getCasilla(i) instanceof Propiedad)) {
+            if ((getCasilla(i) instanceof Propiedad)) {
                 Propiedad propiedad = (Propiedad) getCasilla(i);
-                float valor = (propiedad.getValor() * 0.05f);
-                propiedad.sumarValor(valor);
+                if (propiedad.getDuenho().equals(banca)) {
+                    float valor = (propiedad.getValor() * 0.05f);
+                    propiedad.sumarValor(valor);
+                }
             }
         }
     }

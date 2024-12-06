@@ -68,6 +68,11 @@ public final class Menu {
 
         while (!juego.getPartidaAcabada()) {
             Jugador jugador = juego.getJugadorTurno();
+            if (jugador.getDebeIrACarcel()) {
+                Juego.consola.imprimir("El jugador " + jugador.getNombre() + " va a la cárcel.");
+                jugador.setDebeIrACarcel(false);
+                jugador.encarcelar(juego.getTablero().getPosiciones());
+            }
             juego.getTablero().imprimirTablero();
 
             if (jugador.getFortuna() < 0) {
@@ -81,6 +86,7 @@ public final class Menu {
                 Juego.consola.imprimir(Valor.GREEN + "[INFO]:" + Valor.RESET
                         + " Tienes tratos pendientes. Usa 'listar tratos' para verlos.");
             }
+
             comando = Juego.consola.leer(jugador.getColor() + "[" + jugador.getNombre() + "]: " + Valor.RESET);
 
             try {
@@ -90,7 +96,8 @@ public final class Menu {
             }
 
         }
-        Juego.consola.imprimir(Valor.GREEN + "La partida ha terminado! El ganador es " + juego.getJugadores().get(0).getNombre() + "." + Valor.RESET);
+        Juego.consola.imprimir(Valor.GREEN + "La partida ha terminado! El ganador es "
+                + juego.getJugadores().get(0).getNombre() + "." + Valor.RESET);
     }
 
     /*
@@ -137,7 +144,7 @@ public final class Menu {
             case "m": // DEBUG: moverse manualmente (m [x])
                 try {
                     juego.lanzarDados(Integer.parseInt(partesComando[1]), 0);
-                    juego.setLanzamientos(0); //! DEBUG: el movimiento manual permite moverse varias veces
+                    juego.setLanzamientos(0); // ! DEBUG: el movimiento manual permite moverse varias veces
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
                     throw new DadosManualesException();
                 }

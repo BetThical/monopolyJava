@@ -2,12 +2,12 @@ package monopoly;
 
 public class Pista extends Edificio {
 
-    public Pista(Casilla casilla) {
-        super(casilla, casilla.getValor()*1.25f);
+    public Pista(Solar solar) {
+        super(solar, solar.getValor()*1.25f);
     }
 
     @Override
-    public void generateID(Casilla casilla) {
-        setID("Pista-" + casilla.numPistas());
+    public void generateID(Solar solar) {
+        setID("Pista-" + solar.numPistas());
     }
 }

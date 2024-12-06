@@ -96,7 +96,7 @@ public abstract class Avatar {
     }
 
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, Casilla destino, boolean cobrarSalida) {
-        int valorTirada = (destino.getPosicion() - lugar.getPosicion());
+        int valorTirada = (destino.getPosicion()>lugar.getPosicion())? (destino.getPosicion() - lugar.getPosicion()-1): (40 - lugar.getPosicion() + destino.getPosicion() - 1);
         moverAvatar(casillas, valorTirada, cobrarSalida);
     }
 

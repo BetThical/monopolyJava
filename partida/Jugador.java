@@ -11,10 +11,11 @@ public class Jugador {
     private float fortuna; // Dinero que posee.
     private float gastos; // Gastos realizados a lo largo del juego.
     private boolean enCarcel; // Será true si el jugador está en la carcel
+    private boolean debeIrACarcel; // Será true si el jugador debe ir a la cárcel
     private int tiradasCarcel; // Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí
     // para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; // Cuenta las vueltas dadas al tablero.
-    private ArrayList<Casilla> propiedades; // Propiedades que posee el jugador.
+    private ArrayList<Propiedad> propiedades; // Propiedades que posee el jugador.
     private float bote; // Usado por la banca para almacenar el bote
     private String color; // Usado para imprimir el color del jugador en la consola.
     private ArrayList<Trato> tratos; // Lista de tratos propuestos al jugador.
@@ -58,6 +59,13 @@ public class Jugador {
         return null;
     }
 
+    public boolean getDebeIrACarcel() {
+        return debeIrACarcel;
+    }
+
+    public void setDebeIrACarcel(boolean debeIrACarcel) {
+        this.debeIrACarcel = debeIrACarcel;
+    }
     public ArrayList<Trato> getTratos() {
         return tratos;
     }
@@ -184,14 +192,14 @@ public class Jugador {
     // Otros métodos:
     // Método para añadir una propiedad al jugador. Como parámetro, la casilla a
     // añadir.
-    public void anhadirPropiedad(Casilla casilla) {
+    public void anhadirPropiedad(Propiedad casilla) {
         if (!propiedades.contains(casilla)) {
             this.propiedades.add(casilla);
         }
     }
 
     // Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) {
+    public void eliminarPropiedad(Propiedad casilla) {
         if (propiedades.contains(casilla)) {
             this.propiedades.remove(casilla);
         }
@@ -230,7 +238,7 @@ public class Jugador {
         return gastos;
     }
 
-    public ArrayList<Casilla> getPropiedades() {
+    public ArrayList<Propiedad> getPropiedades() {
         return propiedades;
     }
 
@@ -282,7 +290,7 @@ public class Jugador {
         this.pasarPorCasillaDeSalida += cantidad;
     }
 
-    public void sumarGastosBote(float cantidad) {
+    public void sumarPremiosBote(float cantidad) {
         this.premiosInversionesOBote += cantidad;
     }
 
@@ -322,8 +330,8 @@ public class Jugador {
     public int getNumTrans() { // número de casillas de transporte que posee
         try {
             int j = 0;
-            for (int i = 0; i < propiedades.size(); i++) {
-                if (propiedades.get(i).getTipo().equals("transporte")) {
+            for(Casilla casilla : propiedades){
+                if (casilla instanceof Transporte) {
                     j++;
                 }
             }
@@ -336,8 +344,8 @@ public class Jugador {
 
     public int getNumServ() { // número de casillas de servicio que posee
         int j = 0;
-        for (int i = 0; i < propiedades.size(); i++) {
-            if (propiedades.get(i).getTipo().equals("servicio")) {
+        for (Casilla casilla : propiedades) {
+            if (casilla instanceof Servicio) {
                 j++;
             }
         }
@@ -348,7 +356,7 @@ public class Jugador {
     public void cobrarBote(Jugador banca) {
         float valorBote = banca.getBote();
         sumarFortuna(valorBote);
-        sumarGastosBote(valorBote);
+        sumarPremiosBote(valorBote);
         banca.restarDelBote(valorBote);
         Juego.consola.imprimir("El jugador " + getNombre() + " recibe " + valorBote + "€ del bote.");
     }
@@ -376,7 +384,7 @@ public class Jugador {
         return true;
     }
 
-    public void darCasilla(Casilla casilla, Jugador recibidor) {
+    public void darCasilla(Propiedad casilla, Jugador recibidor) {
         Juego.consola.imprimir("La casilla " + casilla.getNombre() + " ha sido transferida a " + recibidor.getNombre() + ".");
         recibidor.anhadirPropiedad(casilla);
         casilla.setDuenho(recibidor);

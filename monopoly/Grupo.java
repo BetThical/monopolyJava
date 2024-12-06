@@ -6,7 +6,7 @@ import partida.*;
 public class Grupo {
 
     // Atributos
-    private ArrayList<Casilla> miembros; // Casillas miembros del grupo.
+    private ArrayList<Solar> miembros; // Casillas miembros del grupo.
     private String colorGrupo; // Color del grupo
     private int numCasillas; // Número de casillas del grupo.
 
@@ -49,9 +49,9 @@ public class Grupo {
      * Parámetro: casilla que se quiere añadir.
      */
     private void anhadirCasilla(Casilla miembro) {
-        if (!this.miembros.contains(miembro)) {
-            this.miembros.add(miembro);
-            miembro.setGrupo(this);
+        if (!this.miembros.contains(miembro) || (miembro instanceof Solar)) {
+            this.miembros.add((Solar)miembro);
+            ((Solar)miembro).setGrupo(this);
         }
     }
 
@@ -65,7 +65,7 @@ public class Grupo {
     public boolean esDuenhoGrupo(Jugador jugador) {
         boolean esDuenho = true;
         for (int i = 0; i < this.miembros.size(); i++) {
-            if (miembros.get(i).getduenhoJugador() != jugador) {
+            if (miembros.get(i).getDuenho() != jugador) {
                 esDuenho = false;
             }
         }
@@ -83,7 +83,7 @@ public class Grupo {
 
     public ArrayList<Edificio> getEdificiosGrupo() {
         ArrayList<Edificio> lista = new ArrayList<>();
-        for (Casilla miembro : miembros) {
+        for (Solar miembro : miembros) {
             for (Edificio edificio : miembro.getEdificios()) {
                 lista.add(edificio);
             }
@@ -137,7 +137,7 @@ public class Grupo {
 
         double rentabilidad = 0;
 
-        for (Casilla casilla : miembros) {
+        for (Solar casilla : miembros) {
             rentabilidad += casilla.GetRentabilidad();
         }
 
@@ -145,13 +145,12 @@ public class Grupo {
     }
 
     public void descEdificios() {
-        for (Casilla casilla : miembros) {
-            Solar solar = (Solar) casilla;
-            Juego.consola.imprimir("Propiedad: " + casilla.getNombre());
+        for (Solar casilla : miembros) {
+            Juego.consola.imprimir("Solar: " + casilla.getNombre());
             for (Edificio casa : casilla.getEdificios()) {
                 Juego.consola.imprimir("[" + casa.getID() + "], ");
             }
-            Juego.consola.imprimir("Alquiler: " + solar.calcular_coste(0));
+            Juego.consola.imprimir("Alquiler: " + casilla.calcularCoste(0));
         }
         imprimirEdificiosDisponibles();
     }

@@ -12,10 +12,10 @@ public class Trato {
     private final String descripcion;
     private final float dinero;
     private final int tipoTrato;
-    private final Casilla casilla1;
-    private final Casilla casilla2;
+    private final Propiedad casilla1;
+    private final Propiedad casilla2;
 
-    public Trato(Jugador jugador1, Jugador jugador2, Casilla casilla1, Casilla casilla2) {
+    public Trato(Jugador jugador1, Jugador jugador2, Propiedad casilla1, Propiedad casilla2) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.dinero = 0;
@@ -27,7 +27,7 @@ public class Trato {
                 + " a cambio de " + Valor.YELLOW + casilla2.getNombre() + Valor.RESET + " a " + jugador2.getNombre();
     }
 
-    public Trato(Jugador jugador1, Jugador jugador2, float dinero, Casilla casilla2) {
+    public Trato(Jugador jugador1, Jugador jugador2, float dinero, Propiedad casilla2) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.dinero = dinero;
@@ -39,7 +39,7 @@ public class Trato {
                 + Valor.YELLOW + casilla2.getNombre() + Valor.RESET + " a " + jugador2.getNombre();
     }
 
-    public Trato(Jugador jugador1, Jugador jugador2, Casilla casilla1, float dinero) {
+    public Trato(Jugador jugador1, Jugador jugador2, Propiedad casilla1, float dinero) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.dinero = dinero;
@@ -51,7 +51,7 @@ public class Trato {
                 + " a cambio de " + Valor.YELLOW + dinero + "€" + Valor.RESET + " a " + jugador2.getNombre();
     }
 
-    public Trato(Jugador jugador1, Jugador jugador2, Casilla casilla1, Casilla casilla2, float dinero) {
+    public Trato(Jugador jugador1, Jugador jugador2, Propiedad casilla1, Propiedad casilla2, float dinero) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.dinero = dinero;
@@ -64,7 +64,7 @@ public class Trato {
                 + jugador2.getNombre();
     }
 
-    public Trato(Jugador jugador1, Jugador jugador2, Casilla casilla1, float dinero, Casilla casilla2) {
+    public Trato(Jugador jugador1, Jugador jugador2, Propiedad casilla1, float dinero, Propiedad casilla2) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.dinero = dinero;
@@ -85,11 +85,11 @@ public class Trato {
     // Método que comprueba si un trato SE PUEDE PROPONER: si las casillas son propiedad de los jugadores 
     // involucrados en el trato.
     public void comprobarTratoValido() throws TratoInvalidoException {
-        if (casilla1 != null && casilla1.getduenhoJugador() != jugador1) {
+        if (casilla1 != null && casilla1.getDuenho() != jugador1) {
             throw new TratoInvalidoException(
                     "El jugador " + jugador1.getNombre() + " no es dueño de la casilla " + casilla1.getNombre());
         }
-        if (casilla2 != null && casilla2.getduenhoJugador() != jugador2) {
+        if (casilla2 != null && casilla2.getDuenho() != jugador2) {
             throw new TratoInvalidoException(
                     "El jugador " + jugador2.getNombre() + " no es dueño de la casilla " + casilla2.getNombre());
         }

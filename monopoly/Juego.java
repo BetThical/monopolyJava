@@ -61,8 +61,10 @@ public final class Juego implements Comando {
             consola.imprimir(Valor.YELLOW + "DEBUG: Se ha creado un avatar pelota." + Valor.RESET);
             tipoAvatar = "pelota";
         }
-        while (!tipoAvatar.equals("coche") && !tipoAvatar.equals("pelota") && !tipoAvatar.equals("esfinge") && !tipoAvatar.equals("sombrero")) {
-            tipoAvatar = consola.leer("Elige un tipo de avatar válido para " + nombre + " (coche, pelota, esfinge, sombrero):");
+        while (!tipoAvatar.equals("coche") && !tipoAvatar.equals("pelota") && !tipoAvatar.equals("esfinge")
+                && !tipoAvatar.equals("sombrero")) {
+            tipoAvatar = consola
+                    .leer("Elige un tipo de avatar válido para " + nombre + " (coche, pelota, esfinge, sombrero):");
         }
         Jugador jugador = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
 
@@ -98,7 +100,8 @@ public final class Juego implements Comando {
     // dados' para valores de tirada concretos. Se usa desde lanzarDados() y también
     // con los comandos de prueba lanzar dados [x+y] y m[x].
     @Override
-    public void lanzarDados(int tirada1, int tirada2) throws DadosException, AvanzarException, AvatarNoImplementadoException {
+    public void lanzarDados(int tirada1, int tirada2)
+            throws DadosException, AvanzarException, AvatarNoImplementadoException {
         puedeLanzarDados(); // si no puede lanzar, devolverá una excepción, y no se lanzarán los dados
 
         Jugador jugador = getJugadorTurno();
@@ -145,8 +148,7 @@ public final class Juego implements Comando {
                 if (dobles_seguidos != 0 && lanzamientos == 4) {
                     consola.imprimir("Has sacado dobles en la última tirada! Puedes volver a lanzar los dados.");
                 }
-            }
-            else {
+            } else {
                 throw new AvatarNoImplementadoException(avatar.getTipo());
 
             }
@@ -191,14 +193,15 @@ public final class Juego implements Comando {
             throw new CompraNoDisponibleException(
                     "Al avanzar con el coche en modo avanzado, sólo puedes comprar una vez por turno.");
         }
-        if (casilla instanceof Propiedad){
+        if (casilla instanceof Propiedad) {
             Propiedad propiedad = (Propiedad) casilla;
             if (propiedad.esComprable(jugador, banca)) {
                 consola.imprimir(
-                        jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + propiedad.getValor()
+                        jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por "
+                                + propiedad.getValor()
                                 + ".");
-                        propiedad.comprarCasilla(jugador, banca);
-        }
+                propiedad.comprarCasilla(jugador, banca);
+            }
         } else {
             throw new CompraNoDisponibleException("Esta casilla no es comprable");
         }
@@ -209,29 +212,35 @@ public final class Juego implements Comando {
     @Override
     public void edificar(String args, Jugador jugador, Casilla casilla)
             throws EdificarIncorrectoException, EdificioNoPermitidoException, EdificioNoEncontradoException {
+        Solar solar;
+        if (!(casilla instanceof Solar)) {
+            throw new EdificioNoPermitidoException("No puedes edificar en esta casilla.");
+        } else {
+            solar = (Solar) casilla;
+        }
         if (!EDIFICIOS_VALIDOS.contains(args)) {
             throw new EdificarIncorrectoException();
         } else {
             switch (args) {
                 case "casa":
-                    e = new Casa(casilla);
+                    e = new Casa(solar);
                     break;
                 case "hotel":
-                    e = new Hotel(casilla);
+                    e = new Hotel(solar);
                     break;
                 case "piscina":
-                    e = new Piscina(casilla);
+                    e = new Piscina(solar);
                     break;
                 case "pista":
-                    e = new Pista(casilla);
+                    e = new Pista(solar);
                     break;
                 default:
                     throw new EdificioNoEncontradoException(args);
             }
-            casilla.puedeConstruir(e, jugador); // Si no puede construir, lanzará una excepción
+            solar.puedeConstruir(e, jugador); // Si no puede construir, lanzará una excepción
             consola.imprimir("Has comprado un(a) " + args + " en " + casilla.getNombre() + ", por "
                     + e.getValor());
-            casilla.anhadirEdificio(e, jugador);
+            solar.anhadirEdificio(e, jugador);
 
         }
     }
@@ -247,9 +256,9 @@ public final class Juego implements Comando {
             throw new EdificarIncorrectoException();
         } else {
             Solar solar = (Solar) casilla;
-            solar.destruirEdificio(args, jugador);
+            solar.destruirEdificio(args, jugador, true);
             consola.imprimir("Has vendido un(a) " + args + " en " + casilla.getNombre() + ", por "
-                    + solar.valorEdificio(args) / 2f + ".");
+                    + e.getValor() / 2f + ".");
 
         }
     }
@@ -258,18 +267,25 @@ public final class Juego implements Comando {
     // a un
     // jugador hipotecar una propiedad. Recibe el nombre de la casilla a hipotecar.
     @Override
-    public void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException {
-        Casilla aHipotecar;
-        aHipotecar = tablero.getCasilla(args);
-        if (aHipotecar == null) {
-            throw new CasillaNoEncontradaException(args);
-        } else {
-            aHipotecar.hipotecar(jugador);
-            consola.imprimir("Se ha hipotecado " + aHipotecar.getNombre() + ". " + jugador.getNombre()
-                    + " ha recibido " + aHipotecar.getHipoteca() * 1.1f
-                    + "€ de la hipoteca.");
+    public void hipotecar(String args, Jugador jugador)
+            throws CasillaNoEncontradaException, HipotecaException, CasillaNoEsPropiedadException {
 
+        Casilla casilla = tablero.getCasilla(args);
+
+        if (casilla == null) {
+            throw new CasillaNoEncontradaException(args);
         }
+        if (!(casilla instanceof Propiedad)) {
+            throw new CasillaNoEsPropiedadException(args);
+        }
+
+        Propiedad aHipotecar = (Propiedad) casilla;
+
+        aHipotecar.hipotecar(jugador);
+        consola.imprimir("Se ha hipotecado " + aHipotecar.getNombre() + ". " + jugador.getNombre()
+                + " ha recibido " + aHipotecar.getHipoteca() * 1.1f
+                + "€ de la hipoteca.");
+
     }
 
     // Método que realiza las acciones asociadas al comando 'deshipotecar', que
@@ -277,18 +293,24 @@ public final class Juego implements Comando {
     // jugador deshipotecar una propiedad. Recibe el nombre de la casilla a
     // deshipotecar.
     @Override
-    public void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException {
-        Casilla aDeshipotecar;
-        aDeshipotecar = tablero.getCasilla(args);
-        if (aDeshipotecar == null) {
-            throw new CasillaNoEncontradaException(args);
-        } else {
-            aDeshipotecar.deshipotecar(jugador);
-            consola.imprimir("Se ha deshipotecado " + aDeshipotecar.getNombre() + ". " + jugador.getNombre()
-                    + " ha pagado " + aDeshipotecar.getHipoteca()
-                    + "€ de la hipoteca.");
+    public void deshipotecar(String args, Jugador jugador)
+            throws CasillaNoEncontradaException, HipotecaException, CasillaNoEsPropiedadException {
+        Casilla casilla = tablero.getCasilla(args);
 
+        if (casilla == null) {
+            throw new CasillaNoEncontradaException(args);
         }
+        if (!(casilla instanceof Propiedad)) {
+            throw new CasillaNoEsPropiedadException(args);
+        }
+
+        Propiedad aDeshipotecar = (Propiedad) casilla;
+
+        aDeshipotecar.deshipotecar(jugador);
+        consola.imprimir("Se ha deshipotecado " + aDeshipotecar.getNombre() + ". " + jugador.getNombre()
+                + " ha pagado " + aDeshipotecar.getHipoteca()
+                + "€ de la hipoteca.");
+
     }
 
     // * - - - Información partida - - - * //
@@ -336,15 +358,10 @@ public final class Juego implements Comando {
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     @Override
     public void listarVenta() {
-        banca.getPropiedades();
-        Casilla casilla_aux;
-        for (int i = 0; i < tablero.getNumCasillas(); i++) {
-            casilla_aux = tablero.getCasilla(i);
-            if ((casilla_aux.getTipo().equals("solar") || casilla_aux.getTipo().equals("transporte")
-                    || casilla_aux.getTipo().equals("servicio")) && casilla_aux.getduenhoJugador() == banca) {
-                consola.imprimir(casilla_aux.casEnVenta());
-            }
+        for (Propiedad casilla : banca.getPropiedades()) {
+            consola.imprimir(casilla.casEnVenta());
         }
+
     }
 
     // Método que realiza las acciones asociadas al comando 'listar tratos'.
@@ -365,13 +382,15 @@ public final class Juego implements Comando {
     public void listarEdificios() {
         for (int i = 0; i < tablero.getNumCasillas(); i++) {
             Casilla casilla = tablero.getCasilla(i);
-            if (!casilla.getEdificios().isEmpty()) {
+            if (casilla instanceof Solar) {
                 Solar solar = (Solar) casilla;
-                for (Edificio edificio : casilla.getEdificios()) {
-                    consola.imprimir("\nID:" + edificio.getID());
-                    consola.imprimir("Propietario: " + casilla.getduenhoJugador().getNombre());
-                    consola.imprimir("Grupo: " + casilla.getGrupo().getNombre());
-                    consola.imprimir("Coste: " + solar.valorEdificio(edificio.getTipo()));
+                if (!solar.getEdificios().isEmpty()) {
+                    for (Edificio edificio : solar.getEdificios()) {
+                        consola.imprimir("\nID:" + edificio.getID());
+                        consola.imprimir("Propietario: " + solar.getDuenho().getNombre());
+                        consola.imprimir("Grupo: " + solar.getGrupo().getNombre());
+                        consola.imprimir("Coste: " + e.getValor());
+                    }
                 }
             }
         }
@@ -436,10 +455,7 @@ public final class Juego implements Comando {
         consola.imprimir("Fortuna: " + jugador.getFortuna());
         consola.imprimir("Propiedades:");
         for (int j = 0; j < jugador.getPropiedades().size(); j++) {
-            consola.imprimir("  ||" + jugador.getPropiedades().get(j).getNombre() + "||");
-            if (jugador.getPropiedades().get(j).getHipotecada()) {
-                consola.imprimir("[H]");
-            }
+            consola.imprimir("  ||" + jugador.getPropiedades().get(j).getNombre() + "||" + (jugador.getPropiedades().get(j).getHipotecada() ? " [H]" : ""));
         }
         consola.imprimir("");
         consola.imprimir("Hipotecas: ");
@@ -569,6 +585,9 @@ public final class Juego implements Comando {
         if (jugador2 == null) {
             throw new JugadorNoEncontradoException(partesComando[1]);
         }
+        if (jugador == jugador2) {
+            throw new TratoInvalidoException("No puedes hacerte un trato a ti mismo");
+        }
 
         // POSIBLES TRATOS
         String elemento1 = partesComando[3];
@@ -582,7 +601,7 @@ public final class Juego implements Comando {
         } catch (NumberFormatException e) {
             // El elemento 1 no es un número --> debe ser una casilla
             casilla1 = tablero.getCasilla(elemento1);
-            if (casilla1 == null) {
+            if (casilla1 == null || !(casilla1 instanceof Propiedad)) {
                 // No es número ni casilla --> trato incorrecto
                 consola.imprimir("No se ha encontrado la casilla " + elemento1);
                 throw new TratoIncorrectoException();
@@ -595,7 +614,8 @@ public final class Juego implements Comando {
             try {
                 dinero = Float.parseFloat(elemento2);
                 if (casilla1 != null) {
-                    trato = new Trato(jugador, jugador2, casilla1, dinero); // TIPO TRATO 1: casilla por dinero
+                    trato = new Trato(jugador, jugador2, (Propiedad) casilla1, dinero); // TIPO TRATO 1: casilla por
+                                                                                        // dinero
                 } else {
                     throw new TratoIncorrectoException(); // si se llega a este punto, se ha intentado cambiar dinero
                     // por dinero}
@@ -608,11 +628,14 @@ public final class Juego implements Comando {
                     throw new TratoIncorrectoException();
                 }
                 if (dinero != 0) {
-                    trato = new Trato(jugador, jugador2, dinero, casilla2); // TIPO TRATO 2: dinero por casilla
+                    trato = new Trato(jugador, jugador2, dinero, (Propiedad) casilla2); // TIPO TRATO 2: dinero por
+                                                                                        // casilla
 
                 }
                 if (casilla1 != null) {
-                    trato = new Trato(jugador, jugador2, casilla1, casilla2); // TIPO TRATO 3: casilla por casilla
+                    trato = new Trato(jugador, jugador2, (Propiedad) casilla1, (Propiedad) casilla2); // TIPO TRATO 3:
+                                                                                                      // casilla por
+                                                                                                      // casilla
                 }
             }
         } else { // trato 'complejo', casilla y dinero por casilla o casilla por casilla y dinero
@@ -621,14 +644,19 @@ public final class Juego implements Comando {
                 elemento2 = partesComando[5];
                 elemento3 = partesComando[6];
                 casilla2 = tablero.getCasilla(elemento3);
-                if (casilla2 == null) { // Si J2 ofrece sólo una cosa, debe ser una casilla.
+                if (casilla2 == null || !(casilla2 instanceof Propiedad)) { // Si J2 ofrece sólo una cosa, debe ser una
+                                                                            // casilla.
                     throw new TratoIncorrectoException();
                 }
                 try {
                     dinero = Float.parseFloat(elemento2); // dinero que ofrece J1
                     casilla2 = tablero.getCasilla(elemento3);
-                    if (casilla2 != null) {
-                        trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y
+                    if (casilla2 != null || !(casilla2 instanceof Propiedad)) {
+                        trato = new Trato(jugador, jugador2, (Propiedad) casilla1, dinero, (Propiedad) casilla2); // TIPO
+                                                                                                                  // TRATO
+                                                                                                                  // 4:
+                                                                                                                  // casilla
+                                                                                                                  // y
                         // dinero por casilla
                     } else {
                         throw new TratoIncorrectoException();
@@ -641,11 +669,16 @@ public final class Juego implements Comando {
                     } catch (NumberFormatException ex) {
                         throw new TratoIncorrectoException();
                     }
-                    if (casilla1 == null) {
+                    if (casilla1 == null || !(casilla1 instanceof Propiedad)) {
                         // No es número ni casilla --> trato incorrecto
                         throw new TratoIncorrectoException();
                     }
-                    trato = new Trato(jugador, jugador2, casilla1, dinero, casilla2); // TIPO TRATO 4: casilla y dinero
+                    trato = new Trato(jugador, jugador2, (Propiedad) casilla1, dinero, (Propiedad) casilla2); // TIPO
+                                                                                                              // TRATO
+                                                                                                              // 4:
+                                                                                                              // casilla
+                                                                                                              // y
+                                                                                                              // dinero
                     // por casilla
                 }
             } else { // Jugador2 ofrece dos cosas.
@@ -657,8 +690,12 @@ public final class Juego implements Comando {
                 try {
                     dinero = Float.parseFloat(elemento3); // dinero que ofrece J2
                     casilla2 = tablero.getCasilla(elemento2);
-                    if (casilla2 != null) {
-                        trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por
+                    if (casilla2 != null && (casilla2 instanceof Propiedad)) {
+                        trato = new Trato(jugador, jugador2, (Propiedad) casilla1, (Propiedad) casilla2, dinero); // TIPO
+                                                                                                                  // TRATO
+                                                                                                                  // 5:
+                                                                                                                  // casilla
+                                                                                                                  // por
                         // casilla y dinero
                     } else {
                         throw new TratoIncorrectoException();
@@ -671,11 +708,15 @@ public final class Juego implements Comando {
                     } catch (NumberFormatException ex) {
                         throw new TratoIncorrectoException();
                     }
-                    if (casilla2 == null) {
+                    if (casilla2 == null || !(casilla2 instanceof Propiedad)) {
                         // No es número ni casilla --> trato incorrecto
                         throw new TratoIncorrectoException();
                     }
-                    trato = new Trato(jugador, jugador2, casilla1, casilla2, dinero); // TIPO TRATO 5: casilla por
+                    trato = new Trato(jugador, jugador2, (Propiedad) casilla1, (Propiedad) casilla2, dinero); // TIPO
+                                                                                                              // TRATO
+                                                                                                              // 5:
+                                                                                                              // casilla
+                                                                                                              // por
                     // casilla y dinero
                 }
             }
@@ -720,25 +761,15 @@ public final class Juego implements Comando {
             throw new CartaNoDisponibleException();
         }
         int cartaDisponible = jugador.puedeCogerCarta();
-        HashMap<Integer, Carta> cartas; // 1: comunidad, 2: suerte
+        ArrayList<Carta> cartas; // 1: comunidad, 2: suerte
         if (cartaDisponible == 1) {
             cartas = tablero.getComunidad();
             consola.imprimir("Has cogido una carta de la comunidad.");
         } else {
             consola.imprimir("Has cogido una carta de la suerte.");
             cartas = tablero.getSuerte();
-
         }
-        consola.imprimir("Cartas disponibles:");
-        for (Map.Entry<Integer, Carta> entry : cartas.entrySet()) {
-            if (cartaDisponible == 1) { // suerte en amarillo, comunidad en azul
-                consola.imprimir(
-                        Valor.BLUE + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getTextoCarta());
-            } else {
-                consola.imprimir(
-                        Valor.YELLOW + entry.getKey() + "." + Valor.RESET + " " + entry.getValue().getTextoCarta());
-            }
-        }
+        Collections.shuffle(cartas);
         try {
             numero = Integer.parseInt(consola.leer("Introduce un número entre 1 y 6:"));
         } catch (NumberFormatException ex) {
@@ -810,7 +841,7 @@ public final class Juego implements Comando {
         } else {
             jugadorRecibe = jugadorBancarrota.getEnDeuda();
         }
-        ArrayList<Casilla> array_propiedades;
+        ArrayList<Propiedad> array_propiedades;
         Casilla casilla = getJugadorTurno().getAvatar().getLugar();
         consola.imprimir(
                 "El jugador " + jugadorBancarrota.getNombre() + " ha declarado la bancarrota y abandona la partida!");
@@ -819,7 +850,9 @@ public final class Juego implements Comando {
         array_propiedades = jugadorBancarrota.getPropiedades();
 
         for (int i = 0; i < array_propiedades.size(); i++) { // Los edificios se eliminan.
-            array_propiedades.get(i).getEdificios().clear();
+            if (array_propiedades.get(i) instanceof Solar) {
+                ((Solar) array_propiedades.get(i)).getEdificios().clear();
+            }
             if (jugadorRecibe != banca) {
                 jugadorRecibe.anhadirPropiedad(array_propiedades.get(i));
             }
@@ -888,9 +921,9 @@ public final class Juego implements Comando {
     // Inicia un nuevo turno, reiniciando las variables correspondientes.
     // Llamado por 'acabarTurno' y 'bancarrota'.
     private void nuevoTurno() {
-        try{
-        getJugadorTurno().setPuedeComprar(true);
-        }catch(IndexOutOfBoundsException e){
+        try {
+            getJugadorTurno().setPuedeComprar(true);
+        } catch (IndexOutOfBoundsException e) {
             turno = 0;
             getJugadorTurno().setPuedeComprar(true);
         }
@@ -998,7 +1031,10 @@ public final class Juego implements Comando {
         List<String> casillasEmpatadas = new ArrayList<>();
 
         for (int i = 0; i < tablero.getNumCasillas(); i++) {
-            float rentabilidad = tablero.getCasilla(i).GetRentabilidad();
+            if (!(tablero.getCasilla(i) instanceof Propiedad)) {
+                continue;
+            }
+            float rentabilidad = ((Propiedad) tablero.getCasilla(i)).GetRentabilidad();
             if (rentabilidad > max) {
                 max = rentabilidad;
                 casillasEmpatadas.clear();
@@ -1147,7 +1183,8 @@ public final class Juego implements Comando {
     public int getNumJugadores() {
         return jugadores.size();
     }
-    public ArrayList <Jugador> getJugadores(){
+
+    public ArrayList<Jugador> getJugadores() {
         return jugadores;
     }
 

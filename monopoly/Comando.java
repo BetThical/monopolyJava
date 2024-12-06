@@ -27,9 +27,9 @@ public interface Comando {
     void destruir(String args, Jugador jugador, Casilla casilla)
             throws EdificarIncorrectoException, EdificioNoEncontradoException;
 
-    void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException;
+    void hipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException, CasillaNoEsPropiedadException;
 
-    void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException;
+    void deshipotecar(String args, Jugador jugador) throws CasillaNoEncontradaException, HipotecaException, CasillaNoEsPropiedadException;
 
     // * - - - Información partida - - - * //
     void listar(String args) throws ListarIncorrectoException, NoEncontradoException;
