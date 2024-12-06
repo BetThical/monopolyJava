@@ -191,11 +191,14 @@ public final class Juego implements Comando {
             throw new CompraNoDisponibleException(
                     "Al avanzar con el coche en modo avanzado, sólo puedes comprar una vez por turno.");
         }
-        if (casilla.esComprable(jugador, banca)) {
-            consola.imprimir(
-                    jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + casilla.getValor()
-                            + ".");
-            casilla.comprarCasilla(jugador, banca);
+        if (casilla instanceof Propiedad){
+            Propiedad propiedad = (Propiedad) casilla;
+            if (propiedad.esComprable(jugador, banca)) {
+                consola.imprimir(
+                        jugador.getNombre() + " compra la propiedad " + casilla.getNombre() + " por " + propiedad.getValor()
+                                + ".");
+                        propiedad.comprarCasilla(jugador, banca);
+        }
         } else {
             throw new CompraNoDisponibleException("Esta casilla no es comprable");
         }
@@ -243,9 +246,10 @@ public final class Juego implements Comando {
         if (!EDIFICIOS_VALIDOS.contains(args)) {
             throw new EdificarIncorrectoException();
         } else {
-            casilla.destruirEdificio(args, jugador, true);
+            Solar solar = (Solar) casilla;
+            solar.destruirEdificio(args, jugador);
             consola.imprimir("Has vendido un(a) " + args + " en " + casilla.getNombre() + ", por "
-                    + e.getValor() / 2f + ".");
+                    + solar.valorEdificio(args) / 2f + ".");
 
         }
     }
@@ -362,11 +366,12 @@ public final class Juego implements Comando {
         for (int i = 0; i < tablero.getNumCasillas(); i++) {
             Casilla casilla = tablero.getCasilla(i);
             if (!casilla.getEdificios().isEmpty()) {
+                Solar solar = (Solar) casilla;
                 for (Edificio edificio : casilla.getEdificios()) {
                     consola.imprimir("\nID:" + edificio.getID());
                     consola.imprimir("Propietario: " + casilla.getduenhoJugador().getNombre());
                     consola.imprimir("Grupo: " + casilla.getGrupo().getNombre());
-                    consola.imprimir("Coste: " + edificio.getValor());
+                    consola.imprimir("Coste: " + solar.valorEdificio(edificio.getTipo()));
                 }
             }
         }

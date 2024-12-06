@@ -146,11 +146,12 @@ public class Grupo {
 
     public void descEdificios() {
         for (Casilla casilla : miembros) {
+            Solar solar = (Solar) casilla;
             Juego.consola.imprimir("Propiedad: " + casilla.getNombre());
             for (Edificio casa : casilla.getEdificios()) {
                 Juego.consola.imprimir("[" + casa.getID() + "], ");
             }
-            Juego.consola.imprimir("Alquiler: " + casilla.calcular_coste(0));
+            Juego.consola.imprimir("Alquiler: " + solar.calcular_coste(0));
         }
         imprimirEdificiosDisponibles();
     }

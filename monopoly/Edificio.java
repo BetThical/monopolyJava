@@ -7,6 +7,11 @@ public abstract class Edificio {
     private float valor; // precio de edificar
     private String id;
 
+    public Edificio(String tipo, Casilla casilla) {
+        this.tipo = tipo;
+        Solar solar = (Solar) casilla;
+        this.id = solar.contarEdificiosPorTipo().getOrDefault(tipo, 0)+1;
+    }
     public Edificio(Casilla casilla, float coste) {
         generateID(casilla); // implementado por las subclases
         this.valor = coste;
