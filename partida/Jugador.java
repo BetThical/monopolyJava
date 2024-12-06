@@ -135,6 +135,12 @@ public class Jugador {
             case "coche":
                 this.avatar = new Coche(this, inicio, avCreados);
                 break;
+            case "esfinge":
+                this.avatar = new Esfinge(this, inicio, avCreados);
+                break;
+            case "sombrero":
+                this.avatar = new Sombrero(this, inicio, avCreados);
+                break;
             default:
                 this.avatar = null;
                 break;
@@ -371,6 +377,7 @@ public class Jugador {
     }
 
     public void darCasilla(Casilla casilla, Jugador recibidor) {
+        Juego.consola.imprimir("La casilla " + casilla.getNombre() + " ha sido transferida a " + recibidor.getNombre() + ".");
         recibidor.anhadirPropiedad(casilla);
         casilla.setDuenho(recibidor);
         eliminarPropiedad(casilla);

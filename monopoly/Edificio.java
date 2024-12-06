@@ -1,23 +1,37 @@
 package monopoly;
 
-public class Edificio {
+public abstract class Edificio {
 
     // Atributos
-    private final String tipo;
-    private float alquiler;
-    private final int id;
+    private float alquiler; // valor que suma al alquiler de la casilla
+    private float valor; // precio de edificar
+    private String id;
 
-    public Edificio(String tipo, Casilla casilla) {
-        this.tipo = tipo;
-        this.id = casilla.contarEdificiosPorTipo().getOrDefault(tipo, 0) + 1;
+    public Edificio(Casilla casilla, float coste) {
+        generateID(casilla); // implementado por las subclases
+        this.valor = coste;
     }
+
+    public abstract void generateID(Casilla casilla);
 
     public String getID() {
-        return tipo + "-" + String.valueOf(id);
+        return id;
     }
 
-    public String getTipo() {
-        return tipo;
+    public float getValor() {
+        return valor;
+    }
+
+    public String getTipoNombre() {
+        return this.getClass().getSimpleName();
+    }
+
+    protected void setID(String id) {
+        this.id = id;
+    }
+
+    protected void setValor(float c) {
+        valor = c;
     }
 
     public float getAlquiler() {

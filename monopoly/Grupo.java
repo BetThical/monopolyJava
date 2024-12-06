@@ -1,7 +1,6 @@
 package monopoly;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import partida.*;
 
 public class Grupo {
@@ -94,18 +93,44 @@ public class Grupo {
     }
 
     // Método para contar cuántos edificios de cada tipo hay
-    public HashMap<String, Integer> contarEdificiosPorTipo() {
-        HashMap<String, Integer> contador = new HashMap<>();
-        ArrayList<Edificio> edificios = getEdificiosGrupo();
-
-        for (Edificio edificio : edificios) {
-            String tipo = edificio.getTipo();
-
-            // Incrementar el contador para el tipo de edificio
-            contador.put(tipo, contador.getOrDefault(tipo, 0) + 1);
+    public int numCasas() {
+        int num = 0;
+        for (Edificio e : getEdificiosGrupo()) {
+            if (e instanceof Casa) {
+                num++;
+            }
         }
+        return num;
+    }
 
-        return contador;
+    public int numHoteles() {
+        int num = 0;
+        for (Edificio e : getEdificiosGrupo()) {
+            if (e instanceof Hotel) {
+                num++;
+            }
+        }
+        return num;
+    }
+
+    public int numPiscinas() {
+        int num = 0;
+        for (Edificio e : getEdificiosGrupo()) {
+            if (e instanceof Piscina) {
+                num++;
+            }
+        }
+        return num;
+    }
+
+    public int numPistas() {
+        int num = 0;
+        for (Edificio e : getEdificiosGrupo()) {
+            if (e instanceof Pista) {
+                num++;
+            }
+        }
+        return num;
     }
 
     public double getRentabilidadGrupo() {
@@ -132,17 +157,16 @@ public class Grupo {
 
     public void imprimirEdificiosDisponibles() {
         // Obtiene la cuenta actual de cada tipo de edificio en el grupo
-        HashMap<String, Integer> edificiosGrupo = contarEdificiosPorTipo();
 
         // Obtiene el número máximo de cada tipo de edificio que se puede construir en
         // el grupo
         int maxEdificiosPorTipo = (getNumCasillas() == 2) ? 2 : 3;
 
         // Calcula cuántos edificios de cada tipo se pueden construir
-        int casasDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("casa", 0);
-        int hotelesDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("hotel", 0);
-        int piscinasDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("piscina", 0);
-        int pistasDisponibles = maxEdificiosPorTipo - edificiosGrupo.getOrDefault("pista", 0);
+        int casasDisponibles = maxEdificiosPorTipo - numCasas();
+        int hotelesDisponibles = maxEdificiosPorTipo - numHoteles();
+        int piscinasDisponibles = maxEdificiosPorTipo - numPiscinas();
+        int pistasDisponibles = maxEdificiosPorTipo - numPistas();
 
         // Imprime cuántos edificios de cada tipo se pueden construir
         StringBuilder mensaje = new StringBuilder("Aún se pueden edificar ");

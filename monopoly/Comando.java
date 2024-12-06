@@ -11,11 +11,10 @@ public interface Comando {
     void anhadirJugador();
 
     void jugadorActual(Jugador jugador);
-
     // * - - - Movimientos - - - * //
-    void lanzarDados() throws DadosException, AvanzarException;
+    void lanzarDados() throws DadosException, AvanzarException, AvatarNoImplementadoException;
 
-    void lanzarDados(int tirada1, int tirada2) throws DadosException, AvanzarException;
+    void lanzarDados(int tirada1, int tirada2) throws DadosException, AvanzarException, AvatarNoImplementadoException;
 
     void avanzar(Jugador jugador) throws AvanzarException;
 

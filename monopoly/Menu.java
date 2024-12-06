@@ -90,7 +90,7 @@ public final class Menu {
             }
 
         }
-        Juego.consola.imprimir("La partida ha terminado! El ganador es " + juego.getJugadorTurno().getNombre() + ".");
+        Juego.consola.imprimir(Valor.GREEN + "La partida ha terminado! El ganador es " + juego.getJugadores().get(0).getNombre() + "." + Valor.RESET);
     }
 
     /*
@@ -137,7 +137,7 @@ public final class Menu {
             case "m": // DEBUG: moverse manualmente (m [x])
                 try {
                     juego.lanzarDados(Integer.parseInt(partesComando[1]), 0);
-                    juego.setLanzamientos(juego.getLanzamientos() + 1);
+                    juego.setLanzamientos(0); //! DEBUG: el movimiento manual permite moverse varias veces
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
                     throw new DadosManualesException();
                 }

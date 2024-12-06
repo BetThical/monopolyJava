@@ -6,7 +6,7 @@ import partida.*;
 
 public class Trato {
     static int numTratos = 0;
-    private int idTrato = 0; // inicialmente 0, cuando el trato se confirma como correto se le asigna el ID
+    private int idTrato; // Identificador del trato
     private final Jugador jugador1; // Jugador que propone el trato
     private final Jugador jugador2; // Jugador que recibe el trato
     private final String descripcion;
@@ -22,6 +22,7 @@ public class Trato {
         this.casilla1 = casilla1;
         this.casilla2 = casilla2;
         this.tipoTrato = 1;
+        this.idTrato = ++numTratos;
         this.descripcion = jugador1.getNombre() + " le da " + Valor.GREEN + casilla1.getNombre() + Valor.RESET
                 + " a cambio de " + Valor.YELLOW + casilla2.getNombre() + Valor.RESET + " a " + jugador2.getNombre();
     }
@@ -33,6 +34,7 @@ public class Trato {
         this.casilla1 = null;
         this.casilla2 = casilla2;
         this.tipoTrato = 2;
+        this.idTrato = ++numTratos;
         this.descripcion = jugador1.getNombre() + " le da " + Valor.GREEN + dinero + "€" + Valor.RESET + " a cambio de "
                 + Valor.YELLOW + casilla2.getNombre() + Valor.RESET + " a " + jugador2.getNombre();
     }
@@ -44,6 +46,7 @@ public class Trato {
         this.casilla1 = casilla1;
         this.casilla2 = null;
         this.tipoTrato = 3;
+        this.idTrato = ++numTratos;
         this.descripcion = jugador1.getNombre() + " le da " + Valor.GREEN + casilla1.getNombre() + Valor.RESET
                 + " a cambio de " + Valor.YELLOW + dinero + "€" + Valor.RESET + " a " + jugador2.getNombre();
     }
@@ -55,6 +58,7 @@ public class Trato {
         this.casilla1 = casilla1;
         this.casilla2 = casilla2;
         this.tipoTrato = 4;
+        this.idTrato = ++numTratos;
         this.descripcion = jugador1.getNombre() + " le da " + Valor.GREEN + casilla1.getNombre() + Valor.RESET
                 + " a cambio de " + Valor.YELLOW + casilla2.getNombre() + " y " + dinero + "€" + Valor.RESET + " a "
                 + jugador2.getNombre();
@@ -67,6 +71,7 @@ public class Trato {
         this.casilla1 = casilla1;
         this.casilla2 = casilla2;
         this.tipoTrato = 5;
+        this.idTrato = ++numTratos;
         this.descripcion = jugador1.getNombre() + " le da " + Valor.GREEN + casilla1.getNombre() + " y " + dinero + "€"
                 + Valor.RESET + " a cambio de " + Valor.YELLOW + casilla2.getNombre() + Valor.RESET + " a "
                 + jugador2.getNombre();
@@ -77,6 +82,8 @@ public class Trato {
         return Valor.BLUE + "Trato #" + idTrato + Valor.RESET + ": " + descripcion;
     }
 
+    // Método que comprueba si un trato SE PUEDE PROPONER: si las casillas son propiedad de los jugadores 
+    // involucrados en el trato.
     public void comprobarTratoValido() throws TratoInvalidoException {
         if (casilla1 != null && casilla1.getduenhoJugador() != jugador1) {
             throw new TratoInvalidoException(
@@ -86,9 +93,10 @@ public class Trato {
             throw new TratoInvalidoException(
                     "El jugador " + jugador2.getNombre() + " no es dueño de la casilla " + casilla2.getNombre());
         }
-        this.idTrato = ++numTratos; // se le asigna el id solo al comprobar que es válido
     }
 
+    // Método que comprueba si un trato SE PUEDE ACEPTAR: si los jugadores tienen suficiente dinero para
+    // realizar el trato, controlan las casillas indicadas, etc.
     public void aceptarTrato() throws TratoInvalidoException {
         comprobarTratoValido();
         if ((tipoTrato == 2 || tipoTrato == 5) && jugador1.getFortuna() < dinero) {

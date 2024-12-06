@@ -2,6 +2,8 @@ package partida;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+
+import exception.comandoInvalidoException.AvatarNoImplementadoException;
 import monopoly.*;
 
 public abstract class Avatar {
@@ -98,7 +100,7 @@ public abstract class Avatar {
         moverAvatar(casillas, valorTirada, cobrarSalida);
     }
 
-    public void moverEnAvanzado(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+    public void moverEnAvanzado(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) throws AvatarNoImplementadoException {
         // cada clase debe reimplementar este método
     }
 
