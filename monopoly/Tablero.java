@@ -76,16 +76,16 @@ public class Tablero {
     private void insertarLadoSur() {
 
         ArrayList<Casilla> ladoSur = new ArrayList<>();
-        ladoSur.add(new Casilla("Salida", "especial", 1, banca));
-        ladoSur.add(new Casilla("Solar1", "solar", 2, 600000, banca));
-        ladoSur.add(new Casilla("Caja", "comunidad", 3, banca));
-        ladoSur.add(new Casilla("Solar2", "solar", 4, 600000, banca));
-        ladoSur.add(new Casilla("Imp1", 5, ((float) (Valor.SUMA_VUELTA * 0.5)), banca));
-        ladoSur.add(new Casilla("Trans1", "transporte", 6, Valor.SUMA_VUELTA, banca));
-        ladoSur.add(new Casilla("Solar3", "solar", 7, 520000, banca));
-        ladoSur.add(new Casilla("Suerte", "suerte", 8, banca));
-        ladoSur.add(new Casilla("Solar4", "solar", 9, 520000, banca));
-        ladoSur.add(new Casilla("Solar5", "solar", 10, 520000, banca));
+        ladoSur.add(new Especial("Salida", 1, banca)); // Especial: Salida
+        ladoSur.add(new Solar("Solar1", 2, banca, 600000)); // Propiedad: Solar
+        ladoSur.add(new AccionCajaComunidad("Caja", 3, banca)); // Acción: Caja de Comunidad
+        ladoSur.add(new Solar("Solar2", 4, banca, 600000)); // Propiedad: Solar
+        ladoSur.add(new Impuesto("Imp1", 5, banca, (float) (Valor.SUMA_VUELTA * 0.5))); // Impuesto
+        ladoSur.add(new Transporte("Trans1", 6, banca, Valor.SUMA_VUELTA)); // Propiedad: Transporte
+        ladoSur.add(new Solar("Solar3", 7, banca, 520000)); // Propiedad: Solar
+        ladoSur.add(new AccionSuerte("Suerte", 8, banca)); // Acción: Suerte
+        ladoSur.add(new Solar("Solar4", 9, banca, 520000)); // Propiedad: Solar
+        ladoSur.add(new Solar("Solar5", 10, banca, 520000)); // Propiedad: Solar
 
         // Se crean los grupos correspondientes a esta fila.
         grupos.put(Valor.BLACK, new Grupo(ladoSur.get(1), ladoSur.get(3), Valor.BLACK + "Negro" + Valor.RESET));
@@ -99,16 +99,16 @@ public class Tablero {
     private void insertarLadoOeste() {
 
         ArrayList<Casilla> ladoOeste = new ArrayList<>();
-        ladoOeste.add(new Casilla("Carcel", "especial", 11, banca));
-        ladoOeste.add(new Casilla("Solar6", "solar", 12, 676000, banca));
-        ladoOeste.add(new Casilla("Serv1", "servicio", 13, 0.75f * Valor.SUMA_VUELTA, banca));
-        ladoOeste.add(new Casilla("Solar7", "solar", 14, 676000, banca));
-        ladoOeste.add(new Casilla("Solar8", "solar", 15, 676000, banca));
-        ladoOeste.add(new Casilla("Trans2", "transporte", 16, Valor.SUMA_VUELTA, banca));
-        ladoOeste.add(new Casilla("Solar9", "solar", 17, 878000, banca));
-        ladoOeste.add(new Casilla("Caja", "comunidad", 18, banca));
-        ladoOeste.add(new Casilla("Solar10", "solar", 19, 878000, banca));
-        ladoOeste.add(new Casilla("Solar11", "solar", 20, 878000, banca));
+        ladoOeste.add(new Especial("Cárcel", 11, banca)); // Especial: Cárcel
+        ladoOeste.add(new Solar("Solar6", 12, banca, 676000)); // Propiedad: Solar
+        ladoOeste.add(new Servicio("Serv1", 13, banca, 0.75f * Valor.SUMA_VUELTA)); // Propiedad: Servicio
+        ladoOeste.add(new Solar("Solar7", 14, banca, 676000)); // Propiedad: Solar
+        ladoOeste.add(new Solar("Solar8", 15, banca, 676000)); // Propiedad: Solar
+        ladoOeste.add(new Transporte("Trans2", 16, banca, Valor.SUMA_VUELTA)); // Propiedad: Transporte
+        ladoOeste.add(new Solar("Solar9", 17, banca, 878000)); // Propiedad: Solar
+        ladoOeste.add(new AccionCajaComunidad("Caja", 18, banca)); // Acción: Caja de Comunidad
+        ladoOeste.add(new Solar("Solar10", 19, banca, 878000)); // Propiedad: Solar
+        ladoOeste.add(new Solar("Solar11", 20, banca, 878000)); // Propiedad: Solar
 
         // Se crean los grupos correspondientes a esta fila.
         grupos.put(Valor.PURPLE,
@@ -124,16 +124,16 @@ public class Tablero {
     private void insertarLadoNorte() {
 
         ArrayList<Casilla> ladoNorte = new ArrayList<>();
-        ladoNorte.add(new Casilla("Parking", "especial", 21, banca));
-        ladoNorte.add(new Casilla("Solar12", "solar", 22, 1142440, banca));
-        ladoNorte.add(new Casilla("Suerte", "suerte", 23, banca));
-        ladoNorte.add(new Casilla("Solar13", "solar", 24, 1142440, banca));
-        ladoNorte.add(new Casilla("Solar14", "solar", 25, 1142440, banca));
-        ladoNorte.add(new Casilla("Trans3", "transporte", 26, Valor.SUMA_VUELTA, banca));
-        ladoNorte.add(new Casilla("Solar15", "solar", 27, 1485172, banca));
-        ladoNorte.add(new Casilla("Solar16", "solar", 28, 1485172, banca));
-        ladoNorte.add(new Casilla("Serv2", "servicio", 29, 0.75f * Valor.SUMA_VUELTA, banca));
-        ladoNorte.add(new Casilla("Solar17", "solar", 30, 1485172, banca));
+        ladoNorte.add(new Especial("Parking", 21, banca)); // Especial: Parking
+        ladoNorte.add(new Solar("Solar12", 22, banca, 1142440)); // Propiedad: Solar
+        ladoNorte.add(new AccionSuerte("Suerte", 23, banca)); // Acción: Suerte
+        ladoNorte.add(new Solar("Solar13", 24, banca, 1142440)); // Propiedad: Solar
+        ladoNorte.add(new Solar("Solar14", 25, banca, 1142440)); // Propiedad: Solar
+        ladoNorte.add(new Transporte("Trans3", 26, banca, Valor.SUMA_VUELTA)); // Propiedad: Transporte
+        ladoNorte.add(new Solar("Solar15", 27, banca, 1485172)); // Propiedad: Solar
+        ladoNorte.add(new Solar("Solar16", 28, banca, 1485172)); // Propiedad: Solar
+        ladoNorte.add(new Servicio("Serv2", 29, banca, 0.75f * Valor.SUMA_VUELTA)); // Propiedad: Servicio
+        ladoNorte.add(new Solar("Solar17", 30, banca, 1485172)); // Propiedad: Solar
 
         // Se crean los grupos correspondientes a esta fila.
         grupos.put(Valor.RED,
@@ -150,16 +150,16 @@ public class Tablero {
 
         ArrayList<Casilla> ladoEste = new ArrayList<>();
 
-        ladoEste.add(new Casilla("IrCarcel", "especial", 31, banca));
-        ladoEste.add(new Casilla("Solar18", "solar", 32, (float) 1930723.6, banca));
-        ladoEste.add(new Casilla("Solar19", "solar", 33, (float) 1930723.6, banca));
-        ladoEste.add(new Casilla("Caja", "comunidad", 34, banca));
-        ladoEste.add(new Casilla("Solar20", "solar", 35, (float) 1930723.6, banca));
-        ladoEste.add(new Casilla("Trans4", "transporte", 36, Valor.SUMA_VUELTA, banca));
-        ladoEste.add(new Casilla("Suerte", "suerte", 37, banca));
-        ladoEste.add(new Casilla("Solar21", "solar", 38, (float) 3764922.02, banca));
-        ladoEste.add(new Casilla("Imp2", 39, ((float) Valor.SUMA_VUELTA), banca));
-        ladoEste.add(new Casilla("Solar22", "solar", 40, (float) 3764922.02, banca));
+        ladoEste.add(new Especial("IrCarcel", 31, banca)); // Especial: Ir a la Cárcel
+        ladoEste.add(new Solar("Solar18", 32, banca, 1930723.6f)); // Propiedad: Solar
+        ladoEste.add(new Solar("Solar19", 33, banca, 1930723.6f)); // Propiedad: Solar
+        ladoEste.add(new AccionCajaComunidad("Caja", 34, banca)); // Acción: Caja de Comunidad
+        ladoEste.add(new Solar("Solar20", 35, banca, 1930723.6f)); // Propiedad: Solar
+        ladoEste.add(new Transporte("Trans4", 36, banca, Valor.SUMA_VUELTA)); // Propiedad: Transporte
+        ladoEste.add(new AccionSuerte("Suerte", 37, banca)); // Acción: Suerte
+        ladoEste.add(new Solar("Solar21", 38, banca, 3764922.02f)); // Propiedad: Solar
+        ladoEste.add(new Impuesto("Imp2", 39, banca, Valor.SUMA_VUELTA)); // Impuesto
+        ladoEste.add(new Solar("Solar22", 40, banca, 3764922.02f)); // Propiedad: Solar
 
         // Se crean los grupos correspondientes a esta fila.
         grupos.put(Valor.GREEN,
@@ -302,9 +302,10 @@ public class Tablero {
     public void aumentarCoste(Jugador banca) { // Aumenta el coste de todas las casillas sin dueño en un 5%. Se usa
         // cuando los jugadores dan 4 vueltas.
         for (int i = 0; i < 40; i++) {
-            if (getCasilla(i).getduenhoJugador() == banca) {
-                float valor = (getCasilla(i).getValor() * 0.05f);
-                getCasilla(i).sumarValor(valor);
+            if (getCasilla(i).getduenhoJugador() == banca && (getCasilla(i) instanceof Propiedad)) {
+                Propiedad propiedad = (Propiedad) getCasilla(i);
+                float valor = (propiedad.getValor() * 0.05f);
+                propiedad.sumarValor(valor);
             }
         }
     }

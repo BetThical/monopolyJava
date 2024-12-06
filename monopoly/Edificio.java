@@ -9,7 +9,8 @@ public class Edificio {
 
     public Edificio(String tipo, Casilla casilla) {
         this.tipo = tipo;
-        this.id = casilla.contarEdificiosPorTipo().getOrDefault(tipo, 0) + 1;
+        Solar solar = (Solar) casilla;
+        this.id = solar.contarEdificiosPorTipo().getOrDefault(tipo, 0)+1;
     }
 
     public String getID() {
