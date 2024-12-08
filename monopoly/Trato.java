@@ -1,12 +1,11 @@
 package monopoly;
 
 import exception.comandoInvalidoException.TratoInvalidoException;
-
 import partida.*;
 
 public class Trato {
     static int numTratos = 0;
-    private int idTrato; // Identificador del trato
+    private final int idTrato; // Identificador del trato
     private final Jugador jugador1; // Jugador que propone el trato
     private final Jugador jugador2; // Jugador que recibe el trato
     private final String descripcion;
