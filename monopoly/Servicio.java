@@ -12,7 +12,7 @@ public class Servicio extends Propiedad {
 
     @Override
     public String infoCasilla(Jugador banca) {
-        return "Nombre: " + getNombre() + "\nTipo: servicio" + "\nValor: " + valor + "€.\nHipotecada: " + (getHipotecada() ? "si" : "no") + "\n";
+        return "Nombre: " + getNombre() + "\nTipo: servicio" + "\nValor: " + getValor() + "€.\nHipotecada: " + (getHipotecada() ? "si" : "no") + "\n";
     }
 
     @Override
@@ -28,6 +28,6 @@ public class Servicio extends Propiedad {
 
     @Override
     public String casEnVenta(){
-        return "Nombre: " + getNombre() + ", tipo: servicio" + ", valor: " + valor + "€.\n";
+        return "Nombre: " + getNombre() + ", tipo: servicio" + ", valor: " + getValor() + "€.\n";
     }
 }

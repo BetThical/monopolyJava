@@ -114,7 +114,7 @@ public class Trato {
 
             case 2:
                 jugador1.pagar(dinero, jugador2, false);
-                jugador2.darCasilla(casilla1, jugador1);
+                jugador2.darCasilla(casilla2, jugador1);
                 break;
 
             case 3:

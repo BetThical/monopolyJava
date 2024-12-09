@@ -27,6 +27,6 @@ public class Transporte extends Propiedad {
 
     @Override
     public String casEnVenta(){
-        return "Nombre: " + getNombre() + ", tipo: transporte" + ", valor: " + valor + "€.\n";
+        return "Nombre: " + getNombre() + ", tipo: transporte" + ", valor: " + getValor() + "€.\n";
     }
 }

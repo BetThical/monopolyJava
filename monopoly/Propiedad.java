@@ -6,7 +6,7 @@ import partida.*;
 public abstract class Propiedad extends Casilla {
 
     // Atributos:
-    protected float valor; // precio de compra
+    private float valor; // precio de compra
     private Jugador duenho;
     private float hipoteca;
     private float alquiler; // precio al aer en la casilla, sin modificadores (como edificios y tirada)

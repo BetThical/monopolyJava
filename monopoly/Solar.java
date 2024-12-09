@@ -62,7 +62,7 @@ public class Solar extends Propiedad {
     
     @Override
     public String casEnVenta(){
-        return "Nombre: " + getNombre() + ", tipo: solar" + ", grupo: " + grupo.getColor() + ", valor: " + valor
+        return "Nombre: " + getNombre() + ", tipo: solar" + ", grupo: " + grupo.getColor() + ", valor: " + getValor()
         + "€.\n";
     }
 
