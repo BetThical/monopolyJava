@@ -808,7 +808,7 @@ public final class Juego implements Comando {
             throw new CartaNoEncontradaException(numero);
 
         } else {
-            Carta carta = cartas.get(numero);
+            Carta carta = cartas.get(numero-1);
             consola.imprimir("Has seleccionado: " + carta.getTextoCarta());
             carta.accionCarta(jugadores, jugador, tablero);
             jugador.setCartaDisponible(0);
