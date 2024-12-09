@@ -1,16 +1,15 @@
 package monopoly;
 
-import java.util.ArrayList;
-
 import exception.comandoInvalidoException.EdificioNoPermitidoException;
 import exception.noEncontradoException.EdificioNoEncontradoException;
+import java.util.ArrayList;
 import partida.*;
 
 public class Solar extends Propiedad {
 
     // Atributos:
     private Grupo grupo;
-    private ArrayList<Edificio> edificios;
+    private final ArrayList<Edificio> edificios;
 
     // Constructores:
     public Solar(String nombre, int posicion, Jugador duenho, float valor) {

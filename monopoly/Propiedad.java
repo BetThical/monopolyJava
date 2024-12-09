@@ -8,8 +8,8 @@ public abstract class Propiedad extends Casilla {
     // Atributos:
     private float valor; // precio de compra
     private Jugador duenho;
-    private float hipoteca;
-    private float alquiler; // precio al aer en la casilla, sin modificadores (como edificios y tirada)
+    private final float hipoteca;
+    private final float alquiler; // precio al aer en la casilla, sin modificadores (como edificios y tirada)
     private boolean hipotecada=false;
     private float rentable;
 
@@ -149,7 +149,7 @@ public abstract class Propiedad extends Casilla {
             String respuesta = Juego.consola
                     .leer("El jugador " + actual.getNombre() + " puede comprar esta casilla, por "
                             + getValor()
-                            + " euros. Comprar? (Y/N)")
+                            + " euros. Comprar? (Y/N) ")
                     .toUpperCase(); // Captura la respuesta del jugador (en mayúsculas)
 
             if (respuesta.equals("Y")) {
