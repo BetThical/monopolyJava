@@ -138,6 +138,7 @@ public class Jugador {
         this.nombre = nombre;
         switch (tipoAvatar) {
             case "pelota":
+                
                 this.avatar = new Pelota(this, inicio, avCreados);
                 break;
             case "coche":

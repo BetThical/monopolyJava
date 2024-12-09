@@ -137,10 +137,10 @@ public final class Juego implements Comando {
 
         // manejo de movimientos especiales
         if (jugador.getMovEspecial()) {
-            if ((avatar instanceof Pelota)) {
+            if (avatar instanceof Pelota) {
                 ((Pelota) avatar).moverEnAvanzado(tablero.getPosiciones(), valor_tiradas);
             }
-            if ((avatar instanceof Coche)) {
+            else if ((avatar instanceof Coche)) {
                 ((Coche) avatar).moverEnAvanzado(tablero.getPosiciones(), valor_tiradas);
                 if (valor_tiradas > 4 && lanzamientos < 4) {
                     consola.imprimir("Tu tirada continúa! Puedes volver a lanzar los dados.");
@@ -308,13 +308,14 @@ public final class Juego implements Comando {
 
         aDeshipotecar.deshipotecar(jugador);
         consola.imprimir("Se ha deshipotecado " + aDeshipotecar.getNombre() + ". " + jugador.getNombre()
-                + " ha pagado " + aDeshipotecar.getHipoteca()*1.1f
+                + " ha pagado " + aDeshipotecar.getHipoteca() * 1.1f
                 + "€ de la hipoteca.");
 
     }
 
     // * - - - Información partida - - - * //
-    // Método invocado por el comando 'listar'. Permite listar jugadores, avatarem 40s,
+    // Método invocado por el comando 'listar'. Permite listar jugadores, avatarem
+    // 40s,
     // propiedades en venta y edificios. Dependiendo del argumento, se invocan otros
     // métodos.
     @Override
@@ -358,8 +359,14 @@ public final class Juego implements Comando {
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     @Override
     public void listarVenta() {
-        for (Propiedad casilla : banca.getPropiedades()) {
-            consola.imprimir(casilla.casEnVenta());
+        for (int i = 0; i < 4; i++) {
+            for (Casilla casilla : (tablero.getPosiciones().get(i))) {
+                if (casilla instanceof Propiedad) {
+                    Propiedad propiedad = (Propiedad) casilla;
+                    if (propiedad.getDuenho().equals(banca))
+                        consola.imprimir(propiedad.casEnVenta());
+                }
+            }
         }
 
     }
@@ -453,29 +460,33 @@ public final class Juego implements Comando {
     // Método que imprime, mediante la consola, la información de un jugador,
     // pero recibe un objeto Jugador. Se invoca desde otros métodos, como listar.
     public void descJugador(Jugador jugador) {
-        consola.imprimir(jugador.getColor() + "Nombre: " + Valor.RESET + Valor.WHITE + jugador.getNombre() + Valor.RESET);
-        consola.imprimir(jugador.getColor() + "Avatar: " + Valor.RESET + Valor.WHITE + jugador.getAvatar().getID() + Valor.RESET);
-        consola.imprimir(jugador.getColor() + "Fortuna: " + Valor.RESET + Valor.WHITE + jugador.getFortuna() + Valor.RESET);
+        consola.imprimir(
+                jugador.getColor() + "Nombre: " + Valor.RESET + Valor.WHITE + jugador.getNombre() + Valor.RESET);
+        consola.imprimir(jugador.getColor() + "Avatar: " + Valor.RESET + Valor.WHITE + jugador.getAvatar().getID()
+                + Valor.RESET);
+        consola.imprimir(
+                jugador.getColor() + "Fortuna: " + Valor.RESET + Valor.WHITE + jugador.getFortuna() + Valor.RESET);
         consola.imprimir(jugador.getColor() + "Propiedades:" + Valor.RESET);
         for (int j = 0; j < jugador.getPropiedades().size(); j++) {
-            consola.imprimir(Valor.WHITE + "  ||" + jugador.getPropiedades().get(j).getNombre() + "||" + (jugador.getPropiedades().get(j).getHipotecada() ? " [H]" : "") + Valor.RESET);
+            consola.imprimir(Valor.WHITE + "  ||" + jugador.getPropiedades().get(j).getNombre() + "||"
+                    + (jugador.getPropiedades().get(j).getHipotecada() ? " [H]" : "") + Valor.RESET);
         }
         consola.imprimir(jugador.getColor() + "Hipotecas: " + Valor.RESET);
         for (Propiedad propiedad : jugador.getPropiedades()) {
             if (propiedad.getHipotecada()) {
-            consola.imprimir(Valor.WHITE + "  ||" + propiedad.getNombre() + "||" + Valor.RESET);
+                consola.imprimir(Valor.WHITE + "  ||" + propiedad.getNombre() + "||" + Valor.RESET);
             }
         }
-        
+
         consola.imprimir(jugador.getColor() + "Edificios: " + Valor.RESET);
         for (Propiedad propiedad : jugador.getPropiedades()) {
             if (propiedad instanceof Solar) {
-            Solar solar = (Solar) propiedad;
-            if (!solar.getEdificios().isEmpty()) {
-                for (Edificio edificio : solar.getEdificios()) {
-                consola.imprimir(Valor.WHITE + "  ||" + edificio.getID() + "||" + Valor.RESET);
+                Solar solar = (Solar) propiedad;
+                if (!solar.getEdificios().isEmpty()) {
+                    for (Edificio edificio : solar.getEdificios()) {
+                        consola.imprimir(Valor.WHITE + "  ||" + edificio.getID() + "||" + Valor.RESET);
+                    }
                 }
-            }
             }
         }
         consola.imprimir("");
